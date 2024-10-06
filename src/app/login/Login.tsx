@@ -4,7 +4,7 @@ import { useForm, SubmitHandler, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 
 // Define the schema for validation using Yup
@@ -22,11 +22,7 @@ interface IFormInput {
 const Login: React.FC = () => {
   const router = useRouter()
   // Initialize the form with useForm hook
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<IFormInput>({
+  const { control, handleSubmit } = useForm<IFormInput>({
     defaultValues: {
       email: '',
       password: '',

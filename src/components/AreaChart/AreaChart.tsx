@@ -89,7 +89,7 @@ interface Props {
 }
 
 function AreaChart({
-  useOptions,
+  // useOptions,
   data,
   // referenceLinePoint,
   width,
@@ -97,7 +97,7 @@ function AreaChart({
   yLegend,
   xAxis,
   hideXAxis,
-  withBorderTop,
+  // withBorderTop,
   margin,
 }: Readonly<Props>) {
   return (

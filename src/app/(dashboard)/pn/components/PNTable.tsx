@@ -124,10 +124,10 @@ const columns = [
 ]
 
 const PNTable = () => {
-  const [data, setData] = React.useState(() => [...defaultData])
+  // const [data, setData] = React.useState(() => [...defaultData])
 
   const table = useReactTable({
-    data,
+    data: defaultData,
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
