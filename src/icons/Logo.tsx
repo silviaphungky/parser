@@ -1,5 +1,4 @@
 const Logo = ({
-  color,
   width,
   height,
 }: {
