@@ -1,12 +1,6 @@
 'use client'
 
-import {
-  Breadcrumbs,
-  Card,
-  LineSeparator,
-  ProgressBar,
-  Title,
-} from '@/components'
+import { Breadcrumbs, Card, LineSeparator, ProgressBar } from '@/components'
 import AreaChart from '@/components/AreaChart'
 import DatePickerRange from '@/components/DatePickerRange'
 import InputDropdown from '@/components/InputDropdown'

@@ -1,3 +1,8 @@
 {
-  "extends": ["next/core-web-vitals", "next/typescript"]
+  "extends": ["next/core-web-vitals", "next/typescript"],
+  "rules": {
+    "@typescript-eslint/no-empty-function": "off",
+    "unused-imports/no-unused-imports": "off",
+    "max-len": [2, { "code": 110, "tabWidth": 4, "ignoreUrls": true }]
+  }
 }
