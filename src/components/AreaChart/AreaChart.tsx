@@ -90,17 +90,13 @@ interface Props {
 
 function AreaChart({
   useOptions,
-  selectedRange,
-  range,
   data,
-  referenceLinePoint,
-  isUp,
+  // referenceLinePoint,
   width,
   height,
   yLegend,
   xAxis,
   hideXAxis,
-  handleChangeRange,
   withBorderTop,
   margin,
 }: Readonly<Props>) {
@@ -224,12 +220,12 @@ function AreaChart({
             stroke={'#007DFE'}
             strokeWidth={2.5}
           />
-          <ReferenceLine
+          {/* <ReferenceLine
             y={referenceLinePoint}
             // stroke={colorToken.grayNusantara}
             strokeWidth={1}
             strokeDasharray={'4'}
-          />
+          /> */}
         </RAreaChart>
       </ResponsiveContainer>
     </div>
