@@ -214,7 +214,7 @@ const PNAnalyticPage = () => {
               </div>
               {topTransactionValueData.in.map((item, index) => {
                 return (
-                  <div key={index} className="mb-1">
+                  <div key={`topValueIn-${index}`} className="mb-1">
                     <div className="flex justify-between">
                       <div>{item.name}</div>
                       <div className="text-sm cursor-pointer text-blue-400">
@@ -226,7 +226,7 @@ const PNAnalyticPage = () => {
                         progress={
                           (item.nominal / transactionData.in.total) * 100
                         }
-                        color="#22C55E"
+                        className="bg-[#22C55E]"
                       />
                       <div className="text-xs text-gray-600">
                         {`${(
@@ -259,7 +259,9 @@ const PNAnalyticPage = () => {
                 </div>
               </div>
               <LineSeparator />
-              <div className="mt-4 font-semibold font-barlow">Top Value</div>
+              <div className="mt-4 font-semibold font-barlow mb-2">
+                Top Value
+              </div>
               {topTransactionValueData.out.map((item, index) => {
                 return (
                   <div key={index} className="mb-1">
@@ -269,14 +271,21 @@ const PNAnalyticPage = () => {
                         see all
                       </div>
                     </div>
-                    <div>
+                    <div className="flex gap-2 items-center">
                       <ProgressBar
                         progress={
                           (item.nominal / transactionData.out.total) * 100
                         }
-                        color="#fe8c8c"
+                        className="bg-[#fe8c8c]"
                       />
+                      <div className="text-xs text-gray-600">
+                        {`${(
+                          (item.nominal / transactionData.in.total) *
+                          100
+                        ).toFixed(0)}%`}
+                      </div>
                     </div>
+
                     <div className="font-semibold">{`Rp ${thousandSeparator(
                       item.nominal
                     )}`}</div>
