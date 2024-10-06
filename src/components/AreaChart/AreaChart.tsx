@@ -13,7 +13,7 @@ import { ReactNode } from 'react'
 import Card from '../Card'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 
-export const Flex = ({ children }) => (
+export const Flex = ({ children }: { children: ReactNode }) => (
   <div className="flex gap-2">{children}</div>
 )
 
@@ -68,17 +68,17 @@ export const RangeOption = ({ isSelected, children }: RangeOptionProps) => (
 
 interface Props {
   useOptions?: boolean
-  selectedRange: { label: string; key?: string }
+  // selectedRange: { label: string; key?: string }
   // range: Array<{ label: string; key: string }>
   data: Array<Record<string | number, string | number>>
-  referenceLinePoint: number
+  // referenceLinePoint: number
   // isUp: boolean
   width?: string | number
   height?: string | number
   yLegend?: string
   xAxis?: string
   hideXAxis?: boolean
-  handleChangeRange: (selected: { label: string; key: string }) => void
+  // handleChangeRange: (selected: { label: string; key: string }) => void
   withBorderTop?: boolean
   margin?: {
     top?: number

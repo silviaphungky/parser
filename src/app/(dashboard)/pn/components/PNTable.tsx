@@ -13,7 +13,7 @@ import { IconExpand, IconTrash } from '@/icons'
 import Link from 'next/link'
 
 type Person = {
-  id: string
+  id: number
   index: number
   name: string
   nik: string
