@@ -28,11 +28,11 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
       if (!range.from || (range.from && range.to)) {
         const newRange = { from: day, to: undefined }
         setRange(newRange)
-        onRangeChange && onRangeChange(newRange) // Call the callback if provided
+        onRangeChange?.(newRange) // Call the callback if provided
       } else {
         const newRange = { ...range, to: day }
         setRange(newRange)
-        onRangeChange && onRangeChange(newRange) // Call the callback if provided
+        onRangeChange?.(newRange) // Call the callback if provided
       }
     }
 

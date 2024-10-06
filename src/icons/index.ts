@@ -6,7 +6,7 @@ import Logo from './Logo'
 import IconTrash from './IconTrash'
 import IconExpand from './IconExpand'
 import IconPlus from './IconPlus'
-import IconUserFlash from './IconUserFlash'
+
 import IconCalendar from './IconCalendar'
 import IconIn from './IconIn'
 import IconOut from './IconOut'
@@ -21,7 +21,6 @@ export {
   IconTrash,
   IconExpand,
   IconPlus,
-  IconUserFlash,
   IconCalendar,
   IconIn,
   IconOut,
