@@ -64,7 +64,7 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
 
         {isCalendarOpen && (
           <div
-            className="p-4 border border-gray-300 rounded-lg shadow-md absolute bg-white top-[3rem] w-max left-0 z-10 bg-white"
+            className="p-4 border border-gray-300 rounded-lg shadow-md absolute bg-white top-[3rem] w-max right-0 z-10 bg-white"
             ref={divRef}
           >
             <DayPicker
@@ -83,6 +83,6 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
   }
 )
 
-DatePickerRange.displayName = 'DatePickerRange' // Set display name for debugging
+DatePickerRange.displayName = 'DatePickerRange'
 
 export default DatePickerRange

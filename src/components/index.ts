@@ -7,6 +7,8 @@ import Title from './Title'
 import AreaChart from './AreaChart'
 import LineSeparator from './LineSeparator'
 import ProgressBar from './ProgressBar'
+import PieChart from './PieChart'
+import StackedBarChart from './StackedBarChart'
 
 export {
   Input,
@@ -18,4 +20,6 @@ export {
   AreaChart,
   LineSeparator,
   ProgressBar,
+  PieChart,
+  StackedBarChart,
 }

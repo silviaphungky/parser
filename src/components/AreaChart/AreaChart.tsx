@@ -10,8 +10,9 @@ import {
 } from 'recharts'
 
 import { ReactNode } from 'react'
-import Card from '../Card'
+
 import { thousandSeparator } from '@/utils/thousanSeparator'
+import { Card } from '..'
 
 export const Flex = ({ children }: { children: ReactNode }) => (
   <div className="flex gap-2">{children}</div>
