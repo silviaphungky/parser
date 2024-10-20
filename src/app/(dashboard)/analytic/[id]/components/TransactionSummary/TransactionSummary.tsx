@@ -6,7 +6,7 @@ import InputDropdown from '@/components/InputDropdown'
 
 import { useState } from 'react'
 
-import TransactionHeatmapDate from '../TransactionHeatmapDate/TransactionHeatmapDate'
+import TransactionHeatmapDate from './components/FreqValueHeatmapDate/FreqValueHeatmapDate'
 
 import {
   SumaryGlobalFilter,
@@ -14,6 +14,7 @@ import {
   Top5Ranking,
   TreemapSubjectFreqValue,
   FrequencyPieChart,
+  FreqValueHeatmapDate,
 } from './components'
 import dayjs from 'dayjs'
 
@@ -124,23 +125,57 @@ const dataFreqPiechart = {
   },
 }
 
-const mockGroupByDate = [
-  {
-    '2024-05-01': {
-      level: 1,
+const mockGroupByDate = {
+  in: [
+    {
+      '2024-04-02': {
+        level: 2,
+      },
     },
-  },
-  {
-    '2024-07-08': {
-      level: 3,
+    {
+      '2024-05-03': {
+        level: 2,
+      },
     },
-  },
-  {
-    '2024-07-09': {
-      level: 1, // `data` attribute could be omitted
+    {
+      '2024-05-07': {
+        level: 4,
+      },
     },
-  },
-]
+    {
+      '2024-07-06': {
+        level: 3,
+      },
+    },
+    {
+      '2024-07-01': {
+        level: 1, // `data` attribute could be omitted
+      },
+    },
+    {
+      '2024-01-01': {
+        level: 4, // `data` attribute could be omitted
+      },
+    },
+  ],
+  out: [
+    {
+      '2024-05-01': {
+        level: 1,
+      },
+    },
+    {
+      '2024-07-08': {
+        level: 3,
+      },
+    },
+    {
+      '2024-07-09': {
+        level: 1, // `data` attribute could be omitted
+      },
+    },
+  ],
+}
 
 const mockSubjectFilter = [
   {
@@ -202,36 +237,7 @@ const TransactionSummary = () => {
         <h2 className="text-xl font-semibold mb-4">Transaction by Frequency</h2>
         <TreemapSubjectFreqValue data={dataTreemap} />
         <FrequencyPieChart data={dataFreqPiechart} />
-
-        <div>
-          <Card>
-            <div className="flex justify-between items-center mb-6">
-              <div className="text-sm">Group by Date</div>
-              <div className="w-[10rem]">
-                <InputDropdown
-                  options={mockSubjectFilter}
-                  value={mockSubjectFilter[0]}
-                  onChange={() => {}}
-                />
-              </div>
-            </div>
-
-            <TransactionHeatmapDate
-              data={mockGroupByDate as any}
-              color={[
-                'rgba(255, 204, 204, 0.8)',
-                'rgba(255, 153, 153, 0.8)',
-                'rgba(255, 102, 102, 0.8)',
-                'rgba(255, 77, 77, 0.8)',
-                'rgba(255, 51, 51, 0.8)',
-                'rgba(204, 41, 41, 0.8)',
-                'rgba(153, 31, 31, 0.8)',
-                'rgba(122, 35, 35, 0.8)',
-                'rgba(115, 36, 36, 0.8)',
-              ]}
-            />
-          </Card>
-        </div>
+        <FreqValueHeatmapDate data={mockGroupByDate as any} />
       </div>
     </div>
   )

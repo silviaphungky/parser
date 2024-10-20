@@ -3,6 +3,7 @@ import AssetChart from './AssetChart'
 import FrequencyPieChart from './FrequencyPieChart'
 import Top5Ranking from './Top5Ranking'
 import TreemapSubjectFreqValue from './TreemapSubjectFreqValue'
+import FreqValueHeatmapDate from './FreqValueHeatmapDate'
 
 export {
   SumaryGlobalFilter,
@@ -10,4 +11,5 @@ export {
   FrequencyPieChart,
   Top5Ranking,
   TreemapSubjectFreqValue,
+  FreqValueHeatmapDate,
 }
