@@ -40,8 +40,6 @@ const SumaryGlobalFilter = ({
     to: Date | undefined
   }) => void
 }) => {
-  console.log('masuk')
-  console.log({ selectedBank })
   return (
     <div className="mt-4 flex gap-4 justify-end">
       <div className="w-[10rem]">

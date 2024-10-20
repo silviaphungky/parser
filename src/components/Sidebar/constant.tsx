@@ -1,5 +1,6 @@
 import { IconFileCheck, IconReceipt, IconUsers } from '@/icons'
 import IconChart from '@/icons/IconChart'
+import IconSetting from '@/icons/IconSetting'
 
 export const SIDEBAR_MENU = [
   {
@@ -27,11 +28,11 @@ export const SIDEBAR_MENU = [
     ),
   },
   {
-    key: 'mutation',
-    name: 'Mutation',
-    link: '/mutation',
+    key: 'user',
+    name: 'User Management',
+    link: '/user-management',
     icon: (isSelected: boolean) => (
-      <IconReceipt color={isSelected ? '#EA454C' : undefined} />
+      <IconSetting color={isSelected ? '#EA454C' : undefined} />
     ),
   },
 ]
