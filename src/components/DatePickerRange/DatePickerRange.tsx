@@ -1,5 +1,6 @@
 import { IconCalendar } from '@/icons'
 import useOutsideClick from '@/utils/useClickOutside'
+import dayjs from 'dayjs'
 import React, { useState, forwardRef, Ref, useRef } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
@@ -42,7 +43,9 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
 
     const formatDateRange = () => {
       if (range.from && range.to) {
-        return `${range.from.toLocaleDateString()} - ${range.to.toLocaleDateString()}`
+        return `${dayjs(range.from.toLocaleDateString()).format(
+          'DD/MM/YYYY'
+        )} - ${dayjs(range.to.toLocaleDateString()).format('DD/MM/YYYY')}`
       }
       return 'Select Date Range'
     }

@@ -9,6 +9,7 @@ import LineSeparator from './LineSeparator'
 import ProgressBar from './ProgressBar'
 import PieChart from './PieChart'
 import StackedBarChart from './StackedBarChart'
+import Treemap from './Treemap'
 
 export {
   Input,
@@ -22,4 +23,5 @@ export {
   ProgressBar,
   PieChart,
   StackedBarChart,
+  Treemap,
 }

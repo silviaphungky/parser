@@ -3,7 +3,7 @@
 import { Breadcrumbs, Card } from '@/components'
 import { IconPlus } from '@/icons'
 import { thousandSeparator } from '@/utils/thousanSeparator'
-import { TransactionSumary } from './components'
+import { TransactionSummary } from './components'
 import Tab from '@/components/Tab'
 
 const PNDATA = {
@@ -56,7 +56,7 @@ const PNAnalyticPage = () => {
               {
                 id: 'tab1',
                 label: 'Transaction Summary',
-                content: <TransactionSumary />,
+                content: <TransactionSummary />,
               },
               {
                 id: 'tab2',

@@ -1,5 +1,5 @@
-import TransactionSumary from './TransactionSumary'
+import TransactionSummary from './TransactionSummary'
 
-import TransactionPieChartFreq from './TransactionPieChartFreq'
+import TransactionPieChartFreq from './TransactionSummary/components/FrequencyPieChart'
 
-export { TransactionSumary, TransactionPieChartFreq }
+export { TransactionSummary, TransactionPieChartFreq }

@@ -19,6 +19,33 @@ body {
   background: var(--background);
 }
 
+.recharts-wrapper {
+  margin: 0 auto;
+}
+
+.contributionCalendar__Container > div > div {
+  padding-right: 20px !important;
+}
+
+.contributionCalendar__Container table {
+  border-collapse: separate;
+  border-spacing: 4px;
+}
+
+.contributionCalendar__Container table thead td {
+  font-size: 12px !important;
+}
+
+.contributionCalendar__Container table tbody td {
+  width: 14px !important;
+  height: 14px;
+  font-size: 12px !important;
+}
+
+.recharts-legend-item-text {
+  color: black !important;
+}
+
 @layer base {
   html {
     font-family: 'Poppins', Helvetica, sans-serif;

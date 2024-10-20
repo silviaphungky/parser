@@ -1,10 +1,13 @@
 'use client'
+import { thousandSeparator } from '@/utils/thousanSeparator'
+import { ReactElement, ReactNode } from 'react'
 import {
   Cell,
   Legend,
   Pie,
   PieChart as RPieChart,
   ResponsiveContainer,
+  Tooltip,
 } from 'recharts'
 
 interface Props {
@@ -13,24 +16,36 @@ interface Props {
     value: number
   }>
   value: number
-  color: string
-  title?: string
+  colorMap: Array<string>
   size?: number
-  titleSize?: number
-  labelSize?: number
   cx?: number
+  label?: (props: any) => string | ReactElement
 }
 
-const PieChart = ({
-  chartData,
-  value,
-  title,
-  size,
-  titleSize,
-  labelSize,
-  colorsMap,
-  cx,
-}: Props) => {
+// const CustomTooltip = ({ active, payload }: { active: any; payload: any }) => {
+//   if (active) {
+//     const percentage = ((payload[0].value / total) * 100).toFixed(2)
+//     return (
+//       <div
+//         className="custom-tooltip"
+//         style={{
+//           backgroundColor: '#ffff',
+//           padding: '5px',
+//           border: '1px solid #cccc',
+//           width: '10rem',
+//         }}
+//       >
+//         <label>
+//           {`${payload[0].name} : ${thousandSeparator(
+//             payload[0].value
+//           )} (${percentage}%)`}
+//         </label>
+//       </div>
+//     )
+//   }
+// }
+
+const PieChart = ({ chartData, value, size, colorMap, cx, label }: Props) => {
   return (
     <ResponsiveContainer height={size || 150}>
       <RPieChart>
@@ -39,36 +54,24 @@ const PieChart = ({
           data={chartData}
           startAngle={90}
           endAngle={-270}
-          cx={cx || '45%'}
-          cy={'45%'}
+          cx={cx || '50%'}
+          cy={'50%'}
           innerRadius={'60%'}
-          outerRadius={'80%'}
+          outerRadius={'75%'}
           fill={'#8884d8"'}
-          paddingAngle={0}
+          paddingAngle={4}
           stroke={'10'}
           strokeWidth={15}
           cornerRadius={4}
           dataKey="value"
           labelLine={false}
-          label={(props) => (
-            <text
-              style={{
-                fontWeight: 600,
-                fontSize: labelSize || '1.375rem',
-              }}
-              x={props.cx}
-              y={props.cy + 5}
-              textAnchor="middle"
-            >
-              {value}%
-            </text>
-          )}
+          label={label}
         >
           {chartData.map((entry, index) => {
             return (
               <Cell
                 key={`cell-${entry.name}-${index}`}
-                fill={colorsMap[index]}
+                fill={colorMap[index]}
                 stroke="10"
                 strokeWidth={15}
                 opacity={1}
@@ -81,6 +84,7 @@ const PieChart = ({
             fontSize: '0.75rem',
           }}
         />
+        <Tooltip />
       </RPieChart>
     </ResponsiveContainer>
   )

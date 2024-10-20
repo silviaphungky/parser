@@ -62,7 +62,9 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
                 <div
                   key={item.id}
                   className="cursor-pointer p-2 text-sm flex gap-2"
-                  onClick={() => onChange(item)}
+                  onClick={() => {
+                    onChange(item)
+                  }}
                   ref={ref}
                 >
                   {item.icon}
