@@ -1,6 +1,5 @@
 'use client'
-import { thousandSeparator } from '@/utils/thousanSeparator'
-import { ReactElement, ReactNode } from 'react'
+import { ReactElement } from 'react'
 import {
   Cell,
   Legend,
