@@ -23,9 +23,7 @@ const TransactionCard = ({
   return (
     <Card className="flex-1">
       <div className="flex gap-2">
-        <div className={`p-1 bg-[${iconBg}] rounded-lg h-[2.25rem]`}>
-          {icon}
-        </div>
+        <div className={`p-1 ${iconBg} rounded-lg h-[2.25rem]`}>{icon}</div>
         <div>
           <div className="text-sm">{title}</div>
           <div className="text-xl font-bold">{`Rp ${thousandSeparator(
@@ -52,7 +50,7 @@ const TransactionCard = ({
             <div className="flex gap-2 items-center">
               <ProgressBar
                 progress={(item.nominal / transactionData.in.total) * 100}
-                className={`bg-[${color}]`}
+                className={`${color}`}
               />
               <div className="text-xs text-gray-600">
                 {`${((item.nominal / transactionData.in.total) * 100).toFixed(
@@ -90,16 +88,16 @@ const Top5Ranking = ({
         data={data.in}
         title="Transfer In"
         icon={<IconIn color="white" size={26} />}
-        iconBg="#77ED8B"
-        color="#22C55E"
+        iconBg="bg-[#77ED8B]"
+        color="bg-[#22C55E]"
       />
 
       <TransactionCard
         data={data.out}
         title="Transfer Out"
         icon={<IconOut color="white" size={26} />}
-        iconBg="#fe8c8c"
-        color="#fe8c8c"
+        iconBg="bg-[#fe8c8c]"
+        color="bg-[#E11711]"
       />
     </>
   )
