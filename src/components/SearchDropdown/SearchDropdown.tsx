@@ -44,7 +44,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
           value={selectedField}
           options={searchFields}
           onChange={handleFieldChange}
-          className="ring-0 border-0 rounded-r-none"
+          className="ring-0 border-0"
         />
       </div>
       <div className="h-[1.5rem] border-l" />
