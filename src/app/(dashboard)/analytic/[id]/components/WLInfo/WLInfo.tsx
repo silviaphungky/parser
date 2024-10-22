@@ -14,6 +14,7 @@ const WLInfo = ({
   data: {
     name: string
     totalAsset: number
+    nik: string
   }
 }) => {
   const router = useRouter()
