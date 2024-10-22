@@ -171,17 +171,6 @@ const mockGroupByDate = {
   ],
 }
 
-const mockSubjectFilter = [
-  {
-    id: 'in',
-    label: 'Transaction In',
-  },
-  {
-    id: 'out',
-    label: 'Transaction Out',
-  },
-]
-
 const TransactionSummary = () => {
   const [selectedBank, setSelectedBank] = useState<{
     id: string | number

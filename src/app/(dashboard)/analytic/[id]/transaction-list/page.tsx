@@ -1,5 +1,7 @@
+import TransactionList from '../components/TransactionList'
+
 const TransactionListPage = () => {
-  return <div>test</div>
+  return <TransactionList />
 }
 
 export default TransactionListPage
