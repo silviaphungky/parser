@@ -19,7 +19,10 @@ const sortOptions = [
 ]
 
 const TransactionList = () => {
-  const [selectedSort, setSelectedSort] = useState({ id: '', label: '' })
+  const [selectedSort, setSelectedSort] = useState<{
+    id: string | number
+    label: string
+  }>({ id: '', label: '' })
 
   const handleSearch = (query: string, field: string) => {
     // Implement your filtering logic based on the query and field here
@@ -27,7 +30,7 @@ const TransactionList = () => {
     // Example: Apply search logic to filter your table data and update state
   }
 
-  const handleSort = (option) => {
+  const handleSort = (option: { id: string | number; label: string }) => {
     setSelectedSort(option)
   }
 
