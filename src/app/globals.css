@@ -16,6 +16,48 @@
 body {
   color: var(--foreground);
   background: var(--background);
+
+  .rdp {
+    margin: 0;
+  }
+
+  .rdp-cell {
+    font-size: 0.75rem;
+  }
+
+  .rdp-day.rdp-range_start.rdp-selected {
+    .rdp-day_button {
+      border-radius: 0%;
+      background-color: #007dfe;
+      border: none;
+    }
+  }
+
+  .rdp-day.rdp-range_end.rdp-selected {
+    .rdp-day_button {
+      border-radius: 0%;
+      background-color: #007dfe;
+      border: none;
+    }
+  }
+
+  .rdp .rdp-button:hover:not([disabled]):not(.rdp-day_selected) {
+    background-color: #e9eff3;
+    border-radius: 0%;
+  }
+
+  .rdp-day.rdp-range_middle.rdp-selected {
+    border-radius: 0%;
+    background-color: #e9eff3;
+  }
+
+  .rdp-chevron {
+    fill: #9497b0;
+  }
+
+  .rdp-caption_label {
+    font-size: 1rem;
+  }
 }
 
 .recharts-wrapper {
