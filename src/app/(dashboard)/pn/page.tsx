@@ -6,10 +6,10 @@ const PNPage = () => {
   return (
     <div>
       <div className="flex justify-between">
-        <Title title="PN" />
+        <Title title="Wajib Lapor" />
         <button className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95">
           <IconPlus color="#fff" size={18} />
-          New PN
+          New Wajib Lapor
         </button>
       </div>
       <Card className="w-full mt-6">

@@ -29,7 +29,7 @@ const IconMap: { [key in 'pn' | 'mutation']: ReactNode } = {
 }
 
 const TitleMap: { [key in 'pn' | 'mutation']: string } = {
-  pn: 'PN',
+  pn: 'Wajib Lapor',
   mutation: 'Bank Statement',
 }
 
