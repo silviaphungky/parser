@@ -11,6 +11,7 @@ import PieChart from './PieChart'
 import StackedBarChart from './StackedBarChart'
 import Treemap from './Treemap'
 import Modal from './Modal'
+import SearchDropdown from './SearchDropdown'
 
 export {
   Input,
@@ -26,4 +27,5 @@ export {
   StackedBarChart,
   Treemap,
   Modal,
+  SearchDropdown,
 }

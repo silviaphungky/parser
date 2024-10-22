@@ -16,6 +16,8 @@ import IconBCA from './IconBCA'
 import IconBNI from './IconBNI'
 import IconBRI from './IconBRI'
 import IconMandiri from './IconMandiri'
+import IconSearch from './IconSearch'
+import IconSort from './IconSort'
 
 export {
   IconFileCheck,
@@ -36,4 +38,6 @@ export {
   IconBNI,
   IconBRI,
   IconMandiri,
+  IconSearch,
+  IconSort,
 }

@@ -1,6 +1,7 @@
 'use client'
 
-import { IconChevronDown } from '@/icons'
+import { colorToken } from '@/constants/color-token'
+import { IconChevronDown, IconX } from '@/icons'
 import useOutsideClick from '@/utils/useClickOutside'
 
 import { ReactNode, forwardRef, useRef, useState } from 'react'
@@ -10,15 +11,29 @@ interface Props {
     id: string | number
     label: string
   }
-  placeholder?: string
+  placeholder?: string | ReactNode
   options: Array<{ id: string | number; label: string; icon?: ReactNode }>
   onChange: ({ id, label }: { id: string | number; label: string }) => void
   disabled?: boolean
   className?: string
+  hideChevron?: boolean
+  reset?: boolean
 }
 
 const InputDropdown = forwardRef<HTMLDivElement, Props>(
-  ({ value, onChange, options, placeholder, className, ...props }, ref) => {
+  (
+    {
+      value,
+      onChange,
+      options,
+      placeholder,
+      className,
+      hideChevron,
+      reset,
+      ...props
+    },
+    ref
+  ) => {
     const divRef = useRef<HTMLDivElement>(null)
     const [isOpen, setIsOpen] = useState(false)
 
@@ -28,14 +43,14 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
 
     return (
       <div
-        className={`${className} relative inline-block text-left w-full`}
+        className={` relative inline-block text-left w-full`}
         ref={divRef}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div>
           <button
             type="button"
-            className="inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100"
+            className={`${className} inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900  ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100`}
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
@@ -45,7 +60,15 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
               {selectedOptions?.icon}
               {selectedOptions?.label || placeholder}
             </div>
-            <IconChevronDown />
+            {reset && selectedOptions?.label && (
+              <div
+                onClick={() => onChange({ id: '', label: '' })}
+                className="cursor-pointer ml-2"
+              >
+                <IconX color={colorToken.grayVulkanik} size={20} />
+              </div>
+            )}
+            {!hideChevron && <IconChevronDown />}
           </button>
         </div>
         <div
@@ -55,6 +78,7 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
           role="menu"
           aria-orientation="vertical"
           aria-labelledby="menu-button"
+          style={{ width: 'max-content' }}
         >
           <div className="py-3 px-2 overflow-auto max-h-[180px]" role="none">
             {options.map((item) => {
