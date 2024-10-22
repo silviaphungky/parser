@@ -13,7 +13,7 @@ export const SIDEBAR_MENU = [
   },
   {
     key: 'pn',
-    name: 'PN',
+    name: 'Wajib Lapor',
     link: '/pn',
     icon: (isSelected: boolean) => (
       <IconUsers color={isSelected ? '#EA454C' : undefined} />
