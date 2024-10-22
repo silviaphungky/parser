@@ -11,7 +11,6 @@ import {
   FreqValueHeatmapDate,
 } from './components'
 import dayjs from 'dayjs'
-import UploadBankStatement from '../UploadBankStatement/UploadBankStatement'
 
 export const transactionData = {
   balance: {

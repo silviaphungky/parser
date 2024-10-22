@@ -1,3 +1,4 @@
+'use client'
 import { Card, PieChart } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { numberAbbv } from '@/utils/numberAbbv'
