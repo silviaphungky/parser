@@ -5,6 +5,8 @@ import { IconPlus } from '@/icons'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { TransactionSummary } from './components'
 import Tab from '@/components/Tab'
+import UploadBankStatement from './components/UploadBankStatement/UploadBankStatement'
+import { useState } from 'react'
 
 const PNDATA = {
   name: 'Anton',
@@ -13,9 +15,15 @@ const PNDATA = {
 }
 
 const PNAnalyticPage = () => {
+  const [isOpenUploadForm, setIsOpenUploadForm] = useState(false)
+
   return (
     <div>
-      <div className="">
+      <UploadBankStatement
+        isOpen={isOpenUploadForm}
+        setIsOpen={setIsOpenUploadForm}
+      />
+      <div>
         <Breadcrumbs
           routes={[
             {
@@ -43,7 +51,10 @@ const PNAnalyticPage = () => {
                 )}`}</div>
                 <div className="text-xs text-dark">{`Latest bank statement: July 2024`}</div>
               </div>
-              <button className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm">
+              <button
+                className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95"
+                onClick={() => setIsOpenUploadForm(true)}
+              >
                 <IconPlus color="#fff" size={18} />
                 Add Bank Statement
               </button>

@@ -61,7 +61,9 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
               return (
                 <div
                   key={item.id}
-                  className="cursor-pointer p-2 text-sm flex gap-2"
+                  className={`cursor-pointer p-2 text-sm flex gap-2 ${
+                    selectedOptions?.id === item.id && 'bg-gray-200'
+                  }`}
                   onClick={() => {
                     onChange(item)
                   }}

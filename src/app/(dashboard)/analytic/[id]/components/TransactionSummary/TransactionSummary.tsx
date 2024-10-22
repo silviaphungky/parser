@@ -1,12 +1,6 @@
 'use client'
 
-import { Card } from '@/components'
-
-import InputDropdown from '@/components/InputDropdown'
-
 import { useState } from 'react'
-
-import TransactionHeatmapDate from './components/FreqValueHeatmapDate/FreqValueHeatmapDate'
 
 import {
   SumaryGlobalFilter,
@@ -17,6 +11,7 @@ import {
   FreqValueHeatmapDate,
 } from './components'
 import dayjs from 'dayjs'
+import UploadBankStatement from '../UploadBankStatement/UploadBankStatement'
 
 export const transactionData = {
   balance: {

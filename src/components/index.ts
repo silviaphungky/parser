@@ -10,6 +10,7 @@ import ProgressBar from './ProgressBar'
 import PieChart from './PieChart'
 import StackedBarChart from './StackedBarChart'
 import Treemap from './Treemap'
+import Modal from './Modal'
 
 export {
   Input,
@@ -24,4 +25,5 @@ export {
   PieChart,
   StackedBarChart,
   Treemap,
+  Modal,
 }
