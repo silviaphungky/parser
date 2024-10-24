@@ -1,6 +1,6 @@
 'use client'
 import { useState } from 'react'
-import { FormItem, Modal } from '@/components'
+import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
 
@@ -102,28 +102,26 @@ const TransctionFilter: React.FC<FilterModalProps> = ({
       {/* Mutation Range Filter */}
       <div className="flex space-x-4 mb-4">
         <div className="w-1/2">
-          <label className="block text-sm font-medium text-gray-700">
-            Min Mutation
-          </label>
-          <input
-            type="number"
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            value={minMutation}
-            onChange={(e) => setMinMutation(Number(e.target.value))}
-            placeholder="Min"
-          />
+          <FormItem label="Min Mutation">
+            <Input
+              type="number"
+              className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              value={minMutation}
+              onChange={(e) => setMinMutation(Number(e.target.value))}
+              placeholder="Min"
+            />
+          </FormItem>
         </div>
         <div className="w-1/2">
-          <label className="block text-sm font-medium text-gray-700">
-            Max Mutation
-          </label>
-          <input
-            type="number"
-            className="w-full px-3 py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            value={maxMutation}
-            onChange={(e) => setMaxMutation(Number(e.target.value))}
-            placeholder="Max"
-          />
+          <FormItem label="Max Mutation">
+            <Input
+              type="number"
+              className="w-full px-3 py-2 text-sm mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              value={maxMutation}
+              onChange={(e) => setMaxMutation(Number(e.target.value))}
+              placeholder="Max"
+            />
+          </FormItem>
         </div>
       </div>
 
