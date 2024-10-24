@@ -46,7 +46,7 @@ const Pagination: React.FC<PaginationProps> = ({
 
   return (
     <div className="flex items-center py-4 justify-between my-4">
-      <p className="text-gray-600 text-xs">
+      <p className="text-gray-600 text-sm">
         Showing{' '}
         <span className="font-bold">
           {startItem}-{endItem}
@@ -56,13 +56,13 @@ const Pagination: React.FC<PaginationProps> = ({
 
       <div className="flex items-center gap-6">
         {/* Size Changer */}
-        <div className="flex items-center space-x-2 text-xs">
+        <div className="flex items-center space-x-2 text-sm">
           <label htmlFor="itemsPerPage" className="text-gray-600">
             Items per page:
           </label>
           <select
             id="itemsPerPage"
-            className="cursor-pointer py-2 rounded-lg focus:outline-none text-xs"
+            className="cursor-pointer py-2 rounded-lg focus:outline-none text-sm"
             value={itemsPerPage}
             onChange={(e) => onItemsPerPageChange(Number(e.target.value))}
           >
@@ -74,7 +74,7 @@ const Pagination: React.FC<PaginationProps> = ({
         </div>
 
         {/* Pagination Controls */}
-        <div className="flex items-center space-x-2 text-xs">
+        <div className="flex items-center space-x-2 text-sm">
           {/* Prev Button (with arrow) */}
           <button
             className={`px-4 py-2 disabled:opacity-50 transition-all`}
