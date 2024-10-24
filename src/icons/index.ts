@@ -18,6 +18,7 @@ import IconBRI from './IconBRI'
 import IconMandiri from './IconMandiri'
 import IconSearch from './IconSearch'
 import IconSort from './IconSort'
+import IconFilter from './IconFilter'
 
 export {
   IconFileCheck,
@@ -40,4 +41,5 @@ export {
   IconMandiri,
   IconSearch,
   IconSort,
+  IconFilter,
 }

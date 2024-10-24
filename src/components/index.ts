@@ -12,6 +12,7 @@ import StackedBarChart from './StackedBarChart'
 import Treemap from './Treemap'
 import Modal from './Modal'
 import SearchDropdown from './SearchDropdown'
+import Pagination from './Pagination'
 
 export {
   Input,
@@ -28,4 +29,5 @@ export {
   Treemap,
   Modal,
   SearchDropdown,
+  Pagination,
 }

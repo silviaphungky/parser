@@ -43,14 +43,18 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
 
     return (
       <div
-        className={` relative inline-block text-left w-full`}
+        className={`relative inline-block text-left w-full`}
         ref={divRef}
         onClick={() => setIsOpen(!isOpen)}
       >
         <div>
           <button
             type="button"
-            className={`inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900  ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 ${className}`}
+            className={`${className} ${
+              reset && selectedOptions?.id && 'bg-[#EFEFEF]'
+            } ${
+              !reset && 'hover:bg-gray-50'
+            } inline-flex w-full justify-between gap-x-1.5 rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 disabled:bg-gray-100 `}
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"
@@ -72,7 +76,7 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
           </button>
         </div>
         <div
-          className={`absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
+          className={`min-w-full absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
             isOpen && !props.disabled ? 'block' : 'hidden'
           }`}
           role="menu"
