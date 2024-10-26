@@ -22,7 +22,7 @@ const Tab: React.FC<TabProps> = ({ tabs }) => {
             onClick={() => {
               tab.handleClick()
             }}
-            className={`py-2 px-4 focus:outline-none ${
+            className={`py-2 px-4 focus:outline-none text-sm ${
               tab.active
                 ? 'border-b-2 border-primary font-bold'
                 : 'text-gray-500'

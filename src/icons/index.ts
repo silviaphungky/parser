@@ -19,6 +19,7 @@ import IconMandiri from './IconMandiri'
 import IconSearch from './IconSearch'
 import IconSort from './IconSort'
 import IconFilter from './IconFilter'
+import IconPencil from './IconPencil'
 
 export {
   IconFileCheck,
@@ -42,4 +43,5 @@ export {
   IconSearch,
   IconSort,
   IconFilter,
+  IconPencil,
 }
