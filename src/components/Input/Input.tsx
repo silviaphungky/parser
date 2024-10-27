@@ -12,7 +12,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(
       <input
         ref={ref}
         type={type}
-        className={`border rounded-lg px-4 py-2 focus:outline-none focus:none ${className} ${
+        className={`border text-sm rounded-lg px-4 py-2 focus:outline-none focus:none ${className} ${
           errorMessage ? 'border-red-500' : ''
         }`}
         {...props}
