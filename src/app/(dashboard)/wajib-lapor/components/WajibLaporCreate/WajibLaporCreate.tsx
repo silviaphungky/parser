@@ -50,7 +50,7 @@ const validationSchema = yup.object().shape({
     ),
 })
 
-const FamilyForm: React.FC = () => {
+const WajibLaporCreate: React.FC = () => {
   const {
     handleSubmit,
     control,
@@ -68,7 +68,7 @@ const FamilyForm: React.FC = () => {
   return (
     <div>
       <h2 className="font-semibold mb-4 text-lg">Create New Wajib Lapor</h2>
-      <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 max-w-lg ">
+      <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg ">
         <div className="w-full">
           <Controller
             name="name"
@@ -228,7 +228,7 @@ const FamilyForm: React.FC = () => {
         {/* Submit Button */}
         <button
           type="submit"
-          className={`ml-auto block px-6 py-2 text-sm bg-black rounded transition-all border-black border text-white ${'hoverhover:opacitity-70'}`}
+          className="mt-6 text-sm bg-primary w-full text-white px-4 py-2 rounded-md hover:opacity-95"
         >
           Create
         </button>
@@ -237,4 +237,4 @@ const FamilyForm: React.FC = () => {
   )
 }
 
-export default FamilyForm
+export default WajibLaporCreate

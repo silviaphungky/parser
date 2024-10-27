@@ -10,6 +10,7 @@ const PNPage = () => {
   return (
     <div>
       <Modal
+        width="max-w-[30rem]"
         isOpen={isOpenCreateModal}
         onClose={() => setIsOpenCreateModal(false)}
       >
