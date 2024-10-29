@@ -1,23 +1,11 @@
 import DatePickerRange from '@/components/DatePickerRange'
-import InputDropdown from '@/components/InputDropdown'
+import ReactSelect from 'react-select'
 
 export const mockBank = [
-  {
-    id: '',
-    label: 'All banks',
-  },
-  {
-    id: 'bca',
-    label: 'BCA',
-  },
-  {
-    id: 'bni',
-    label: 'BNI',
-  },
-  {
-    id: 'mandiri',
-    label: 'Mandiri',
-  },
+  { value: 'BCA1', label: 'BCA - 12345678' },
+  { value: 'BCA1', label: 'BCA - 12345678' },
+  { value: 'BNI1', label: 'BNI - 87654321' },
+  { value: 'BRI1', label: 'BRI - 11223344' },
 ]
 
 const SumaryGlobalFilter = ({
@@ -43,10 +31,11 @@ const SumaryGlobalFilter = ({
   return (
     <div className="mt-4 flex gap-4 justify-end">
       <div className="w-[10rem]">
-        <InputDropdown
-          value={selectedBank}
+        <ReactSelect
+          isMulti
+          name="colors"
           options={mockBank}
-          onChange={handleChangeBank}
+          className="react-select-container"
         />
       </div>
       <DatePickerRange

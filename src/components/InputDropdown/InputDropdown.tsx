@@ -18,6 +18,7 @@ interface Props {
   className?: string
   hideChevron?: boolean
   reset?: boolean
+  errorMessage?: string
 }
 
 const InputDropdown = forwardRef<HTMLDivElement, Props>(
@@ -30,6 +31,7 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
       className,
       hideChevron,
       reset,
+      errorMessage,
       ...props
     },
     ref
@@ -50,7 +52,7 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
         <div>
           <button
             type="button"
-            className={`${className} ${
+            className={`${className} ${errorMessage && 'border-red-500'} ${
               reset && selectedOptions?.id && 'bg-[#EFEFEF]'
             } ${
               !reset && 'hover:bg-gray-50'

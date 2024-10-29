@@ -1,10 +1,14 @@
 'use client'
-import { Card, Title } from '@/components'
+import { Card, Pagination, Title } from '@/components'
 import { UserTable } from './components'
 import { IconPlus } from '@/icons'
+import { useState } from 'react'
 
 const currentUserRole = 'superadmin'
 const UserManagementPage = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemPerPage] = useState(5)
+
   return (
     <>
       <div className="flex item-center justify-between">
@@ -22,6 +26,14 @@ const UserManagementPage = () => {
           onCreateUser={() => {}}
           onEditUser={() => {}}
           onDeleteUser={() => {}}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={10}
+          onPageChange={setCurrentPage}
+          totalItems={100}
+          itemsPerPage={5}
+          onItemsPerPageChange={setItemPerPage}
         />
       </Card>
     </>

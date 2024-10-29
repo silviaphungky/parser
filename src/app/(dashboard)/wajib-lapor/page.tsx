@@ -1,11 +1,13 @@
 'use client'
-import { Card, Modal, Title } from '@/components'
+import { Card, Modal, Pagination, Title } from '@/components'
 import PNTable from './components/PNTable'
 import { IconPlus } from '@/icons'
 import { WajibLaporCreate } from './components'
 import { useState } from 'react'
 
 const PNPage = () => {
+  const [currentPage, setCurrentPage] = useState(1)
+  const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpenCreateModal, setIsOpenCreateModal] = useState(false)
   return (
     <div>
@@ -28,6 +30,14 @@ const PNPage = () => {
       </div>
       <Card className="w-full mt-6">
         <PNTable />
+        <Pagination
+          currentPage={currentPage}
+          totalPages={10}
+          onPageChange={setCurrentPage}
+          totalItems={100}
+          itemsPerPage={5}
+          onItemsPerPageChange={setItemPerPage}
+        />
       </Card>
     </div>
   )

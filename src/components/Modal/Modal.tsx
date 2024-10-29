@@ -26,9 +26,7 @@ const Modal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-gray-800 bg-opacity-50 ">
-      <div
-        className={`relative bg-white rounded-lg shadow-lg w-full ${width} p-6 max-h[50vh] overflow-auto`}
-      >
+      <div className={` bg-white rounded-lg shadow-lg w-full ${width} p-6`}>
         {closeable && (
           <div onClick={handleClose} className="cursor-pointer float-right">
             <IconX size={18} />

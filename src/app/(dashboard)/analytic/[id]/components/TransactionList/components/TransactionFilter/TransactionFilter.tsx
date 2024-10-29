@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
+import ReactSelect from 'react-select'
 
 interface FilterValues {
   startDate: string
@@ -18,12 +19,12 @@ interface FilterModalProps {
   isOpen: boolean
   onClose: () => void
   onApplyFilter: (filterValues: FilterValues) => void
-  bankOptions: { id: string | number; label: string }[]
+  bankOptions: { value: string | number; label: string }[]
   currencyOptions: { id: string | number; label: string }[]
   transactionTypeOptions: { id: string | number; label: string }[]
 }
 
-const TransctionFilter: React.FC<FilterModalProps> = ({
+const TransactionFilter: React.FC<FilterModalProps> = ({
   isOpen,
   onClose,
   onApplyFilter,
@@ -45,7 +46,7 @@ const TransctionFilter: React.FC<FilterModalProps> = ({
   const [minMutation, setMinMutation] = useState(0)
   const [maxMutation, setMaxMutation] = useState(0)
   const [selectedBank, setSelectedBank] = useState<{
-    id: string | number
+    value: string | number
     label: string
   }>(bankOptions[0])
   const [currency, setCurrency] = useState<{
@@ -60,7 +61,7 @@ const TransctionFilter: React.FC<FilterModalProps> = ({
       transactionType: transactionType.id as string,
       minMutation,
       maxMutation,
-      selectedBank: selectedBank.id as string,
+      selectedBank: selectedBank.value as string,
       currency: currency.id as string,
     }
     onApplyFilter(filterValues)
@@ -90,10 +91,11 @@ const TransctionFilter: React.FC<FilterModalProps> = ({
         </div>
         <div className="flex-1">
           <FormItem label="Personal Bank">
-            <InputDropdown
+            <ReactSelect
+              isMulti
+              name="banks"
               options={bankOptions}
-              value={selectedBank}
-              onChange={setSelectedBank}
+              className="react-select-container"
             />
           </FormItem>
         </div>
@@ -164,4 +166,4 @@ const TransctionFilter: React.FC<FilterModalProps> = ({
   )
 }
 
-export default TransctionFilter
+export default TransactionFilter

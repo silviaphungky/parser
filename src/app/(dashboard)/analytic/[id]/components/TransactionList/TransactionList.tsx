@@ -26,10 +26,11 @@ const transactionTypeOptions = [
 ]
 
 const bankOptions = [
-  { id: '', label: 'All Banks' },
-  { id: 'BCA', label: 'BCA - 12345678' },
-  { id: 'BNI', label: 'BNI - 87654321' },
-  { id: 'BRI', label: 'BRI - 11223344' },
+  { value: '', label: 'All Bank Account' },
+  { value: 'BCA1', label: 'BCA - 12345678' },
+  { value: 'BCA1', label: 'BCA - 12345678' },
+  { value: 'BNI1', label: 'BNI - 87654321' },
+  { value: 'BRI1', label: 'BRI - 11223344' },
 ]
 
 const currencyOptions = [

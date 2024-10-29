@@ -12,7 +12,7 @@ const FormItem: React.FC<FormItemProps> = ({
   errorMessage,
 }) => {
   return (
-    <div className="form-item">
+    <div className="form-item mb-2">
       {label && (
         <label className="form-label text-sm  font-semibold">{label}</label>
       )}

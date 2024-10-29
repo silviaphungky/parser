@@ -114,7 +114,7 @@ const UserTable: React.FC<UserTableProps> = ({
       }),
       columnHelper.accessor('email', {
         header: 'Email',
-        cell: (info) => <div className="text-xs">{info.getValue()}</div>,
+        cell: (info) => <div className="text-sm">{info.getValue()}</div>,
       }),
       columnHelper.accessor('role', {
         header: 'Role',
@@ -136,14 +136,14 @@ const UserTable: React.FC<UserTableProps> = ({
                 className="border p-2 rounded-lg hover:border-gray-400"
                 onClick={() => onEditUser(user.id)}
               >
-                <IconPencil />
+                <IconPencil size={20} />
               </button>
 
               {/* Delete Button: Only available to admins and superadmins */}
               {currentUserRole === 'superadmin' &&
                 user.role !== 'superadmin' && (
                   <button className="border p-2 rounded-lg hover:border-gray-400">
-                    <IconTrash color="#EA454C" />
+                    <IconTrash color="#EA454C" size={20} />
                   </button>
                 )}
 
