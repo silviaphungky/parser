@@ -92,9 +92,9 @@ const WLInfo = ({
                 id: 'tab3',
                 label: 'Transaction Bank Statements',
                 content: <></>,
-                active: pathname === '/analytic/1/bank-statement-list',
+                active: pathname === '/analytic/1/transaction-statements',
                 handleClick: () => {
-                  router.push('/analytic/1/bank-statement-list')
+                  router.push('/analytic/1/transaction-statements')
                 },
               },
             ]}
