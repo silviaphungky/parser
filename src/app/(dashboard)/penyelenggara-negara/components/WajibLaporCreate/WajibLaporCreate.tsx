@@ -2,6 +2,7 @@ import { useForm, Controller } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
+import { useState } from 'react'
 
 interface FamilyMember {
   member: {
@@ -36,21 +37,17 @@ const familyMemberOptions = [
 ]
 
 const validationSchema = yup.object().shape({
-  name: yup.string().required('Name is required'),
+  name: yup.string().required('Nama wajib diisi'),
   nik: yup
     .number()
-    .typeError('NIK must be a number')
-    .required('NIK is required')
+    .typeError('NIK harus angka')
+    .required('NIK wajib diisi')
     .positive('NIK must be positive')
-    .integer('NIK must be an integer')
-    .test(
-      'length',
-      'NIK must be exactly 16 digits',
-      (val) => String(val).length === 16
-    ),
+    .integer('NIK must be an integer'),
 })
 
 const WajibLaporCreate: React.FC = () => {
+  const [isOpen, setIsOpen] = useState(false)
   const {
     handleSubmit,
     control,
@@ -62,6 +59,7 @@ const WajibLaporCreate: React.FC = () => {
 
   const onSubmit = (data: FormValues) => {
     console.log(data)
+    setIsOpen(true)
     // Handle form submission
   }
 
@@ -76,10 +74,10 @@ const WajibLaporCreate: React.FC = () => {
             name="name"
             control={control}
             render={({ fieldState: { error }, ...fields }) => (
-              <FormItem label="Name" errorMessage={error?.message}>
+              <FormItem label="Nama" errorMessage={error?.message}>
                 <Input
                   {...fields}
-                  placeholder="Nama"
+                  placeholder="Masukkan nama"
                   className="w-full"
                   errorMessage={error?.message}
                 />
@@ -95,7 +93,7 @@ const WajibLaporCreate: React.FC = () => {
             render={({ fieldState: { error }, ...fields }) => (
               <FormItem label="NIK" errorMessage={error?.message}>
                 <Input
-                  placeholder="NIK"
+                  placeholder="Masukkan NIK"
                   className="w-full"
                   type="number"
                   {...fields}

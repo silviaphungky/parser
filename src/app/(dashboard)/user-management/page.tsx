@@ -16,7 +16,7 @@ const UserManagementPage = () => {
         {currentUserRole === 'superadmin' && (
           <button className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95">
             <IconPlus color="#fff" size={18} />
-            Add User
+            Tambahkan Pengguna
           </button>
         )}
       </div>
