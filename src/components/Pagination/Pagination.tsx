@@ -47,18 +47,18 @@ const Pagination: React.FC<PaginationProps> = ({
   return (
     <div className="flex items-center py-4 justify-between my-4">
       <p className="text-gray-600 text-sm">
-        Showing{' '}
+        Menampilkan{' '}
         <span className="font-bold">
           {startItem}-{endItem}
         </span>{' '}
-        of <span className="font-bold">{totalItems}</span> items
+        dari <span className="font-bold">{totalItems}</span> data
       </p>
 
       <div className="flex items-center gap-6">
         {/* Size Changer */}
         <div className="flex items-center space-x-2 text-sm">
           <label htmlFor="itemsPerPage" className="text-gray-600">
-            Items per page:
+            Data per halaman:
           </label>
           <select
             id="itemsPerPage"
@@ -81,7 +81,7 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => onPageChange(currentPage - 1)}
             disabled={currentPage === 1}
           >
-            Prev
+            Sebelumnya
           </button>
 
           {/* Page Numbers */}
@@ -105,7 +105,7 @@ const Pagination: React.FC<PaginationProps> = ({
             onClick={() => onPageChange(currentPage + 1)}
             disabled={currentPage === totalPages}
           >
-            Next
+            Selanjutnya
           </button>
         </div>
       </div>

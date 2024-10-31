@@ -105,11 +105,11 @@ const UserTable: React.FC<UserTableProps> = ({
   const columns = useMemo(
     () => [
       columnHelper.accessor('created_at', {
-        header: 'Created at',
+        header: 'Tanggan dibuat',
         cell: (info) => <div className="text-xs">{info.getValue()}</div>,
       }),
       columnHelper.accessor('name', {
-        header: 'Name',
+        header: 'Nama',
         cell: (info) => <div className="font-semibold">{info.getValue()}</div>,
       }),
       columnHelper.accessor('email', {

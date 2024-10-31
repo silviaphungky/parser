@@ -9,7 +9,7 @@ interface Props {
 
 const SummaryCard = ({ title, icon, description }: Props) => {
   return (
-    <Card className="w-[15rem]">
+    <Card className="w-[20rem]">
       <div className="flex items-center gap-6">
         {icon}
         <div>

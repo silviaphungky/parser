@@ -27,8 +27,8 @@ const data = [
 ]
 
 export const LEGEND_MAP: { [key in string]: string } = {
-  transferIn: 'Transfer In',
-  transferOut: 'Transfer Out',
+  transferIn: 'Transfer Masuk',
+  transferOut: 'Transfer Keluar',
 }
 
 const CustomLegendText = (value: string) => {

@@ -12,7 +12,7 @@ const UserManagementPage = () => {
   return (
     <>
       <div className="flex item-center justify-between">
-        <Title title="User Management" />
+        <Title title="Menejemen Pengguna" />
         {currentUserRole === 'superadmin' && (
           <button className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95">
             <IconPlus color="#fff" size={18} />

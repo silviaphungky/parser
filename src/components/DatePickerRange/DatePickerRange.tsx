@@ -11,11 +11,16 @@ interface DatePickerRangeProps {
     from: Date | undefined
     to: Date | undefined
   }) => void
+  className?: string
 }
 
 const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
   (
-    { initialRange = { from: undefined, to: undefined }, onRangeChange },
+    {
+      initialRange = { from: undefined, to: undefined },
+      onRangeChange,
+      className,
+    },
     ref: Ref<HTMLDivElement>
   ) => {
     const divRef = useRef(null)
@@ -47,14 +52,16 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
           'DD/MM/YYYY'
         )} - ${dayjs(range.to.toLocaleDateString()).format('DD/MM/YYYY')}`
       }
-      return 'Select Date Range'
+      return 'Pilih rentang waktu'
     }
 
     useOutsideClick(divRef, () => setIsCalendarOpen(false))
 
     return (
-      <div ref={ref} className="flex flex-col items-center relative">
-        <div className="p-2 border border-gray-300 rounded-lg mb-4 cursor-pointer text-sm w-[14rem] flex gap-2 cursor-pointer bg-white">
+      <div ref={ref} className={`flex flex-col relative `}>
+        <div
+          className={`p-2 border border-gray-300 rounded-lg cursor-pointer text-sm w-[14rem] ${className} flex gap-2 cursor-pointer bg-white`}
+        >
           <IconCalendar />
           <input
             type="text"

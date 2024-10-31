@@ -20,6 +20,8 @@ import IconSearch from './IconSearch'
 import IconSort from './IconSort'
 import IconFilter from './IconFilter'
 import IconPencil from './IconPencil'
+import IconKebab from './IconKebab'
+import IconUnlink from './IconUnlink'
 
 export {
   IconFileCheck,
@@ -44,4 +46,6 @@ export {
   IconSort,
   IconFilter,
   IconPencil,
+  IconKebab,
+  IconUnlink,
 }
