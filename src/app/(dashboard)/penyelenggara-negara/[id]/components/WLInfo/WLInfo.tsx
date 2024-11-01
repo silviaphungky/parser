@@ -39,7 +39,7 @@ const WLInfo = ({
         <Breadcrumbs
           routes={[
             {
-              label: 'Analytic',
+              label: 'Penyelenggara Negara',
               link: '/penyelenggara-negara',
             },
             {

@@ -21,7 +21,7 @@ const Sidebar = () => {
         <Logo width={180} height={35} />
       </div>
       {MENU.map((item, index) => {
-        const isSelected = pathname === item.link
+        const isSelected = pathname.includes(item.link)
         return (
           <div key={item.key}>
             <Link
