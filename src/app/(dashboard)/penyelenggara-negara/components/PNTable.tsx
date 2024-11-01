@@ -10,9 +10,15 @@ import {
 } from '@tanstack/react-table'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { numberAbbv } from '@/utils/numberAbbv'
-import { IconChevronDown, IconExpand, IconTrash } from '@/icons'
+import {
+  IconChevronDown,
+  IconExpand,
+  IconFilter,
+  IconSort,
+  IconTrash,
+} from '@/icons'
 import Link from 'next/link'
-import { FormItem, Input, Modal } from '@/components'
+import { FormItem, Input, Modal, SearchDropdown } from '@/components'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
@@ -35,7 +41,7 @@ const defaultData: (Person & { action: string })[] = [
   {
     id: 1,
     index: 1,
-    name: 'Test 1',
+    name: 'Anton Soni',
     nik: '123456789',
     bankTotal: 1,
     bankStatementTotal: 10,
@@ -47,7 +53,7 @@ const defaultData: (Person & { action: string })[] = [
   {
     id: 2,
     index: 2,
-    name: 'Test 2',
+    name: 'Budi Soni',
     nik: '987654321',
     bankTotal: 3,
     bankStatementTotal: 25,
@@ -59,7 +65,7 @@ const defaultData: (Person & { action: string })[] = [
   {
     id: 3,
     index: 3,
-    name: 'Test 3',
+    name: 'Celica Nana H.',
     nik: '88763931123',
     bankTotal: 0,
     bankStatementTotal: 0,
@@ -122,6 +128,24 @@ const validationSchema = yup.object().shape({
 
 const columnHelper = createColumnHelper<Person & { action: string }>()
 
+const searchFields = [
+  { label: 'Nama PN', id: 'pnName' },
+  { label: 'NIK PN', id: 'pnNIK' },
+]
+
+const sortOptions = [
+  { label: 'Nama - A-Z', id: 'name' },
+  { label: 'Nama - Z-A', id: '-name' },
+  { label: 'Jumlah Relasi Keluarga - Terbanyak', id: 'relation' },
+  { label: 'Jumlah Relasi Keluarga - Tersedikit', id: '-relation' },
+  { label: 'Jumlah Transaksi - Terbanyak', id: 'frequency' },
+  { label: 'Jumlah Transaksi - Tersedikit', id: '-frequency' },
+  { label: 'Akun Bank - Paling banyak', id: 'bankAccount' },
+  { label: 'Akun Bank - Paling sedikit', id: '-bankAccount' },
+  { label: 'Total Asset - Paling banyak', id: 'totalAsset' },
+  { label: 'Total Asset - Paling sedikit', id: '-totalAsset' },
+]
+
 const PNTable = () => {
   const [isOpenFamilyForm, setIsOpenFamilyForm] = React.useState(false)
   const { handleSubmit, control, formState } = useForm<FormValues>({
@@ -133,7 +157,10 @@ const PNTable = () => {
       },
     },
   })
-
+  const [selectedSort, setSelectedSort] = React.useState<{
+    id: string | number
+    label: string
+  }>({ id: '', label: '' })
   const selectedRole =
     useWatch({
       name: 'role',
@@ -151,13 +178,13 @@ const PNTable = () => {
       columnHelper.accessor('name', {
         header: () => <span>Nama</span>,
         cell: (info) => {
-          return info.getValue()
+          return <div className="font-semibold">{info.getValue()}</div>
         },
       }),
       columnHelper.accessor('nik', {
         header: () => <span>NIK</span>,
         cell: (info) => {
-          return info.getValue()
+          return <div className="font-semibold">{info.getValue()}</div>
         },
       }),
       columnHelper.accessor('family', {
@@ -239,6 +266,16 @@ const PNTable = () => {
     getCoreRowModel: getCoreRowModel(),
   })
 
+  const handleSearch = (query: string, field: string) => {
+    // Implement your filtering logic based on the query and field here
+    console.log(`Searching for "${query}" in field "${field}"`)
+    // Example: Apply search logic to filter your table data and update state
+  }
+
+  const handleSort = (option: { id: string | number; label: string }) => {
+    setSelectedSort(option)
+  }
+
   return (
     <>
       <Modal
@@ -316,6 +353,29 @@ const PNTable = () => {
           </button>
         </form>
       </Modal>
+
+      <div className="mb-4 flex justify-between">
+        <SearchDropdown
+          searchFields={searchFields}
+          onSearch={handleSearch}
+          placeholder="Cari PN..."
+        />
+        <div className="w-max">
+          <InputDropdown
+            reset
+            value={selectedSort}
+            hideChevron
+            options={sortOptions}
+            placeholder={
+              <div className="flex gap-2 items-center">
+                <div>Urutkan berdasarkan</div>
+                <IconSort />
+              </div>
+            }
+            onChange={handleSort}
+          />
+        </div>
+      </div>
       <div className="p-2">
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="font-semibold bg-gray-100">
