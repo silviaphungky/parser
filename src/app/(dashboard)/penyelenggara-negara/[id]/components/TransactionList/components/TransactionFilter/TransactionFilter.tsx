@@ -134,7 +134,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
           </FormItem>
         </div>
         <div className="w-1/2">
-          <FormItem label="Maksimal Nominal Transaksi">
+          <FormItem label="Maks. Nominal Transaksi">
             <Input
               type="number"
               className="w-full px-3 py-2 text-sm mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
