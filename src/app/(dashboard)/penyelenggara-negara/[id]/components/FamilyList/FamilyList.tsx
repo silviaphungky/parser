@@ -1,6 +1,6 @@
 'use client'
 import { Card, Pagination, SearchDropdown } from '@/components'
-import { FamilyTable, TransactionFilter } from './components'
+import { FamilyTable } from './components'
 import { useState } from 'react'
 import InputDropdown from '@/components/InputDropdown'
 import { IconFilter, IconSort } from '@/icons'
