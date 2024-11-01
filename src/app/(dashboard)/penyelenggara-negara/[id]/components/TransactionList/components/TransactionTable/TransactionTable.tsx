@@ -8,6 +8,7 @@ import {
 } from '@tanstack/react-table'
 import useOutsideClick from '@/utils/useClickOutside'
 import { Modal } from '@/components'
+import TransactionCategoryModal from '../TransactionCategoryModal'
 
 type TransactionData = {
   id: string
@@ -411,6 +412,7 @@ const TransactionTable = () => {
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
+  const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
 
   const onClose = () => {
     setIsOpen(false)
@@ -576,7 +578,7 @@ const TransactionTable = () => {
               <button
                 onClick={() => {
                   setSelected(info.row.original)
-                  setIsOpen(true)
+                  setIsOpenCategoryModal(true)
                 }}
                 className="block w-full px-4 py-2 text-left hover:bg-gray-100"
               >
@@ -621,6 +623,13 @@ const TransactionTable = () => {
 
   return (
     <>
+      <TransactionCategoryModal
+        isOpen={isOpenCategoryModal}
+        onClose={() => {
+          setIsOpenCategoryModal(false)
+          setSelected({} as TransactionData)
+        }}
+      />
       <Modal
         isOpen={isOpenVerfiModal}
         onClose={() => setIsOpenVerifModal(false)}
