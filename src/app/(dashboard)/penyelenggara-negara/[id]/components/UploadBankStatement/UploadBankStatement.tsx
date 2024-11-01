@@ -145,10 +145,10 @@ const UploadBankStatement = ({
 
         <button
           type="submit"
-          className="mt-2 text-sm bg-primary w-full text-white px-4 py-2 rounded-md hover:opacity-95"
+          className="mt-2 text-sm bg-black w-full text-white px-4 py-2 rounded-md hover:opacity-95"
           onClick={handleUpload}
         >
-          Upload
+          Unggah
         </button>
       </form>
     </Modal>
