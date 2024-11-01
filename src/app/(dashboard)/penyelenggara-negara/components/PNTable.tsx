@@ -295,7 +295,7 @@ const PNTable = () => {
 
           <button
             type="submit"
-            className="mt-8 text-sm bg-primary w-full text-white px-4 py-2 rounded-md hover:opacity-95"
+            className="mt-8 text-sm bg-black w-full text-white px-4 py-2 rounded-md hover:opacity-95"
           >
             Hubungkan Keluarga
           </button>
