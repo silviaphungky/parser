@@ -18,7 +18,13 @@ const categoryOptions = [
   },
 ]
 
-const TransactionCategoryModal = ({ isOpen, onClose }) => {
+const TransactionCategoryModal = ({
+  isOpen,
+  onClose,
+}: {
+  isOpen: boolean
+  onClose: () => void
+}) => {
   const [selectedCategory, setSelectedCategory] = useState<{
     id: string | number
     label: string
