@@ -239,12 +239,12 @@ const PNTable = () => {
             <div className="flex gap-3 items-center">
               <Link href={`/penyelenggara-negara/${info.row.original.id}`}>
                 <button className="border items-center p-2 rounded-lg hover:border-gray-400 flex gap-2">
-                  <div className="text-sm">Lihat Detail</div>
+                  <div className="text-xs">Lihat Detail</div>
                   <IconExpand size={16} color={colorToken.grayVulkanik} />
                 </button>
               </Link>
               <button
-                className="text-sm border p-2 rounded-lg hover:border-gray-400"
+                className="text-xs border p-2 rounded-lg hover:border-gray-400"
                 onClick={() => setIsOpenFamilyForm(true)}
               >
                 Hubungkan Keluarga
