@@ -7,6 +7,7 @@ import {
   XAxis,
   AreaChart as RAreaChart,
   Area,
+  Legend,
 } from 'recharts'
 
 import { ReactNode } from 'react'
@@ -221,6 +222,7 @@ function AreaChart({
             stroke={'#007DFE'}
             strokeWidth={2.5}
           />
+          <Legend wrapperStyle={{ fontSize: '12px', marginBottom: '0.5rem' }} />
           {/* <ReferenceLine
             y={referenceLinePoint}
             // stroke={colorToken.grayNusantara}

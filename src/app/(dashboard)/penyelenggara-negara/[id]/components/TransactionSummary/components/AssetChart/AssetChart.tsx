@@ -56,7 +56,7 @@ const AssetChart = () => {
           <IconWallet color="white" size={26} />
         </div>
         <div>
-          <div className="text-sm">Balance</div>
+          <div className="text-sm">Saldo</div>
           <div className="text-xl font-bold">{`Rp ${thousandSeparator(
             transactionData.balance.total
           )}`}</div>
@@ -67,7 +67,7 @@ const AssetChart = () => {
           data={data}
           height={300}
           width={500}
-          yLegend="balance"
+          yLegend="saldo"
           xAxis="date"
         />
       </div>

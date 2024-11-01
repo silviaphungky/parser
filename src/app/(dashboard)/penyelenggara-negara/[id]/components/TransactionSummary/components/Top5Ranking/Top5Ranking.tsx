@@ -36,15 +36,15 @@ const TransactionCard = ({
       </div>
       <LineSeparator />
       <div className="mt-4 font-semibold font-barlow text-lg mb-2">
-        Top Value
+        Transaksi Terbesar
       </div>
       {data.map((item, index) => {
         return (
           <div key={`topValueIn-${index}`} className="mb-1">
-            <div className="flex justify-between">
+            <div className="flex justify-between items-center">
               <div>{item.name}</div>
-              <div className="text-sm cursor-pointer text-blue-400">
-                see all
+              <div className="text-xs cursor-pointer text-blue-400">
+                lihat semua
               </div>
             </div>
             <div className="flex gap-2 items-center">

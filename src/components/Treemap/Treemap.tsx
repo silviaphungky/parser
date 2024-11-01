@@ -72,8 +72,8 @@ const CustomTooltip = ({ active, payload }: any) => {
         <p>
           <strong>{name}</strong>
         </p>
-        <p>Nominal Transaksi: {numberAbbv(value)}</p>
-        <p>Frekuensi: {frequency}</p>
+        <p className="text-sm">Nominal Transaksi: {numberAbbv(value)}</p>
+        <p className="text-sm">Frekuensi: {frequency}</p>
       </div>
     )
   }

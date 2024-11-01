@@ -60,7 +60,7 @@ const WLInfo = ({
                 <div className="font-semibold text-sm">{`Total Asset: Rp ${thousandSeparator(
                   data.totalAsset
                 )}`}</div>
-                <div className="text-xs text-dark">{`Latest bank statement: July 2024`}</div>
+                <div className="text-xs text-dark">{`Laporan bank terakhir: Juli 2024`}</div>
               </div>
               <button
                 className="h-fit flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95"

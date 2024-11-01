@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconKebab } from '@/icons'
+import { IconBCA, IconBNI, IconBRI, IconKebab, IconMandiri } from '@/icons'
 import {
   useReactTable,
   getCoreRowModel,
@@ -398,6 +398,13 @@ const defaultData: Array<TransactionData & { actions: any }> = [
 
 const columnHelper = createColumnHelper<TransactionData & { actions: any }>()
 
+const iconBankMap = {
+  BCA: <IconBCA size={24} />,
+  BRI: <IconBRI size={24} />,
+  BNI: <IconBNI size={24} />,
+  Mandiri: <IconMandiri size={24} />,
+}
+
 const TransactionTable = () => {
   const ref = useRef(null)
   const [selected, setSelected] = useState({} as TransactionData)
@@ -420,7 +427,7 @@ const TransactionTable = () => {
         <div className="flex gap-2 items-center">
           <div className="text-xs">{row.transactionDate}</div>
           {row.isHighlight && (
-            <div className="rounded-full w-[0.7rem] h-[0.7rem] bg-yellow-500" />
+            <div className="ml-1 rounded-full w-[0.4rem] h-[0.4rem] bg-yellow-500 animate-ping" />
           )}
         </div>
       ),
@@ -433,9 +440,19 @@ const TransactionTable = () => {
     columnHelper.accessor(
       (row) => (
         <div>
-          <div className="text-sm">{row.personalBankAccName}</div>
-          <div className="text-xs">{row.personalBankName}</div>
-          <div className="text-xs">{row.personalBankAccNo}</div>
+          <div className="flex gap-2 mt-2 items-center">
+            {
+              iconBankMap[
+                row.personalBankName as 'BNI' | 'BCA' | 'BRI' | 'Mandiri'
+              ]
+            }
+            <div>
+              <div className="text-xs font-semibold">
+                {row.personalBankAccName}
+              </div>
+              <div className="text-xs">{`${row.personalBankName} - ${row.personalBankAccNo}`}</div>
+            </div>
+          </div>
         </div>
       ),
       {
@@ -457,7 +474,9 @@ const TransactionTable = () => {
     columnHelper.accessor(
       (row) => (
         <div>
-          <div className="text-sm">{row.targetBankAccName || 'Unknown'}</div>
+          <div className="text-xs font-semibold">
+            {row.targetBankAccName || 'Unknown'}
+          </div>
           <div className="text-xs">{row.targetBankName || '-'}</div>
           <div className="text-xs">{row.targetBankAccNo || '-'}</div>
         </div>
@@ -501,11 +520,11 @@ const TransactionTable = () => {
     }),
     columnHelper.accessor('remark', {
       header: 'Remark',
-      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
+      cell: (info) => <div className="text-sm">{info.getValue()}</div>,
     }),
     columnHelper.accessor('category.label', {
       header: 'Kategori',
-      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
+      cell: (info) => <div className="text-sm">{info.getValue()}</div>,
     }),
     columnHelper.accessor('mutation', {
       header: 'Nominal Transkasi',
@@ -530,7 +549,7 @@ const TransactionTable = () => {
     columnHelper.accessor('actions', {
       header: '',
       cell: (info) => (
-        <div className="relative" ref={ref}>
+        <div className="relative ml-4" ref={ref}>
           <div
             className="cursor-pointer"
             onClick={() => handleMenuToggle(info.row.id)}
