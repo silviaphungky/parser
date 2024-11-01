@@ -98,6 +98,7 @@ const familyOptions = [
 const roleOptions = [
   { id: 'children', label: 'Anak' },
   { id: 'wife/husband', label: 'Suami/Istri' },
+  { id: 'sister/brother', label: 'Saudara Kandung' },
   { id: 'parents', label: 'Orang Tua' },
   { id: 'other', label: 'Lainnya' },
 ]
