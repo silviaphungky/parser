@@ -52,7 +52,7 @@ const Sidebar = () => {
         onClick={logout}
       >
         <IconLogout />
-        <div className="text-sm text-dark">Sign Out</div>
+        <div className="text-sm text-dark">Keluar</div>
       </div>
     </div>
   )
