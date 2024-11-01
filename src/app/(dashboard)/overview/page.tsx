@@ -19,7 +19,7 @@ const SUMMARY = [
   },
 ]
 
-const IconMap: { [key in 'pn' | 'mutation']: ReactNode } = {
+const IconMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: ReactNode } = {
   pn: (
     <div className="bg-[#FFE0EB] rounded-full p-4">
       <IconUsers color="#FF82AC" />
