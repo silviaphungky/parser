@@ -130,7 +130,7 @@ const FreqValueHeatmapDate = ({
             level4: color[selectedType.id as 'in' | 'out'][3],
           }}
           cr={2}
-          onCellClick={(e, data) => console.log(data)}
+          onCellClick={(e, data) => console.log(e, data)}
           scroll={false}
         />
         <div>
