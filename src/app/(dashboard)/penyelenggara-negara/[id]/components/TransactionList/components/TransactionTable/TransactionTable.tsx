@@ -468,10 +468,33 @@ const TransactionTable = () => {
         cell: (info) => info.getValue(),
       }
     ),
-    columnHelper.accessor('creditDebit', {
-      header: 'Db / Cr',
-      cell: (info) => (info.getValue() === 'credit' ? 'Cr' : 'Db'),
-    }),
+    columnHelper.accessor(
+      (row) => (
+        <>
+          {row.creditDebit === 'credit' && (
+            <span
+              className="rounded p-2 py-1 text-[#B71D18] font-bold text-xs"
+              style={{ background: 'rgba(255, 86,48, 0.2)' }}
+            >
+              Cr
+            </span>
+          )}
+          {row.creditDebit === 'debit' && (
+            <span
+              className="bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs"
+              style={{ background: 'rgba(34, 197,98, 0.2)' }}
+            >
+              Db
+            </span>
+          )}
+        </>
+      ),
+      {
+        id: 'creditDebit',
+        header: 'Db / Cr',
+        cell: (info) => info.getValue(),
+      }
+    ),
     columnHelper.accessor('currency', {
       header: 'Mata Uang',
       cell: (info) => info.getValue(),
