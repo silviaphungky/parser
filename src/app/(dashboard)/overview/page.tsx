@@ -37,7 +37,7 @@ const IconMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: ReactNode } = {
   ),
 }
 
-const TitleMap: { [key in 'pn' | 'mutation']: string } = {
+const TitleMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: string } = {
   pn: 'Penyelenggara Negara',
   mutation: 'Laporan Bank',
   pnWithHighlight: 'Penyelenggara Negara yang ditandai',
