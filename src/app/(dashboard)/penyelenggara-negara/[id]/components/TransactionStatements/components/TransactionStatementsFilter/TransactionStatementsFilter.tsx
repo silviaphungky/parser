@@ -8,9 +8,6 @@ import ReactSelect from 'react-select'
 interface FilterValues {
   startDate: string
   endDate: string
-  transactionType: string
-  minMutation: number
-  maxMutation: number
   selectedBank: string
   currency: string // Added currency field
 }
