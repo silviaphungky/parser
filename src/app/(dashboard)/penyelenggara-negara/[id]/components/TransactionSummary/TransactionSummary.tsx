@@ -217,7 +217,7 @@ const TransactionSummary = () => {
 
   return (
     <div className="mt-0">
-      <div className="mb-8">
+      <div className="mb-12">
         <SumaryGlobalFilter
           selectedBank={selectedBank}
           initialRange={{
