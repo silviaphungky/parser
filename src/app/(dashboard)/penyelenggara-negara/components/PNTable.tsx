@@ -161,31 +161,46 @@ const PNTable = () => {
         },
       }),
       columnHelper.accessor('family', {
-        header: () => <span>#Relasi Keluarga</span>,
+        header: () => (
+          <div>
+            <div>Jumlah Relasi</div>
+            <div>Keluarga</div>
+          </div>
+        ),
         cell: (info) => {
           return info.getValue()
         },
       }),
       columnHelper.accessor('bankTotal', {
-        header: () => <span>#Bank</span>,
+        header: () => (
+          <div>
+            <div>Jumlah Akun</div>
+            <div>Bank</div>
+          </div>
+        ),
         cell: (info) => {
           return info.getValue()
         },
       }),
       columnHelper.accessor('bankStatementTotal', {
-        header: () => <span>#Laporan Bank</span>,
+        header: () => (
+          <div>
+            <div>Jumlah Laporan</div>
+            <div>Bank</div>
+          </div>
+        ),
         cell: (info) => {
           return thousandSeparator(info.getValue())
         },
       }),
       columnHelper.accessor('transactionTotal', {
-        header: () => <span>#Transaksi</span>,
+        header: () => <span>Jumlah Transaksi</span>,
         cell: (info) => {
           return thousandSeparator(info.getValue())
         },
       }),
       columnHelper.accessor('assetTotal', {
-        header: () => <span>#Total Asset</span>,
+        header: () => <span>Total Asset</span>,
         cell: (info) => {
           return `Rp ${numberAbbv(info.getValue())}`
         },

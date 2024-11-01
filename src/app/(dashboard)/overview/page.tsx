@@ -9,13 +9,14 @@ const SUMMARY = [
     key: 'pn',
     value: 2000,
   },
-  {
-    key: 'mutation',
-    value: 8888,
-  },
+
   {
     key: 'pnWithHighlight',
     value: 90,
+  },
+  {
+    key: 'mutation',
+    value: 8888,
   },
 ]
 
@@ -25,22 +26,22 @@ const IconMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: ReactNode } = {
       <IconUsers color="#FF82AC" />
     </div>
   ),
-  mutation: (
-    <div className="bg-[#FFF5D9] rounded-full p-4">
-      <IconReceipt color="#FFBB38" />
-    </div>
-  ),
   pnWithHighlight: (
     <div className="bg-[#FFE0EB] rounded-full p-4">
       <IconUsers color="#FF82AC" />
+    </div>
+  ),
+  mutation: (
+    <div className="bg-[#FFF5D9] rounded-full p-4">
+      <IconReceipt color="#FFBB38" />
     </div>
   ),
 }
 
 const TitleMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: string } = {
   pn: 'Penyelenggara Negara',
-  mutation: 'Laporan Bank',
   pnWithHighlight: 'Penyelenggara Negara yang ditandai',
+  mutation: 'Laporan Bank',
 }
 
 const OverviewPage = () => {
