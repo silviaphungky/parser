@@ -111,10 +111,16 @@ const FreqValueHeatmapDate = ({
       <div className="contributionCalendar__Container flex">
         <ContributionCalendar
           data={data[selectedType.id as 'in' | 'out']}
-          start={`${dayjs(new Date())
-            .subtract(1, 'year')
-            .format('YYYY-MM-DD')}`}
-          end={`${dayjs(new Date()).format('YYYY-MM-DD')}`}
+          start={
+            selectedYear
+              ? dayjs(new Date(`${selectedYear}/1/1`)).format('YYYY-MM-DD')
+              : `${dayjs(new Date()).subtract(1, 'year').format('YYYY-MM-DD')}`
+          }
+          end={
+            selectedYear
+              ? dayjs(new Date(`${selectedYear}/12/31`)).format('YYYY-MM-DD')
+              : `${dayjs(new Date()).format('YYYY-MM-DD')}`
+          }
           daysOfTheWeek={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
           textColor="#1F2328"
           startsOnSunday={true}
