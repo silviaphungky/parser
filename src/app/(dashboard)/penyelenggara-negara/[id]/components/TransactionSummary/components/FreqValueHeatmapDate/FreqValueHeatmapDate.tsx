@@ -57,8 +57,22 @@ const FreqValueHeatmapDate = ({
   data,
 }: {
   data: {
-    in: InputData[]
-    out: InputData[]
+    in: Array<{
+      [key in string]: {
+        frequency: number
+        value: number
+        levelFreq: number
+        levelVal: number
+      }
+    }>
+    out: Array<{
+      [key in string]: {
+        levelFreq: number
+        levelVal: number
+        frequency: number
+        value: number
+      }
+    }>
   }
 }) => {
   const [selectedYear, setSelectedYear] = useState(yearList[0])
@@ -86,6 +100,20 @@ const FreqValueHeatmapDate = ({
     setSelectedYear(year)
   }
 
+  const dataBasedOnType = data[selectedType.id as 'in' | 'out']
+  const formattedData = dataBasedOnType.map((item) => {
+    const key = Object.keys(item)[0]
+    return {
+      [key]: {
+        data: item[key],
+        level:
+          selectedBased.id === 'freq'
+            ? item[key].levelFreq
+            : item[key].levelVal,
+      },
+    }
+  })
+
   return (
     <Card className="mb-8">
       <div className="flex justify-between items-center mb-6">
@@ -108,9 +136,9 @@ const FreqValueHeatmapDate = ({
           </div>
         </div>
       </div>
-      <div className="contributionCalendar__Container flex">
+      <div className="contributionCalendar__Container flex justify-between">
         <ContributionCalendar
-          data={data[selectedType.id as 'in' | 'out']}
+          data={formattedData}
           start={
             selectedYear
               ? dayjs(new Date(`${selectedYear}/1/1`)).format('YYYY-MM-DD')
@@ -136,11 +164,11 @@ const FreqValueHeatmapDate = ({
             level4: color[selectedType.id as 'in' | 'out'][3],
           }}
           cr={2}
-          onCellClick={(e, data) => console.log(e, data)}
+          onCellClick={(e, data) => console.log({ data })}
           scroll={false}
         />
         <div>
-          <div className="overflow-auto h-[10rem]">
+          <div className="overflow-auto h-[10rem] pr-6">
             {yearList.map((item, index) => (
               <div
                 key={index}

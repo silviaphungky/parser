@@ -119,56 +119,127 @@ const dataFreqPiechart = {
   },
 }
 
-const mockGroupByDate = {
+const mockData: {
+  in: Array<{
+    [key: string]: {
+      frequency: number
+      value: number
+    }
+  }>
+  out: Array<{
+    [key: string]: {
+      frequency: number
+      value: number
+    }
+  }>
+} = {
   in: [
     {
       '2024-04-02': {
-        level: 2,
+        frequency: 5,
+        value: 5000000,
       },
     },
     {
       '2024-05-03': {
-        level: 2,
+        frequency: 2,
+        value: 7000000,
       },
     },
     {
       '2024-05-07': {
-        level: 4,
+        frequency: 1,
+        value: 800000,
       },
     },
     {
       '2024-07-06': {
-        level: 3,
+        frequency: 10,
+        value: 88000000,
       },
     },
     {
       '2024-07-01': {
-        level: 1, // `data` attribute could be omitted
+        frequency: 4,
+        value: 5000000,
       },
     },
     {
       '2024-01-01': {
-        level: 4, // `data` attribute could be omitted
+        frequency: 3,
+        value: 1000000,
       },
     },
   ],
   out: [
     {
       '2024-05-01': {
-        level: 1,
+        frequency: 1,
+        value: 800000,
       },
     },
     {
       '2024-07-08': {
-        level: 3,
+        frequency: 6,
+        value: 1000000,
       },
     },
     {
       '2024-07-09': {
-        level: 1, // `data` attribute could be omitted
+        frequency: 2,
+        value: 123000,
       },
     },
   ],
+}
+
+const mockGroupByDate = {
+  in: mockData.in.map((item) => {
+    const key = Object.keys(item)[0]
+    let levelFreq = 0
+    let levelVal = 0
+
+    if (item[key].frequency > 10) levelFreq = 4
+    else if (item[key].frequency > 7 && item[key].frequency <= 10) levelFreq = 3
+    else if (item[key].frequency > 4 && item[key].frequency <= 7) levelFreq = 2
+    else if (item[key].frequency > 0 && item[key].frequency <= 4) levelFreq = 1
+    else levelFreq = 0
+
+    if (item[key].value > 20000000) levelVal = 4
+    else if (item[key].value > 10000000 && item[key].value <= 20000000)
+      levelVal = 3
+    else if (item[key].value > 2000000 && item[key].value <= 10000000)
+      levelVal = 2
+    else if (item[key].value > 0 && item[key].value <= 2000000) levelVal = 1
+    else levelVal = 0
+
+    return {
+      [key]: { ...item[key], levelFreq, levelVal },
+    }
+  }),
+  out: mockData.out.map((item) => {
+    const key = Object.keys(item)[0]
+    let levelFreq = 0
+    let levelVal = 0
+
+    if (item[key].frequency > 10) levelFreq = 4
+    else if (item[key].frequency > 7 && item[key].frequency <= 10) levelFreq = 3
+    else if (item[key].frequency > 4 && item[key].frequency <= 7) levelFreq = 2
+    else if (item[key].frequency > 0 && item[key].frequency <= 4) levelFreq = 1
+    else levelFreq = 0
+
+    if (item[key].value > 20000000) levelVal = 4
+    else if (item[key].value > 10000000 && item[key].value <= 20000000)
+      levelVal = 3
+    else if (item[key].value > 2000000 && item[key].value <= 10000000)
+      levelVal = 2
+    else if (item[key].value > 0 && item[key].value <= 2000000) levelVal = 1
+    else levelVal = 0
+
+    return {
+      [key]: { ...item[key], levelFreq, levelVal },
+    }
+  }),
 }
 
 const TransactionSummary = () => {
@@ -239,7 +310,7 @@ const TransactionSummary = () => {
         <h2 className="text-xl font-semibold mb-4">Analisis Transaksi</h2>
         <TreemapSubjectFreqValue data={dataTreemap} />
         <FrequencyPieChart data={dataFreqPiechart} />
-        <FreqValueHeatmapDate data={mockGroupByDate as any} />
+        <FreqValueHeatmapDate data={mockGroupByDate} />
       </div>
     </div>
   )
