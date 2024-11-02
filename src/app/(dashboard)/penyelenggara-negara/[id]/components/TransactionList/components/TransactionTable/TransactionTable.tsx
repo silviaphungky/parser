@@ -492,20 +492,20 @@ const TransactionTable = () => {
     columnHelper.accessor(
       (row) => (
         <>
-          {row.creditDebit === 'credit' && (
+          {row.creditDebit === 'debit' && (
             <span
               className="rounded p-2 py-1 text-[#B71D18] font-bold text-xs"
               style={{ background: 'rgba(255, 86,48, 0.2)' }}
             >
-              Cr
+              Db
             </span>
           )}
-          {row.creditDebit === 'debit' && (
+          {row.creditDebit === 'credit' && (
             <span
               className="bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs"
               style={{ background: 'rgba(34, 197,98, 0.2)' }}
             >
-              Db
+              Cr
             </span>
           )}
         </>
