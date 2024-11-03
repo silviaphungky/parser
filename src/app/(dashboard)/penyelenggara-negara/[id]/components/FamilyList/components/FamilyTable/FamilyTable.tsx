@@ -104,7 +104,7 @@ const FamilyTable = () => {
         <div className="flex gap-4">
           <Link href={`/penyelenggara-negara/${info.row.id}/summary`}>
             <button className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400">
-              <div className="text-xs text-black">Lihat Detail</div>
+              <div className="text-xs text-black">Detail</div>
             </button>
           </Link>
           <button className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400">

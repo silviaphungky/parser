@@ -91,7 +91,7 @@ const UploadBankStatement = ({
       width="max-w-[30rem]"
       onClose={() => setIsOpen(false)}
     >
-      <h2 className="text-xl font-bold mb-4">Upload Bank Statement</h2>
+      <h2 className="text-xl font-bold mb-4">Unggah Laporan Bank</h2>
       <div className="mb-4">
         <FormItem label="Select Bank">
           <InputDropdown
@@ -124,9 +124,7 @@ const UploadBankStatement = ({
                 <div className="flex items-center justify-center mb-2">
                   <IconUpload size={30} color="#3B4752" />
                 </div>
-                <div className="text-gray-700 text-sm">
-                  Choose Bank Statements
-                </div>
+                <div className="text-gray-700 text-sm">Pilih Laporan Bank</div>
               </>
             )}
             <div className="text-xs text-gray-500">
