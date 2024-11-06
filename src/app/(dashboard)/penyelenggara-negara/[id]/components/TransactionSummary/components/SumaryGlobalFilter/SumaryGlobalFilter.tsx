@@ -53,12 +53,50 @@ const SumaryGlobalFilter = ({
   }, [])
   return (
     <div className="flex gap-4 justify-end">
-      <div className="w-[10rem]">
+      <div className="w-[25rem]">
         <ReactSelect
           isMulti
           name="colors"
           options={mockBank}
           className="react-select-container"
+          styles={{
+            option: (styles, state) => ({
+              ...styles,
+              backgroundColor: state.isSelected ? '#E6EFF5' : '',
+              '&:hover': {
+                // overriding hover
+                ...styles, // apply initial styles
+              },
+            }),
+            indicatorsContainer: (base, props) => {
+              return {
+                ...base,
+                alignItems: 'start',
+              }
+            },
+            clearIndicator: (base) => {
+              return {
+                ...base,
+                cursor: 'pointer',
+              }
+            },
+            dropdownIndicator: (base) => {
+              return {
+                ...base,
+                cursor: 'pointer',
+              }
+            },
+            control: (baseStyles, state) => {
+              return {
+                ...baseStyles,
+                borderColor: 'rgb(209, 213, 219)',
+                boxShadow: 'none',
+                borderRadius: '0.375rem',
+                height: '34px',
+                overflow: 'auto',
+              }
+            },
+          }}
         />
       </div>
       <div className="w-[10rem]">
