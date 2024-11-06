@@ -18,7 +18,7 @@ import {
   IconTrash,
 } from '@/icons'
 import Link from 'next/link'
-import { FormItem, Input, Modal, SearchDropdown } from '@/components'
+import { FormItem, Input, InputSearch, Modal } from '@/components'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
@@ -266,9 +266,9 @@ const PNTable = () => {
     getCoreRowModel: getCoreRowModel(),
   })
 
-  const handleSearch = (query: string, field: string) => {
+  const handleSearch = (query: string) => {
     // Implement your filtering logic based on the query and field here
-    console.log(`Searching for "${query}" in field "${field}"`)
+    console.log(`Searching for "${query}"`)
     // Example: Apply search logic to filter your table data and update state
   }
 
@@ -355,10 +355,9 @@ const PNTable = () => {
       </Modal>
 
       <div className="mb-4 flex justify-between">
-        <SearchDropdown
-          searchFields={searchFields}
+        <InputSearch
           onSearch={handleSearch}
-          placeholder="Cari PN..."
+          placeholder="Masukkan NIK atau Nama PN..."
         />
         <div className="w-max">
           <InputDropdown

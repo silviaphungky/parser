@@ -13,6 +13,7 @@ import Treemap from './Treemap'
 import Modal from './Modal'
 import SearchDropdown from './SearchDropdown'
 import Pagination from './Pagination'
+import InputSearch from './InputSearch'
 
 export {
   Input,
@@ -30,4 +31,5 @@ export {
   Modal,
   SearchDropdown,
   Pagination,
+  InputSearch,
 }

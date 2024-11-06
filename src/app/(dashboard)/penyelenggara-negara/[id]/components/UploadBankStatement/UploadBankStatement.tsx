@@ -51,8 +51,8 @@ const UploadBankStatement = ({
         return
       }
 
-      if (selectedFile.size > 5 * 1024 * 1024) {
-        setError('File size exceeds 5MB.')
+      if (selectedFile.size > 10 * 1024 * 1024) {
+        setError('File size exceeds 10MB.')
         setFile(null)
         return
       }
