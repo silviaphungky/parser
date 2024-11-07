@@ -52,6 +52,8 @@ const TransactionCategoryModal = ({
         onChange={setSelectedCategory}
       />
 
+      <div className="text-xs mt-2 text-gray-600">*Kategori awal: Travel</div>
+
       <div className="flex justify-end space-x-4 mt-8">
         <button
           onClick={() => {
@@ -61,6 +63,15 @@ const TransactionCategoryModal = ({
         >
           Batal
         </button>
+        <button
+          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100"
+          onClick={() => {
+            onClose()
+          }}
+        >
+          Atur Ulang ke Kategori Awal
+        </button>
+
         <button
           onClick={() => {
             // hit BE API

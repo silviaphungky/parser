@@ -6,6 +6,9 @@ import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
 // import Image from 'next/image'
 import { useRouter } from 'next/navigation'
+import { useMutation } from '@tanstack/react-query'
+import { API_URL } from '@/constants/apiUrl'
+import axios from 'axios'
 
 // Define the schema for validation using Yup
 const schema = yup.object().shape({
@@ -19,7 +22,14 @@ interface IFormInput {
   password: string
 }
 
-const Login: React.FC = () => {
+const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
+
+const Login = ({
+  handleSetSession,
+}: {
+  handleSetSession: (token: string) => void
+}) => {
   const router = useRouter()
   // Initialize the form with useForm hook
   const { control, handleSubmit } = useForm<IFormInput>({
@@ -30,17 +40,39 @@ const Login: React.FC = () => {
     resolver: yupResolver(schema),
   })
 
-  // Function to handle form submission
-  const onSubmit: SubmitHandler<IFormInput> = (data) => {
-    console.log(data) // Handle your login logic here
-    router.push('/overview')
+  const { mutate } = useMutation({
+    mutationFn: (payload: {
+      email: string
+      password: string
+      is_remember_me: boolean
+    }) =>
+      axios.post(`${baseUrl}/${API_URL.LOGIN}`, {
+        ...payload,
+      }),
+    onSuccess: ({ data }) => {
+      const response = data.data || {}
+      const token = response.token
+      handleSetSession(token)
+      router.push('/penyelenggara-negara')
+    },
+  })
+
+  const onSubmit: SubmitHandler<IFormInput> = async (data) => {
+    mutate({
+      email: 'silviaphungky7@gmail.com',
+      password: 'itr1234!',
+      is_remember_me: true,
+    })
   }
 
   return (
     <div className="relative bg-light">
       <div className="flex items-center justify-center min-h-screen relative">
         <form
-          onSubmit={handleSubmit(onSubmit)}
+          onSubmit={(e) => {
+            e.preventDefault()
+            handleSubmit(onSubmit)()
+          }}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md"
         >
           <h2 className="text-center text-2xl mb-4">Login</h2>

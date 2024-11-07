@@ -14,6 +14,7 @@ import Modal from './Modal'
 import SearchDropdown from './SearchDropdown'
 import Pagination from './Pagination'
 import InputSearch from './InputSearch'
+import Shimmer from './Shimmer'
 
 export {
   Input,
@@ -32,4 +33,5 @@ export {
   SearchDropdown,
   Pagination,
   InputSearch,
+  Shimmer,
 }

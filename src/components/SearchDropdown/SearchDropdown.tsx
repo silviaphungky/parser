@@ -39,7 +39,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
   return (
     <div className="flex items-center border border-gray-300 rounded w-[27rem]">
       {/* Dropdown for selecting search field */}
-      <div className="w-[16rem] ">
+      <div className="min-w-max w-[15rem]">
         <InputDropdown
           value={selectedField}
           options={searchFields}

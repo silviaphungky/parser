@@ -3,48 +3,58 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
 import { Dispatch, SetStateAction, useState } from 'react'
-
-interface FamilyMember {
-  member: {
-    value: string
-    label: string
-  }
-  role: {
-    value: string
-    label: string
-  }
-  otherRole?: string
-}
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { API_URL } from '@/constants/apiUrl'
+import toast, { Toaster } from 'react-hot-toast'
 
 interface FormValues {
   name: string
-  nik: number
+  nik: string
 }
-
-const roleOptions = [
-  { value: 'children', label: 'Children' },
-  { value: 'wife/husband', label: 'Wife/Husband' },
-  { value: 'parents', label: 'Parents' },
-  { value: 'other', label: 'Other' },
-]
 
 const validationSchema = yup.object().shape({
   name: yup.string().required('Nama wajib diisi'),
-  nik: yup
-    .number()
-    .typeError('NIK harus angka')
-    .required('NIK wajib diisi')
-    .positive('NIK must be positive')
-    .integer('NIK must be an integer'),
+  nik: yup.string().required('NIK wajib diisi'),
 })
 
+const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
+
+const notify = () => toast.success('PN berhasil ditambahkan')
+
 const WajibLaporCreate = ({
+  token,
   setIsOpenFoundModal,
   setIsOpenCreateModal,
+  refetch,
 }: {
+  token: string
   setIsOpenFoundModal: Dispatch<SetStateAction<boolean>>
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>
+  refetch: () => void
 }) => {
+  console.log({ token }, 'post')
+  const { mutate } = useMutation({
+    mutationFn: (payload: { nik: string; name: string }) =>
+      axios.post(
+        `${baseUrl}/${API_URL.CREATE_PN}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    onSuccess: ({ data }) => {
+      refetch()
+      setIsOpenCreateModal(false)
+      notify()
+    },
+  })
+
   const {
     handleSubmit,
     control,
@@ -57,15 +67,20 @@ const WajibLaporCreate = ({
   })
 
   const onSubmit = (data: FormValues) => {
-    console.log(data)
-    setIsOpenCreateModal(false)
-    setIsOpenFoundModal(true)
-
-    // Handle form submission
+    //  NOTE: search dulu NIK duplicate atau tidak, GET by api
+    const isExists = false
+    if (isExists) {
+      setIsOpenFoundModal(true)
+    } else
+      mutate({
+        nik: data.nik,
+        name: data.name,
+      })
   }
 
   return (
     <div>
+      <Toaster />
       <h2 className="font-semibold mb-4 text-lg">
         Tambah Penyelenggara Negara
       </h2>
@@ -95,8 +110,12 @@ const WajibLaporCreate = ({
                 <Input
                   placeholder="Masukkan NIK"
                   className="w-full"
-                  type="number"
+                  type="text"
                   {...field}
+                  onChange={(e) => {
+                    const value = e.target.value
+                    field.onChange(value.replace(/\D/g, ''))
+                  }}
                   errorMessage={error?.message}
                 />
               </FormItem>

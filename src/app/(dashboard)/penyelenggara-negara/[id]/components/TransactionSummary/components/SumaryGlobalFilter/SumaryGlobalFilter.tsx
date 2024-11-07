@@ -53,6 +53,13 @@ const SumaryGlobalFilter = ({
   }, [])
   return (
     <div className="flex gap-4 justify-end">
+      <div className="w-[10rem]">
+        <InputDropdown
+          options={currencyOptions}
+          value={selectedCurrency}
+          onChange={handleChangeCurrency}
+        />
+      </div>
       <div className="w-[25rem]">
         <ReactSelect
           isMulti
@@ -99,13 +106,7 @@ const SumaryGlobalFilter = ({
           }}
         />
       </div>
-      <div className="w-[10rem]">
-        <InputDropdown
-          options={currencyOptions}
-          value={selectedCurrency}
-          onChange={handleChangeCurrency}
-        />
-      </div>
+
       <DatePickerRange
         initialRange={initialRange}
         onRangeChange={handleChangeDate}

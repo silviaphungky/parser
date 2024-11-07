@@ -1,20 +1,12 @@
 'use client'
-import { Card, FormItem, Modal, Pagination, SearchDropdown } from '@/components'
+import { Card, Pagination, SearchDropdown } from '@/components'
 import { TransactionFilter, TransactionTable } from './components'
 import { useState } from 'react'
-import InputDropdown from '@/components/InputDropdown'
-import { IconFilter, IconSort } from '@/icons'
+import { IconFilter } from '@/icons'
 
 const searchFields = [
-  { label: 'Nama Pemilik Akun', id: 'targetBankName' },
+  { label: 'Nama Akun Lawan Transaksi', id: 'targetBankName' },
   { label: 'Remark', id: 'remark' },
-]
-
-const sortOptions = [
-  { label: 'Tanggal Transaksi - Paling baru', id: 'transactionDate' },
-  { label: 'Tanggal Transaksi - Paling lama', id: '-transactionDate' },
-  { label: 'Nominal Transaksi - Paling tinggi', id: 'mutation' },
-  { label: 'Nominal Transaksi - Paling rendah', id: '-mutation' },
 ]
 
 const transactionTypeOptions = [
@@ -79,11 +71,13 @@ const TransactionList = () => {
           transactionTypeOptions={transactionTypeOptions}
         />
         <div className="mb-4 flex justify-between">
-          <SearchDropdown
-            searchFields={searchFields}
-            onSearch={handleSearch}
-            placeholder="Cari transaksi..."
-          />
+          <div>
+            <SearchDropdown
+              searchFields={searchFields}
+              onSearch={handleSearch}
+              placeholder="Cari transaksi..."
+            />
+          </div>
           <div className="flex gap-4 w-[26rem] justify-end">
             <button
               className={`w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
@@ -97,22 +91,6 @@ const TransactionList = () => {
                 <IconFilter />
               </div>
             </button>
-
-            <div className="w-max">
-              <InputDropdown
-                reset
-                value={selectedSort}
-                hideChevron
-                options={sortOptions}
-                placeholder={
-                  <div className="flex gap-2 items-center">
-                    <div>Urutkan berdasarkan</div>
-                    <IconSort />
-                  </div>
-                }
-                onChange={handleSort}
-              />
-            </div>
           </div>
         </div>
         <TransactionTable />

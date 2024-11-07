@@ -22,6 +22,10 @@ import IconFilter from './IconFilter'
 import IconPencil from './IconPencil'
 import IconKebab from './IconKebab'
 import IconUnlink from './IconUnlink'
+import IconArchieve from './IconArchieve'
+import IconTriangleDown from './IconTriangleDown'
+import IconLink from './IconLink'
+import IconStar from './IconStar'
 
 export {
   IconFileCheck,
@@ -48,4 +52,8 @@ export {
   IconPencil,
   IconKebab,
   IconUnlink,
+  IconArchieve,
+  IconTriangleDown,
+  IconLink,
+  IconStar,
 }

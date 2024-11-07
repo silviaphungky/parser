@@ -5,21 +5,7 @@ import {
   TransactionStatementsFilter,
 } from './components'
 import { useState } from 'react'
-import { IconFilter, IconSort } from '@/icons'
-import InputDropdown from '@/components/InputDropdown'
-
-const sortOptions = [
-  { label: 'Tanggal Laporan Bank - Paling baru', id: 'bankStatementDate' },
-  { label: 'Tanggal Laporan Bank - Paling lama', id: '-bankStatementDate' },
-  { label: 'Tanggal Unggah - Paling baru', id: 'uploadedAt' },
-  { label: 'Tanggal Unggah - Paling lama', id: '-uploadedAt' },
-]
-
-const transactionTypeOptions = [
-  { id: '', label: 'Semua Tipe Transaksi' },
-  { id: 'cr', label: 'Credit' },
-  { id: 'db', label: 'Debit' },
-]
+import { IconFilter } from '@/icons'
 
 const bankOptions = [
   { value: '', label: 'Semua Akun Bank' },
@@ -45,14 +31,6 @@ const TransactionStatementList = () => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
-  const [selectedSort, setSelectedSort] = useState<{
-    id: string | number
-    label: string
-  }>({ id: '', label: '' })
-
-  const handleSort = (option: { id: string | number; label: string }) => {
-    setSelectedSort(option)
-  }
 
   return (
     <div>
@@ -80,22 +58,6 @@ const TransactionStatementList = () => {
                 <IconFilter />
               </div>
             </button>
-
-            <div className="w-max">
-              <InputDropdown
-                reset
-                value={selectedSort}
-                hideChevron
-                options={sortOptions}
-                placeholder={
-                  <div className="flex gap-2 items-center">
-                    <div>Urutkan berdasarkan</div>
-                    <IconSort />
-                  </div>
-                }
-                onChange={handleSort}
-              />
-            </div>
           </div>
         </div>
         <TransactionStatementsTable />

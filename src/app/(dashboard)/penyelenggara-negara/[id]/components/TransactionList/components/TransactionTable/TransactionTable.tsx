@@ -1,5 +1,13 @@
 import { useEffect, useRef, useState } from 'react'
-import { IconBCA, IconBNI, IconBRI, IconKebab, IconMandiri } from '@/icons'
+import {
+  IconBCA,
+  IconBNI,
+  IconBRI,
+  IconTriangleDown,
+  IconKebab,
+  IconMandiri,
+  IconStar,
+} from '@/icons'
 import {
   useReactTable,
   getCoreRowModel,
@@ -9,6 +17,7 @@ import {
 import useOutsideClick from '@/utils/useClickOutside'
 import { Modal } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
+import { colorToken } from '@/constants/color-token'
 
 type TransactionData = {
   id: string
@@ -68,7 +77,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     transactionDate: '2024-10-03',
     remark: 'Salary Credit',
     transactionType: 'Credit',
-    targetBankAccNo: 'N/A',
+    targetBankAccNo: '',
     targetBankAccName: 'N/A',
     targetBankName: 'BNI',
     currency: 'IDR',
@@ -116,7 +125,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     transactionDate: '2024-10-07',
     remark: 'Refund',
     transactionType: 'Credit',
-    targetBankAccNo: 'N/A',
+    targetBankAccNo: '',
     targetBankAccName: 'N/A',
     targetBankName: 'BNI',
     currency: 'IDR',
@@ -188,7 +197,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     transactionDate: '2024-10-14',
     remark: 'Payment from Client',
     transactionType: 'Credit',
-    targetBankAccNo: 'N/A',
+    targetBankAccNo: '',
     targetBankAccName: 'N/A',
     targetBankName: 'N/A',
     currency: 'IDR',
@@ -260,7 +269,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     transactionDate: '2024-10-20',
     remark: 'Refund',
     transactionType: 'Credit',
-    targetBankAccNo: 'N/A',
+    targetBankAccNo: '',
     targetBankAccName: 'N/A',
     targetBankName: 'N/A',
     currency: 'IDR',
@@ -413,6 +422,7 @@ const TransactionTable = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
+  const [sorting, setSorting] = useState([])
 
   const onClose = () => {
     setIsOpen(false)
@@ -428,15 +438,13 @@ const TransactionTable = () => {
       (row) => (
         <div className="flex gap-2 items-center">
           <div className="text-xs">{row.transactionDate}</div>
-          {row.isHighlight && (
-            <div className="ml-1 rounded-full w-[0.4rem] h-[0.4rem] bg-yellow-500 animate-ping" />
-          )}
         </div>
       ),
       {
         id: 'transactionDate',
         header: 'Tanggal',
         cell: (info) => info.getValue(),
+        enableSorting: true,
       }
     ),
     columnHelper.accessor(
@@ -449,10 +457,8 @@ const TransactionTable = () => {
               ]
             }
             <div>
-              <div className="text-xs font-semibold">
-                {row.personalBankAccName}
-              </div>
-              <div className="text-xs">{`${row.personalBankName} - ${row.personalBankAccNo}`}</div>
+              <div className="text-xs">{`${row.personalBankName}`}</div>
+              <div className="text-xs">{row.personalBankAccNo}</div>
             </div>
           </div>
         </div>
@@ -461,6 +467,7 @@ const TransactionTable = () => {
         id: 'personalBankInfo',
         header: 'Info Bank PN',
         cell: (info) => info.getValue(),
+        enableSorting: false,
       }
     ),
 
@@ -472,21 +479,22 @@ const TransactionTable = () => {
         </div>
       ) as any,
       cell: (info) => info.getValue(),
+      enableSorting: false,
     }),
     columnHelper.accessor(
       (row) => (
         <div>
-          <div className="text-xs font-semibold">
-            {row.targetBankAccName || 'Unknown'}
-          </div>
-          <div className="text-xs">{row.targetBankName || '-'}</div>
-          <div className="text-xs">{row.targetBankAccNo || '-'}</div>
+          <div className="text-xs">{row.targetBankName || 'unknown'}</div>
+          <div className="text-xs">{`${row.targetBankAccNo || 'unknown'} - ${
+            row.targetBankAccName || 'unknown'
+          }`}</div>
         </div>
       ),
       {
         id: 'targetBankInfo',
-        header: 'Info Bank Transaksi',
+        header: 'Info Bank Lawan Transaksi',
         cell: (info) => info.getValue(),
+        enableSorting: false,
       }
     ),
     columnHelper.accessor(
@@ -514,27 +522,33 @@ const TransactionTable = () => {
         id: 'creditDebit',
         header: 'Db / Cr',
         cell: (info) => info.getValue(),
+        enableSorting: false,
       }
     ),
     columnHelper.accessor('currency', {
       header: 'Mata Uang',
       cell: (info) => info.getValue(),
+      enableSorting: false,
     }),
     columnHelper.accessor('remark', {
       header: 'Remark',
       cell: (info) => <div className="text-sm">{info.getValue()}</div>,
+      enableSorting: false,
     }),
     columnHelper.accessor('category.label', {
       header: 'Kategori',
       cell: (info) => <div className="text-sm">{info.getValue()}</div>,
+      enableSorting: false,
     }),
     columnHelper.accessor('mutation', {
       header: 'Nominal Transkasi',
       cell: (info) => info.getValue().toLocaleString(),
+      enableSorting: true,
     }),
     columnHelper.accessor('balance', {
       header: 'Saldo',
       cell: (info) => info.getValue().toLocaleString(),
+      enableSorting: false,
     }),
     columnHelper.accessor(
       (row) => (
@@ -546,6 +560,7 @@ const TransactionTable = () => {
         id: 'note',
         header: 'Catatan',
         cell: (info) => info.getValue(),
+        enableSorting: false,
       }
     ),
     columnHelper.accessor('actions', {
@@ -606,13 +621,18 @@ const TransactionTable = () => {
           )}
         </div>
       ),
+      enableSorting: false,
     }),
   ]
 
   const table = useReactTable({
     data: defaultData,
     columns,
+    state: {
+      sorting,
+    },
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting as any,
   })
 
   useEffect(() => {
@@ -634,38 +654,62 @@ const TransactionTable = () => {
         isOpen={isOpenVerfiModal}
         onClose={() => setIsOpenVerifModal(false)}
       >
-        <h2 className="font-semibold text-lg">
-          Konfirmasi Pengecekan Rekening
-        </h2>
-        <div className="mt-2">
-          Apakah pengecekan informasi rekening transaksi akan dilakukan?
-        </div>
-        <div className="text-xs mt-3 text-gray-500">
-          *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan mungkin
-          dikenakan biaya tambahan.
-        </div>
+        {selected.targetBankAccNo ? (
+          <>
+            <h2 className="font-semibold text-lg">
+              Konfirmasi Pengecekan Rekening
+            </h2>
+            <div className="mt-2">
+              Apakah pengecekan informasi rekening transaksi akan dilakukan?
+            </div>
+            <div className="text-xs mt-3 text-gray-500">
+              *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan mungkin
+              dikenakan biaya tambahan.
+            </div>
 
-        <div className="flex justify-end space-x-4 mt-4">
-          <button
-            onClick={() => {
-              setIsOpenVerifModal(false)
-              setSelected({} as TransactionData)
-            }}
-            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Batal
-          </button>
-          <button
-            onClick={() => {
-              // hit BE API
-              setIsOpenVerifModal(false)
-              setSelected({} as TransactionData)
-            }}
-            className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
-          >
-            Cek
-          </button>
-        </div>
+            <div className="flex justify-end space-x-4 mt-4">
+              <button
+                onClick={() => {
+                  setIsOpenVerifModal(false)
+                  setSelected({} as TransactionData)
+                }}
+                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+              >
+                Batal
+              </button>
+              <button
+                onClick={() => {
+                  // hit BE API
+                  setIsOpenVerifModal(false)
+                  setSelected({} as TransactionData)
+                }}
+                className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
+              >
+                Cek
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <h2 className="font-semibold text-lg">Verifikasi Nomor Rekening</h2>
+            <div className="mt-2 text-sm">
+              Verifikasi nomor rekening hanya bisa dilakukan untuk transaksi
+              yang memiliki informasi nomor rekening pihak lawan transaksi
+            </div>
+            <div className="flex justify-end space-x-4 mt-6">
+              <button
+                onClick={() => {
+                  // hit BE API
+                  setIsOpenVerifModal(false)
+                  setSelected({} as TransactionData)
+                }}
+                className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
+              >
+                Mengerti
+              </button>
+            </div>
+          </>
+        )}
       </Modal>
       <Modal isOpen={isOpen} onClose={onClose}>
         <h2 className="text-lg font-semibold mb-4">Catatan</h2>
@@ -678,7 +722,9 @@ const TransactionTable = () => {
               note: value,
             })
           }}
-          className="w-full text-sm h-20 p-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-blue-500 resize-none"
+          className="w-full text-sm h-20 p-2 border border-gray-300 rounded 
+            focus:outline-none focus:ring-2
+           focus:ring-blue-500 resize-none"
           placeholder="Masukkan catatan..."
         />
         <div className="flex justify-end space-x-4 mt-4">
@@ -704,12 +750,7 @@ const TransactionTable = () => {
         </div>
       </Modal>
       <div className="p-2">
-        <div
-          className="overflow-x-auto"
-          style={{
-            width: 'calc(100vw - 21rem)',
-          }}
-        >
+        <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-300">
             <thead className="font-semibold bg-gray-100">
               {table.getHeaderGroups().map((headerGroup) => (
@@ -717,14 +758,43 @@ const TransactionTable = () => {
                   {headerGroup.headers.map((header) => (
                     <th
                       key={header.id}
-                      className="sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100"
+                      className={`sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider  cursor-pointer ${
+                        header.column.getIsSorted()
+                          ? 'bg-gray-200'
+                          : 'bg-gray-100'
+                      }`}
+                      onClick={header.column.getToggleSortingHandler()}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
+                      {header.isPlaceholder ? null : (
+                        <div className="flex gap-2 items-center justify-between">
+                          {flexRender(
                             header.column.columnDef.header,
                             header.getContext()
                           )}
+                          {header.column.getCanSort() && (
+                            <div>
+                              <div className="rotate-180">
+                                <IconTriangleDown
+                                  size={8}
+                                  color={
+                                    header.column.getIsSorted() === 'asc'
+                                      ? colorToken.darkGrafit
+                                      : colorToken.grayVulkanik
+                                  }
+                                />
+                              </div>
+                              <IconTriangleDown
+                                size={8}
+                                color={
+                                  header.column.getIsSorted() === 'desc'
+                                    ? colorToken.darkGrafit
+                                    : colorToken.grayVulkanik
+                                }
+                              />
+                            </div>
+                          )}
+                        </div>
+                      )}
                     </th>
                   ))}
                 </tr>
@@ -734,12 +804,14 @@ const TransactionTable = () => {
               {table.getRowModel().rows.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-gray-100 transition-colors duration-300"
+                  className={`hover:bg-gray-100 transition-colors duration-300 ${
+                    row.original.isHighlight ? 'bg-orange-50' : ''
+                  }`}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <td
                       key={cell.id}
-                      className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
+                      className={`px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
                     >
                       {flexRender(
                         cell.column.columnDef.cell,

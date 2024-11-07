@@ -1,5 +1,4 @@
 'use client'
-import * as React from 'react'
 
 import * as yup from 'yup'
 import {
@@ -11,74 +10,42 @@ import {
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { numberAbbv } from '@/utils/numberAbbv'
 import {
-  IconChevronDown,
+  IconArchieve,
   IconExpand,
-  IconFilter,
+  IconKebab,
+  IconLink,
   IconSort,
   IconTrash,
+  IconTriangleDown,
+  IconUnlink,
 } from '@/icons'
 import Link from 'next/link'
 import { FormItem, Input, InputSearch, Modal } from '@/components'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
-import ReactSelect from 'react-select'
 import { colorToken } from '@/constants/color-token'
+import { useMutation } from '@tanstack/react-query'
+import axios from 'axios'
+import { API_URL } from '@/constants/apiUrl'
+import toast, { Toaster } from 'react-hot-toast'
+import { useMemo, useRef, useState } from 'react'
+import AsyncSelect from 'react-select/async'
 
 type Person = {
-  id: number
-  index: number
+  id: string
   name: string
   nik: string
-  bankTotal: number
-  bankStatementTotal: number
-  transactionTotal: number
-  assetTotal: number
-  family: number
-}
-
-const defaultData: (Person & { action: string })[] = [
-  {
-    id: 1,
-    index: 1,
-    name: 'Anton Soni',
-    nik: '123456789',
-    bankTotal: 1,
-    bankStatementTotal: 10,
-    transactionTotal: 1893,
-    assetTotal: 1929300,
-    family: 0,
-    action: '',
-  },
-  {
-    id: 2,
-    index: 2,
-    name: 'Budi Soni',
-    nik: '987654321',
-    bankTotal: 3,
-    bankStatementTotal: 25,
-    transactionTotal: 888,
-    assetTotal: 6095955555,
-    family: 7,
-    action: '',
-  },
-  {
-    id: 3,
-    index: 3,
-    name: 'Celica Nana H.',
-    nik: '88763931123',
-    bankTotal: 0,
-    bankStatementTotal: 0,
-    transactionTotal: 0,
-    assetTotal: 0,
-    family: 1,
-    action: '',
-  },
-]
-
-interface LinkFamilyFormProps {
-  isOpenFamilyForm: boolean
-  setIsOpenFamilyForm: (isOpen: boolean) => void
+  bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+  total_statement: number
+  total_transaction: number
+  total_family_member: number
+  total_asset?: Array<{
+    [key: string]: number
+  }>
+  total_bank_account: number
+  created_at: string
+  updated_at?: string
 }
 
 interface FormValues {
@@ -113,7 +80,7 @@ const roleOptions = [
 const validationSchema = yup.object().shape({
   familyName: yup.object({
     value: yup.string().required(),
-    label: yup.string().required('Anggota keluarga wajib dipilih'),
+    label: yup.string().required('Identitas keluarga wajib dipilih'),
   }),
   role: yup.object({
     id: yup.string().required(),
@@ -121,34 +88,32 @@ const validationSchema = yup.object().shape({
   }),
   otherRole: yup.string().when('role.id', {
     is: (val: string) => val === 'other',
-    then: () => yup.string().required('Mohon masukkan detail hubungan'),
+    then: () => yup.string().required('Detail hubungan wajib diisi'),
     otherwise: () => yup.string(),
   }),
 })
 
 const columnHelper = createColumnHelper<Person & { action: string }>()
 
-const searchFields = [
-  { label: 'Nama PN', id: 'pnName' },
-  { label: 'NIK PN', id: 'pnNIK' },
-]
+const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
-const sortOptions = [
-  { label: 'Nama - A-Z', id: 'name' },
-  { label: 'Nama - Z-A', id: '-name' },
-  { label: 'Jumlah Relasi Keluarga - Terbanyak', id: 'relation' },
-  { label: 'Jumlah Relasi Keluarga - Tersedikit', id: '-relation' },
-  { label: 'Jumlah Transaksi - Terbanyak', id: 'frequency' },
-  { label: 'Jumlah Transaksi - Tersedikit', id: '-frequency' },
-  { label: 'Akun Bank - Paling banyak', id: 'bankAccount' },
-  { label: 'Akun Bank - Paling sedikit', id: '-bankAccount' },
-  { label: 'Total Asset - Paling banyak', id: 'totalAsset' },
-  { label: 'Total Asset - Paling sedikit', id: '-totalAsset' },
-]
+const notify = () => toast.success('PN berhasil dihapus')
+const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
 
-const PNTable = () => {
-  const [isOpenFamilyForm, setIsOpenFamilyForm] = React.useState(false)
-  const { handleSubmit, control, formState } = useForm<FormValues>({
+const PNTable = ({
+  pnList,
+  token,
+  refetch,
+}: {
+  pnList: Array<Person>
+  token: string
+  refetch: () => void
+}) => {
+  const ref = useRef(null)
+  const [isOpenFamilyForm, setIsOpenFamilyForm] = useState(false)
+  const [isOpenRemove, setIsOpenRemove] = useState(false)
+  const { handleSubmit, control, reset } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       role: {
@@ -157,23 +122,65 @@ const PNTable = () => {
       },
     },
   })
-  const [selectedSort, setSelectedSort] = React.useState<{
-    id: string | number
-    label: string
-  }>({ id: '', label: '' })
+  const [sorting, setSorting] = useState([])
+  const [selectedPn, setSelectedPn] = useState({} as Person)
+  const [actionMenu, setActionMenu] = useState<string | null>(null)
+
+  const { mutate } = useMutation({
+    mutationFn: (payload: { id: string }) =>
+      axios.delete(`${baseUrl}/${API_URL.DELETE_PN}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          id: payload.id,
+        },
+      }),
+  })
+
+  const { mutate: linkFamily } = useMutation({
+    mutationFn: (payload: {
+      account_reporter_id: string
+      family_role: string
+    }) =>
+      axios.post(
+        `${baseUrl}/${API_URL.LINK_FAMILY}/${selectedPn.id}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   const selectedRole =
     useWatch({
       name: 'role',
       control,
     }) || {}
 
-  const onSubmit = (data: FormValues) => {
-    console.log(data)
-    // Handle form submission
-    setIsOpenFamilyForm(false)
+  const handleLinkFamily = (data: FormValues) => {
+    linkFamily(
+      {
+        account_reporter_id: data.familyName.value,
+        family_role:
+          data.role.id === 'other' ? data.otherRole || '' : data.role.label,
+      },
+      {
+        onSuccess: () => {
+          refetch()
+          notifyLink()
+          setIsOpenFamilyForm(false)
+          reset()
+        },
+      }
+    )
   }
 
-  const columns = React.useMemo(
+  const columns = useMemo(
     () => [
       columnHelper.accessor('name', {
         header: () => <span>Nama</span>,
@@ -186,84 +193,187 @@ const PNTable = () => {
         cell: (info) => {
           return <div className="font-semibold">{info.getValue()}</div>
         },
+        enableSorting: false,
       }),
-      columnHelper.accessor('family', {
+      columnHelper.accessor('total_family_member', {
         header: () => (
-          <div>
-            <div>Jumlah Relasi</div>
-            <div>Keluarga</div>
+          <div className="text-right">
+            <div>Jumlah Relasi Keluarga</div>
           </div>
         ),
         cell: (info) => {
-          return info.getValue()
+          return <div className="text-right text-sm">{info.getValue()}</div>
         },
       }),
-      columnHelper.accessor('bankTotal', {
+      columnHelper.accessor('total_bank_account', {
         header: () => (
-          <div>
-            <div>Jumlah Akun</div>
-            <div>Bank</div>
+          <div className="text-right">
+            <div>Jumlah Akun Bank</div>
           </div>
         ),
-        cell: (info) => {
-          return info.getValue()
-        },
-      }),
-      columnHelper.accessor('bankStatementTotal', {
-        header: () => (
-          <div>
-            <div>Jumlah Laporan</div>
-            <div>Bank</div>
-          </div>
-        ),
-        cell: (info) => {
-          return thousandSeparator(info.getValue())
-        },
-      }),
-      columnHelper.accessor('transactionTotal', {
-        header: () => <span>Jumlah Transaksi</span>,
-        cell: (info) => {
-          return thousandSeparator(info.getValue())
-        },
-      }),
-      columnHelper.accessor('assetTotal', {
-        header: () => <span>Total Asset</span>,
-        cell: (info) => {
-          return `Rp ${numberAbbv(info.getValue())}`
-        },
-      }),
-      columnHelper.accessor('action', {
-        header: () => <span>Aksi</span>,
         cell: (info) => {
           return (
-            <div className="flex gap-3 items-center">
-              <Link href={`/penyelenggara-negara/${info.row.original.id}`}>
-                <button className="border items-center p-2 rounded-lg hover:border-gray-400 flex gap-2">
-                  <div className="text-xs">Detail</div>
-                  <IconExpand size={16} color={colorToken.grayVulkanik} />
-                </button>
-              </Link>
-              <button
-                className="text-xs border p-2 rounded-lg hover:border-gray-400"
-                onClick={() => setIsOpenFamilyForm(true)}
-              >
-                Hubungkan Keluarga
-              </button>
-              <button className="border p-2 rounded-lg hover:border-gray-400">
-                <IconTrash size={20} color="#EA454C" />
-              </button>
+            <div className="text-sm text-right">{info.getValue() || 0}</div>
+          )
+        },
+      }),
+      columnHelper.accessor('total_statement', {
+        header: () => (
+          <div className="text-right">
+            <div>Jumlah Laporan Bank</div>
+          </div>
+        ),
+        cell: (info) => {
+          return (
+            <div className="text-sm text-right">
+              {thousandSeparator(info.getValue())}
+            </div>
+          )
+        },
+        enableSorting: false,
+      }),
+      columnHelper.accessor('total_transaction', {
+        header: () => <span>Jumlah Transaksi</span>,
+        cell: (info) => {
+          return (
+            <div className="text-sm text-right">
+              {thousandSeparator(info.getValue())}
             </div>
           )
         },
       }),
+      columnHelper.accessor(
+        (row) =>
+          row.total_asset?.map((obj) => {
+            const key = Object.keys(obj)[0]
+            const item = obj[key]
+            return (
+              <div className="text-sm" key={key}>
+                {`${key} ${numberAbbv(item)}`}
+              </div>
+            )
+          }),
+        {
+          id: 'total_asset',
+          header: () => <span>Total Asset</span>,
+          cell: (info) => {
+            return info.getValue()
+          },
+          enableSorting: false,
+        }
+      ),
+      columnHelper.accessor('updated_at', {
+        header: () => <span>Diperbarui pada</span>,
+        cell: (info) => {
+          return (
+            <div className="text-sm text-left">{info.getValue() || '-'}</div>
+          )
+        },
+      }),
+      columnHelper.accessor('action', {
+        header: () => <span></span>,
+        cell: (info) => {
+          return (
+            <div className="relative ml-4" ref={ref}>
+              <div
+                className="cursor-pointer"
+                onClick={() => handleMenuToggle(info.row.id)}
+              >
+                <IconKebab size={20} />
+              </div>
+              {actionMenu === info.row.id && (
+                <div
+                  className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
+                  style={{ zIndex: 1000 }}
+                >
+                  {/* NOTE: nanti diganti ke NIK, sementara by name dulu */}
+                  <Link
+                    href={`/penyelenggara-negara/${info.row.original.name}/summary`}
+                  >
+                    <button className="w-full p-2 flex gap-2 text-left hover:bg-gray-100">
+                      <IconExpand size={16} color={colorToken.grayVulkanik} />
+                      <div className="text-sm">Lihat detail</div>
+                    </button>
+                  </Link>
+
+                  <button
+                    className="w-full p-2 flex gap-2 text-left hover:bg-gray-100"
+                    onClick={() => {
+                      setSelectedPn(info.row.original)
+                      setIsOpenFamilyForm(true)
+                      setActionMenu(null)
+                    }}
+                  >
+                    <IconLink size={18} color={colorToken.grayVulkanik} />
+                    <div className="text-sm">Hubungkan Keluarga</div>
+                  </button>
+
+                  <div>
+                    <button
+                      className="text-sm p-2 flex gap-2 w-full hover:bg-gray-100"
+                      onClick={() => {
+                        setSelectedPn(info.row.original)
+                        setIsOpenRemove(true)
+                        setActionMenu(null)
+                      }}
+                    >
+                      <IconArchieve color="#FE888F" size={20} />
+                      <div className="text-sm">Arsipkan</div>
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
+            // <div className="flex gap-3 items-center">
+            //   {/* NOTE: nanti diganti ke NIK, sementara by name dulu */}
+            //   <Link
+            //     href={`/penyelenggara-negara/${info.row.original.name}/summary`}
+            //   >
+            //     <button className="border items-center p-2 rounded-lg hover:border-gray-400 flex gap-2">
+            //       <div className="text-xs">Detail</div>
+            //       <IconExpand size={16} color={colorToken.grayVulkanik} />
+            //     </button>
+            //   </Link>
+            //   <button
+            //     className="text-xs border p-2 rounded-lg hover:border-gray-400"
+            //     onClick={() => {
+            //       setSelectedPn(info.row.original)
+            //       setIsOpenFamilyForm(true)
+            //     }}
+            //   >
+            //     Hubungkan Keluarga
+            //   </button>
+            //   <button
+            //     className="border p-2 rounded-lg hover:border-gray-400 flex gap-2 items-center"
+            //     onClick={() => {
+            //       setSelectedPn(info.row.original)
+            //       setIsOpenRemove(true)
+            //     }}
+            //   >
+            //     <div className="text-xs">Arsipkan</div>
+            //     <IconArchieve color="#FE888F" size={20} />
+            //   </button>
+            // </div>
+          )
+        },
+        enableSorting: false,
+      }),
     ],
-    []
+    [actionMenu]
   )
 
+  const handleMenuToggle = (id: string) => {
+    setActionMenu((prev) => (prev === id ? null : id))
+  }
+
   const table = useReactTable({
-    data: defaultData,
+    data: pnList as Array<Person & { action: string }>,
     columns,
+    state: {
+      sorting,
+    },
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting as any,
   })
 
   const handleSearch = (query: string) => {
@@ -272,29 +382,95 @@ const PNTable = () => {
     // Example: Apply search logic to filter your table data and update state
   }
 
-  const handleSort = (option: { id: string | number; label: string }) => {
-    setSelectedSort(option)
+  const searchNIK = async (value: string) => {
+    // NOTE: sementara masih by name dulu, nanti di atur search by yg lain
+    const response = await fetch(
+      `${baseUrl}/${API_URL.PN_LIST}?search=${value}&limit=100`,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    )
+    const data = await response.json()
+    const pn = data.data || {}
+    const pnList = pn.account_reporter_list || []
+
+    return pnList.map((item: Person) => ({
+      value: item.id,
+      label: `${item.nik} - ${item.name}`,
+    }))
   }
 
   return (
     <>
+      <Toaster />
+      <Modal
+        width="max-w-[30rem]"
+        isOpen={isOpenRemove}
+        onClose={() => setIsOpenRemove(false)}
+      >
+        <h2 className="font-semibold mb-4 text-lg">Arsipkan PN</h2>
+        <div className="mt-2 text-sm">
+          Apakah Anda yakin mengarsipkan{' '}
+          <strong>
+            {selectedPn.name} - {selectedPn.nik}
+          </strong>{' '}
+          dari daftar monitoring?
+        </div>
+        <div className="flex justify-end space-x-4 mt-6">
+          <button
+            onClick={() => {
+              setSelectedPn({} as Person)
+              setIsOpenRemove(false)
+            }}
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Batal
+          </button>
+          <button
+            onClick={() => {
+              mutate(
+                {
+                  id: selectedPn.id,
+                },
+                {
+                  onSuccess: () => {
+                    notify()
+                    refetch()
+                    setIsOpenRemove(false)
+                    setSelectedPn({} as Person)
+                  },
+                }
+              )
+            }}
+            className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
+          >
+            Arsipkan
+          </button>
+        </div>
+      </Modal>
+
       <Modal
         width="max-w-[30rem]"
         isOpen={isOpenFamilyForm}
         onClose={() => setIsOpenFamilyForm(false)}
       >
         <h2 className="font-semibold mb-4 text-lg">Hubungkan Keluarga</h2>
-        <form onSubmit={handleSubmit(onSubmit)}>
+        <form onSubmit={handleSubmit(handleLinkFamily)}>
           <div>
             <Controller
               control={control}
               name="familyName"
               render={({ field, fieldState }) => (
-                <FormItem label="Nama" errorMessage={fieldState.error?.message}>
-                  <ReactSelect
-                    options={familyOptions}
-                    placeholder="Pilih anggota keluarga..."
+                <FormItem
+                  label="Identitas Keluarga"
+                  errorMessage={fieldState.error?.message}
+                >
+                  <AsyncSelect
+                    placeholder="Masukkan NIK anggota keluarga..."
                     {...field}
+                    loadOptions={searchNIK}
                     className="react-select-container"
                   />
                 </FormItem>
@@ -302,7 +478,6 @@ const PNTable = () => {
             />
           </div>
 
-          {/* Role Selection */}
           <div>
             <Controller
               control={control}
@@ -357,40 +532,54 @@ const PNTable = () => {
       <div className="mb-4 flex justify-between">
         <InputSearch
           onSearch={handleSearch}
-          placeholder="Masukkan NIK atau Nama PN..."
+          placeholder="Masukkan NIK atau Nama PN ..."
         />
-        <div className="w-max">
-          <InputDropdown
-            reset
-            value={selectedSort}
-            hideChevron
-            options={sortOptions}
-            placeholder={
-              <div className="flex gap-2 items-center">
-                <div>Urutkan berdasarkan</div>
-                <IconSort />
-              </div>
-            }
-            onChange={handleSort}
-          />
-        </div>
       </div>
       <div className="p-2">
         <table className="min-w-full divide-y divide-gray-300">
           <thead className="font-semibold bg-gray-100">
             {table.getHeaderGroups().map((headerGroup) => (
-              <tr key={headerGroup.id}>
+              <tr key={headerGroup.id} className="py-2">
                 {headerGroup.headers.map((header) => (
                   <th
                     key={header.id}
-                    className="sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100"
+                    className={`sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100 ${
+                      header.column.getIsSorted()
+                        ? 'bg-gray-200'
+                        : 'bg-gray-100'
+                    }`}
+                    onClick={header.column.getToggleSortingHandler()}
                   >
-                    {header.isPlaceholder
-                      ? null
-                      : flexRender(
+                    {header.isPlaceholder ? null : (
+                      <div className="flex items-center justify-between gap-3">
+                        {flexRender(
                           header.column.columnDef.header,
                           header.getContext()
                         )}
+                        {header.column.getCanSort() && (
+                          <div>
+                            <div className="rotate-180">
+                              <IconTriangleDown
+                                size={8}
+                                color={
+                                  header.column.getIsSorted() === 'asc'
+                                    ? colorToken.darkGrafit
+                                    : colorToken.grayVulkanik
+                                }
+                              />
+                            </div>
+                            <IconTriangleDown
+                              size={8}
+                              color={
+                                header.column.getIsSorted() === 'desc'
+                                  ? colorToken.darkGrafit
+                                  : colorToken.grayVulkanik
+                              }
+                            />
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </th>
                 ))}
               </tr>

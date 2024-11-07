@@ -1,11 +1,20 @@
 'use client'
-import { IconBCA, IconBNI, IconBRI, IconMandiri, IconTrash } from '@/icons'
+import { colorToken } from '@/constants/color-token'
+import {
+  IconBCA,
+  IconBNI,
+  IconBRI,
+  IconMandiri,
+  IconTrash,
+  IconTriangleDown,
+} from '@/icons'
 import {
   useReactTable,
   createColumnHelper,
   getCoreRowModel,
   flexRender,
 } from '@tanstack/react-table'
+import { useState } from 'react'
 
 export type TransactionBankStatementData = {
   id: string
@@ -200,37 +209,53 @@ const columnHelper = createColumnHelper<
 >()
 
 const columns = [
-  columnHelper.accessor('name', {
-    header: 'Nama',
-    cell: (info) => info.getValue(),
+  columnHelper.accessor('uploaded_at', {
+    header: 'Tanggal Upload',
+    cell: (info) => new Date(info.getValue()).toLocaleDateString(),
   }),
-
-  columnHelper.accessor((row) => `${row.period.from} - ${row.period.to}`, {
-    id: 'period',
-    header: 'Periode',
+  columnHelper.accessor('name', {
+    header: 'Nama File',
     cell: (info) => info.getValue(),
+    enableSorting: false,
   }),
   columnHelper.accessor(
     (row) => (
       <div>
         <div className="flex gap-2 mt-2 items-center">
           {iconBankMap[row.bank.name]}
+          <div className="text-x">{row.bank.name}</div>
+        </div>
+      </div>
+    ),
+    {
+      id: 'bankName',
+      header: 'Bank',
+      cell: (info) => info.getValue(),
+      enableSorting: false,
+    }
+  ),
+  columnHelper.accessor(
+    (row) => (
+      <div>
+        <div className="flex gap-2 mt-2 items-center">
           <div>
             <div className="text-xs">{row.bank.accountName}</div>
-            <div className="text-xs">{`${row.bank.name} - ${row.bank.accountNo}`}</div>
+            <div className="text-xs">{`${row.bank.accountNo}`}</div>
           </div>
         </div>
       </div>
     ),
     {
-      id: 'bankInfo',
-      header: 'Info Bank',
+      id: 'bankAccount',
+      header: 'Akun Bank',
       cell: (info) => info.getValue(),
+      enableSorting: false,
     }
   ),
-  columnHelper.accessor('uploaded_at', {
-    header: 'Tanggal Upload',
-    cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+  columnHelper.accessor((row) => `${row.period.from} - ${row.period.to}`, {
+    id: 'period',
+    header: 'Periode',
+    cell: (info) => info.getValue(),
   }),
   columnHelper.accessor('url', {
     header: 'URL',
@@ -244,6 +269,7 @@ const columns = [
         Lihat Dokumen
       </a>
     ),
+    enableSorting: false,
   }),
   columnHelper.accessor('action', {
     header: () => <span>Aksi</span>,
@@ -256,14 +282,20 @@ const columns = [
         </div>
       )
     },
+    enableSorting: false,
   }),
 ]
 
 const TransactionStatementsTable: React.FC = () => {
+  const [sorting, setSorting] = useState([])
   const table = useReactTable({
     data: transactionBankStatements,
     columns,
+    state: {
+      sorting,
+    },
     getCoreRowModel: getCoreRowModel(),
+    onSortingChange: setSorting as any,
   })
 
   return (
@@ -275,14 +307,41 @@ const TransactionStatementsTable: React.FC = () => {
               {headerGroup.headers.map((header) => (
                 <th
                   key={header.id}
-                  className="sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100"
+                  className={`sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100 ${
+                    header.column.getIsSorted() ? 'bg-gray-200' : 'bg-gray-100'
+                  }`}
+                  onClick={header.column.getToggleSortingHandler()}
                 >
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
+                  {header.isPlaceholder ? null : (
+                    <div className="flex gap-0 items-center justify-between">
+                      {flexRender(
                         header.column.columnDef.header,
                         header.getContext()
                       )}
+                      {header.column.getCanSort() && (
+                        <div>
+                          <div className="rotate-180">
+                            <IconTriangleDown
+                              size={8}
+                              color={
+                                header.column.getIsSorted() === 'asc'
+                                  ? colorToken.darkGrafit
+                                  : colorToken.grayVulkanik
+                              }
+                            />
+                          </div>
+                          <IconTriangleDown
+                            size={8}
+                            color={
+                              header.column.getIsSorted() === 'desc'
+                                ? colorToken.darkGrafit
+                                : colorToken.grayVulkanik
+                            }
+                          />
+                        </div>
+                      )}
+                    </div>
+                  )}
                 </th>
               ))}
             </tr>

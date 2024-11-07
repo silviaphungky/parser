@@ -1,39 +1,44 @@
 'use client'
 
-import { Breadcrumbs, Card } from '@/components'
+import { Breadcrumbs, Card, Shimmer } from '@/components'
 import UploadBankStatement from '../UploadBankStatement/UploadBankStatement'
-import { useState } from 'react'
+import { ReactNode, useState } from 'react'
 import { IconPlus } from '@/icons'
-import { thousandSeparator } from '@/utils/thousanSeparator'
 import Tab from '@/components/Tab'
-import { usePathname, useRouter } from 'next/navigation'
-import Link from 'next/link'
+import { useParams, usePathname, useRouter } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { getPNList } from '@/app/service/getPNList'
+import { API_URL } from '@/constants/apiUrl'
 
 const WLInfo = ({
-  data,
+  token,
+  children,
 }: {
-  data: {
-    name: string
-    totalAsset: number
-    nik: string
-    family: Array<{
-      name: string
-      relation: string
-      relationNote?: string
-      id: string
-      NIK: string
-    }>
-  }
+  token: string
+  children: ReactNode
 }) => {
   const router = useRouter()
   const pathname = usePathname()
+  const { id } = useParams()
+
   const [isOpenUploadForm, setIsOpenUploadForm] = useState(false)
+  const { data, isLoading } = useQuery({
+    queryKey: ['wlInfo', id],
+    queryFn: async () =>
+      await getPNList(`${API_URL.PN_LIST}?search=${id}&limit=1`, token),
+  })
+
+  const pn = data?.account_reporter_list?.[0] || {}
+  console.log({ pn })
 
   return (
     <div>
       <UploadBankStatement
+        token={token}
         isOpen={isOpenUploadForm}
         setIsOpen={setIsOpenUploadForm}
+        name={pn.name}
+        nik={pn.nik}
       />
       <div>
         <Breadcrumbs
@@ -43,82 +48,99 @@ const WLInfo = ({
               link: '/penyelenggara-negara',
             },
             {
-              label: '1',
+              label: id as string,
             },
           ]}
         />
       </div>
       <div className="mt-6">
         <Card>
-          <div className="flex justify-between">
-            <div>
-              <div className="font-bold text-2xl">{data.name}</div>
-              <div className="text-dark text-sm">{`NIK: ${data.nik}`}</div>
-            </div>
-            <div className="flex gap-8">
+          {isLoading && <Shimmer />}
+          {!isLoading && (
+            <div className="flex justify-between">
               <div>
-                <div className="font-semibold text-sm">{`Total Asset: Rp ${thousandSeparator(
-                  data.totalAsset
-                )}`}</div>
-                <div className="text-xs text-dark">{`Laporan bank terakhir: Juli 2024`}</div>
+                <div className="font-bold text-2xl">{pn.name}</div>
+                <div className="text-dark text-sm">{`NIK: ${pn.nik}`}</div>
               </div>
-              <button
-                className="h-fit flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95"
-                onClick={() => setIsOpenUploadForm(true)}
-              >
-                <IconPlus color="#fff" size={18} />
-                Unggah Laporan Bank
-              </button>
+              <div className="flex gap-8">
+                <div>
+                  <button
+                    className="h-fit flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95"
+                    onClick={() => setIsOpenUploadForm(true)}
+                  >
+                    <IconPlus color="#fff" size={18} />
+                    Unggah Laporan Bank
+                  </button>
+                  <div className="mt-2">
+                    <div className="text-xs text-dark">
+                      Pembaruan laporan bank terbaru:{' '}
+                      <strong>November 2024</strong>
+                    </div>
+                    <div className="text-xs text-dark">
+                      Pembaruan laporan bank terlama:{' '}
+                      <strong>Januari 2024</strong>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
         </Card>
       </div>
 
-      <div>
-        <div className="mt-4">
-          <Tab
-            tabs={[
-              {
-                id: 'tab1',
-                label: 'Ringkasan Transaksi',
-                content: <></>,
-                active: pathname === '/penyelenggara-negara/1/summary',
-                handleClick: () => {
-                  router.push('/penyelenggara-negara/1/summary')
+      {!isLoading && (
+        <div>
+          <div className="mt-4">
+            <Tab
+              tabs={[
+                {
+                  id: 'tab1',
+                  label: 'Ringkasan Transaksi',
+                  content: <></>,
+                  active: pathname === `/penyelenggara-negara/${id}/summary`,
+                  handleClick: () => {
+                    router.push(`/penyelenggara-negara/${id}/summary`)
+                  },
                 },
-              },
-              {
-                id: 'tab2',
-                label: 'Daftar Transaksi',
-                content: <></>,
-                active: pathname === '/penyelenggara-negara/1/transaction-list',
-                handleClick: () => {
-                  router.push('/penyelenggara-negara/1/transaction-list')
+                {
+                  id: 'tab2',
+                  label: 'Daftar Transaksi',
+                  content: <></>,
+                  active:
+                    pathname === `/penyelenggara-negara/${id}/transaction-list`,
+                  handleClick: () => {
+                    router.push(`/penyelenggara-negara/${id}/transaction-list`)
+                  },
                 },
-              },
-              {
-                id: 'tab3',
-                label: 'Daftar Laporan Bank',
-                content: <></>,
-                active:
-                  pathname === '/penyelenggara-negara/1/transaction-statements',
-                handleClick: () => {
-                  router.push('/penyelenggara-negara/1/transaction-statements')
+                {
+                  id: 'tab3',
+                  label: 'Daftar Laporan Bank',
+                  content: <></>,
+                  active:
+                    pathname ===
+                    `/penyelenggara-negara/${id}/transaction-statements`,
+                  handleClick: () => {
+                    router.push(
+                      `/penyelenggara-negara/${id}/transaction-statements`
+                    )
+                  },
                 },
-              },
-              {
-                id: 'tab4',
-                label: 'Daftar Relasi Keluarga',
-                content: <></>,
-                active: pathname === '/penyelenggara-negara/1/family',
-                handleClick: () => {
-                  router.push('/penyelenggara-negara/1/family')
+                {
+                  id: 'tab4',
+                  label: 'Daftar Relasi Keluarga',
+                  content: <></>,
+                  active: pathname === `/penyelenggara-negara/${id}/family`,
+                  handleClick: () => {
+                    router.push(`/penyelenggara-negara/${id}/family`)
+                  },
                 },
-              },
-            ]}
-          />
+              ]}
+            />
+          </div>
         </div>
-      </div>
+      )}
+
+      {!isLoading && children}
     </div>
   )
 }

@@ -1,12 +1,14 @@
-import React from 'react'
+'use client'
+
+import { Dispatch, SetStateAction } from 'react'
 
 interface PaginationProps {
   currentPage: number
   totalPages: number
   itemsPerPage: number
   totalItems: number
-  onPageChange: (page: number) => void
-  onItemsPerPageChange: (itemsPerPage: number) => void
+  onPageChange: Dispatch<SetStateAction<number>>
+  onItemsPerPageChange: Dispatch<SetStateAction<number>>
 }
 
 const Pagination: React.FC<PaginationProps> = ({

@@ -1,6 +1,8 @@
 import { Barlow, Poppins } from 'next/font/google'
 import { ReactNode } from 'react'
 import WLInfo from './components/WLInfo/WLInfo'
+import { redirect } from 'next/navigation'
+import { cookies } from 'next/headers'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700'],
@@ -42,10 +44,15 @@ const PNDATA = {
 }
 
 const AnalyticLayout = ({ children }: { children: ReactNode }) => {
+  const token = cookies().get('ACCESS_TOKEN')?.value || ''
+
+  if (!token) {
+    redirect('/login')
+  }
+
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
-      <WLInfo data={PNDATA} />
-      {children}
+      <WLInfo token={token}>{children}</WLInfo>
     </div>
   )
 }

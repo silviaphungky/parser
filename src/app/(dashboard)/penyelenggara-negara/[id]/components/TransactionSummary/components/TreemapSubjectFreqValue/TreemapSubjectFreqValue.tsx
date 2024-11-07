@@ -60,7 +60,9 @@ const TreemapSubjectFreqValue = ({
     <div className="mb-4">
       <Card>
         <div className="flex justify-between items-center mb-4">
-          <div className="text-sm">Pengelompokan berdasarkan Subyek</div>
+          <div className="text-sm">
+            Pengelompokan berdasarkan <strong>Lawan Transaksi</strong>
+          </div>
           <div className="w-[10rem]">
             <InputDropdown
               options={mockTransactionType}
