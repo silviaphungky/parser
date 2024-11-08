@@ -52,10 +52,10 @@ const Login = ({
       axios.post(`${baseUrl}/${API_URL.LOGIN}`, {
         ...payload,
       }),
-    onSuccess: ({ data }) => {
+    onSuccess: async ({ data }) => {
       const response = data.data || {}
       const token = response.token
-      handleSetSession(token)
+      await handleSetSession(token)
       router.push('/penyelenggara-negara')
     },
   })

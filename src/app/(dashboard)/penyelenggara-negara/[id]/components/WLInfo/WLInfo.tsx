@@ -29,7 +29,6 @@ const WLInfo = ({
   })
 
   const pn = data?.account_reporter_list?.[0] || {}
-  console.log({ pn })
 
   return (
     <div>

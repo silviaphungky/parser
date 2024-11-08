@@ -1,5 +1,6 @@
 import { Sidebar } from '@/components'
 import { Barlow, Poppins } from 'next/font/google'
+import { cookies } from 'next/headers'
 import { ReactNode } from 'react'
 
 const poppins = Poppins({
@@ -14,11 +15,17 @@ const barlow = Barlow({
   subsets: ['latin'],
 })
 
+const clearCookies = async () => {
+  'use server'
+  const cookieStore = cookies()
+  cookieStore.delete('ACCESS_TOKEN')
+}
+
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
       <div className="flex">
-        <Sidebar>{children}</Sidebar>
+        <Sidebar clearCookies={clearCookies}>{children}</Sidebar>
       </div>
     </div>
   )

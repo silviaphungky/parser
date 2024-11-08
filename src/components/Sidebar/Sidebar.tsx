@@ -6,7 +6,13 @@ import { IconChevronDown, IconLogout, Logo } from '@/icons'
 import { ReactNode, useState } from 'react'
 import { colorToken } from '@/constants/color-token'
 
-const Sidebar = ({ children }: { children: ReactNode }) => {
+const Sidebar = ({
+  children,
+  clearCookies,
+}: {
+  children: ReactNode
+  clearCookies: () => void
+}) => {
   const pathname = usePathname()
   const router = useRouter()
   const [isCollapsed, setIsCollapsed] = useState(false)
@@ -15,6 +21,7 @@ const Sidebar = ({ children }: { children: ReactNode }) => {
 
   const logout = () => {
     router.push('/login')
+    clearCookies()
   }
 
   return (
