@@ -66,6 +66,7 @@ const SumaryGlobalFilter = ({
           name="colors"
           options={mockBank}
           className="react-select-container"
+          placeholder="Pilih akun bank"
           styles={{
             option: (styles, state) => ({
               ...styles,
@@ -73,6 +74,7 @@ const SumaryGlobalFilter = ({
               '&:hover': {
                 // overriding hover
                 ...styles, // apply initial styles
+                backgroundColor: '#E6EFF5',
               },
             }),
             indicatorsContainer: (base, props) => {
