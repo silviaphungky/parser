@@ -4,10 +4,10 @@ import { useEffect } from 'react'
 import ReactSelect from 'react-select'
 
 export const mockBank = [
-  { value: 'BCA1', label: 'BCA - 12345678' },
-  { value: 'BCA1', label: 'BCA - 12345678' },
-  { value: 'BNI1', label: 'BNI - 87654321' },
-  { value: 'BRI1', label: 'BRI - 11223344' },
+  { value: 'BCA1', label: 'BCA - 12345678 Anton' },
+  { value: 'BCA1', label: 'BCA - 12345678 Anton' },
+  { value: 'BNI1', label: 'BNI - 87654321 Siti Aisyah' },
+  { value: 'BRI1', label: 'BRI - 11223344 Siti Aisyah' },
 ]
 
 const currencyOptions = [
