@@ -7,6 +7,10 @@ import { ContributionCalendar } from 'react-contribution-calendar'
 
 const mockTransactionType = [
   {
+    id: 'all',
+    label: 'Transaksi Masuk/Keluar',
+  },
+  {
     id: 'in',
     label: 'Transaksi Masuk',
   },
@@ -51,12 +55,26 @@ const color = {
     'rgba(255, 51, 51, 0.8)',
     'rgba(153, 31, 31, 0.8)',
   ],
+  all: [
+    'rgba(173, 216, 230, 0.8)', // Biru Muda
+    'rgb(113, 154, 231, 0.8)', // Biru Cornflower
+    'rgba(30, 144, 255, 0.8)', // Biru Dodger
+    'rgba(0, 0, 205, 0.8)', // Biru Tua
+  ],
 }
 
 const FreqValueHeatmapDate = ({
   data,
 }: {
   data: {
+    all: Array<{
+      [key in string]: {
+        frequency: number
+        value: number
+        levelFreq: number
+        levelVal: number
+      }
+    }>
     in: Array<{
       [key in string]: {
         frequency: number
@@ -100,7 +118,7 @@ const FreqValueHeatmapDate = ({
     setSelectedYear(year)
   }
 
-  const dataBasedOnType = data[selectedType.id as 'in' | 'out']
+  const dataBasedOnType = data[selectedType.id as 'in' | 'out' | 'all']
   const formattedData = dataBasedOnType.map((item) => {
     const key = Object.keys(item)[0]
     return {
@@ -120,7 +138,7 @@ const FreqValueHeatmapDate = ({
         <div className="text-sm">Pengelompokan berdasarkan Waktu</div>
 
         <div className="flex gap-2">
-          <div className="w-[10rem]">
+          <div className="w-[14rem]">
             <InputDropdown
               options={mockTransactionType}
               value={selectedType}

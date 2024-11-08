@@ -120,6 +120,12 @@ const dataFreqPiechart = {
 }
 
 const mockData: {
+  all: Array<{
+    [key: string]: {
+      frequency: number
+      value: number
+    }
+  }>
   in: Array<{
     [key: string]: {
       frequency: number
@@ -133,6 +139,44 @@ const mockData: {
     }
   }>
 } = {
+  all: [
+    {
+      '2024-04-02': {
+        frequency: 10,
+        value: 7000000,
+      },
+    },
+    {
+      '2024-04-03': {
+        frequency: 8,
+        value: 5000000,
+      },
+    },
+    {
+      '2024-05-07': {
+        frequency: 3,
+        value: 8800000,
+      },
+    },
+    {
+      '2024-07-06': {
+        frequency: 10,
+        value: 88000000,
+      },
+    },
+    {
+      '2024-07-01': {
+        frequency: 4,
+        value: 5000000,
+      },
+    },
+    {
+      '2024-01-01': {
+        frequency: 3,
+        value: 1000000,
+      },
+    },
+  ],
   in: [
     {
       '2024-04-02': {
@@ -194,6 +238,29 @@ const mockData: {
 }
 
 const mockGroupByDate = {
+  all: mockData.all.map((item) => {
+    const key = Object.keys(item)[0]
+    let levelFreq = 0
+    let levelVal = 0
+
+    if (item[key].frequency > 10) levelFreq = 4
+    else if (item[key].frequency > 7 && item[key].frequency <= 10) levelFreq = 3
+    else if (item[key].frequency > 4 && item[key].frequency <= 7) levelFreq = 2
+    else if (item[key].frequency > 0 && item[key].frequency <= 4) levelFreq = 1
+    else levelFreq = 0
+
+    if (item[key].value > 20000000) levelVal = 4
+    else if (item[key].value > 10000000 && item[key].value <= 20000000)
+      levelVal = 3
+    else if (item[key].value > 2000000 && item[key].value <= 10000000)
+      levelVal = 2
+    else if (item[key].value > 0 && item[key].value <= 2000000) levelVal = 1
+    else levelVal = 0
+
+    return {
+      [key]: { ...item[key], levelFreq, levelVal },
+    }
+  }),
   in: mockData.in.map((item) => {
     const key = Object.keys(item)[0]
     let levelFreq = 0
