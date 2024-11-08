@@ -26,6 +26,7 @@ import IconArchieve from './IconArchieve'
 import IconTriangleDown from './IconTriangleDown'
 import IconLink from './IconLink'
 import IconStar from './IconStar'
+import IconLoading from './IconLoading'
 
 export {
   IconFileCheck,
@@ -56,4 +57,5 @@ export {
   IconTriangleDown,
   IconLink,
   IconStar,
+  IconLoading,
 }

@@ -31,6 +31,8 @@ import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
 import { useMemo, useRef, useState } from 'react'
 import AsyncSelect from 'react-select/async'
+import dayjs from 'dayjs'
+import useOutsideClick from '@/utils/useClickOutside'
 
 type Person = {
   id: string
@@ -125,6 +127,7 @@ const PNTable = ({
   const [sorting, setSorting] = useState([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
+  const refDropdown = useRef(null)
 
   const { mutate } = useMutation({
     mutationFn: (payload: { id: string }) =>
@@ -185,7 +188,11 @@ const PNTable = ({
       columnHelper.accessor('name', {
         header: () => <span>Nama</span>,
         cell: (info) => {
-          return <div className="font-semibold">{info.getValue()}</div>
+          return (
+            <div className="font-semibold capitalize">
+              {info.getValue().toLowerCase()}
+            </div>
+          )
         },
       }),
       columnHelper.accessor('nik', {
@@ -262,11 +269,21 @@ const PNTable = ({
           enableSorting: false,
         }
       ),
+      columnHelper.accessor('created_at', {
+        header: () => <span>Dibuat pada</span>,
+        cell: (info) => {
+          return (
+            <div className="text-xs text-left">
+              {dayjs(info.getValue()).format('DD/MM/YYYY') || '-'}
+            </div>
+          )
+        },
+      }),
       columnHelper.accessor('updated_at', {
         header: () => <span>Diperbarui pada</span>,
         cell: (info) => {
           return (
-            <div className="text-sm text-left">{info.getValue() || '-'}</div>
+            <div className="text-xs text-left">{info.getValue() || '-'}</div>
           )
         },
       }),
@@ -283,6 +300,7 @@ const PNTable = ({
               </div>
               {actionMenu === info.row.id && (
                 <div
+                  ref={refDropdown}
                   className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
                   style={{ zIndex: 1000 }}
                 >
@@ -324,36 +342,6 @@ const PNTable = ({
                 </div>
               )}
             </div>
-            // <div className="flex gap-3 items-center">
-            //   {/* NOTE: nanti diganti ke NIK, sementara by name dulu */}
-            //   <Link
-            //     href={`/penyelenggara-negara/${info.row.original.name}/summary`}
-            //   >
-            //     <button className="border items-center p-2 rounded-lg hover:border-gray-400 flex gap-2">
-            //       <div className="text-xs">Detail</div>
-            //       <IconExpand size={16} color={colorToken.grayVulkanik} />
-            //     </button>
-            //   </Link>
-            //   <button
-            //     className="text-xs border p-2 rounded-lg hover:border-gray-400"
-            //     onClick={() => {
-            //       setSelectedPn(info.row.original)
-            //       setIsOpenFamilyForm(true)
-            //     }}
-            //   >
-            //     Hubungkan Keluarga
-            //   </button>
-            //   <button
-            //     className="border p-2 rounded-lg hover:border-gray-400 flex gap-2 items-center"
-            //     onClick={() => {
-            //       setSelectedPn(info.row.original)
-            //       setIsOpenRemove(true)
-            //     }}
-            //   >
-            //     <div className="text-xs">Arsipkan</div>
-            //     <IconArchieve color="#FE888F" size={20} />
-            //   </button>
-            // </div>
           )
         },
         enableSorting: false,
@@ -365,6 +353,11 @@ const PNTable = ({
   const handleMenuToggle = (id: string) => {
     setActionMenu((prev) => (prev === id ? null : id))
   }
+
+  useOutsideClick(refDropdown, () => {
+    setSelectedPn({} as Person)
+    setActionMenu('')
+  })
 
   const table = useReactTable({
     data: pnList as Array<Person & { action: string }>,

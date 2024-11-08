@@ -7,6 +7,7 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
+import Button from '@/components/Button'
 
 interface FormValues {
   name: string
@@ -34,8 +35,7 @@ const WajibLaporCreate = ({
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>
   refetch: () => void
 }) => {
-  console.log({ token }, 'post')
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (payload: { nik: string; name: string }) =>
       axios.post(
         `${baseUrl}/${API_URL.CREATE_PN}`,
@@ -122,13 +122,9 @@ const WajibLaporCreate = ({
             )}
           />
         </div>
-
-        <button
-          type="submit"
-          className="mt-6 text-sm bg-black w-full text-white px-4 py-2 rounded-md hover:opacity-95"
-        >
+        <Button variant="dark" type="submit" loading={isPending} full>
           Tambah
-        </button>
+        </Button>
       </form>
     </div>
   )

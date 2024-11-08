@@ -9,6 +9,9 @@ import { useRouter } from 'next/navigation'
 import { useMutation } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import axios from 'axios'
+import { IconLoading } from '@/icons'
+import IconBatik from '@/icons/IconBatik'
+import Button from '@/components/Button'
 
 // Define the schema for validation using Yup
 const schema = yup.object().shape({
@@ -40,7 +43,7 @@ const Login = ({
     resolver: yupResolver(schema),
   })
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (payload: {
       email: string
       password: string
@@ -68,6 +71,12 @@ const Login = ({
   return (
     <div className="relative bg-light">
       <div className="flex items-center justify-center min-h-screen relative">
+        <div className="absolute left-0 top-[3rem]">
+          <IconBatik />
+        </div>
+        <div className="absolute right-0 top-[3rem]">
+          <IconBatik />
+        </div>
         <form
           onSubmit={(e) => {
             e.preventDefault()
@@ -75,7 +84,7 @@ const Login = ({
           }}
           className="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 w-full max-w-md"
         >
-          <h2 className="text-center text-2xl mb-4">Login</h2>
+          <h2 className="text-center text-2xl mb-4 font-semibold">Sign In</h2>
 
           <div className="mb-4">
             <Controller
@@ -111,14 +120,9 @@ const Login = ({
             />
           </div>
 
-          <div className="flex items-center justify-between">
-            <button
-              type="submit"
-              className="w-full bg-primary text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
-            >
-              Login
-            </button>
-          </div>
+          <Button type="submit" loading={isPending} variant="primary" full>
+            Sign In
+          </Button>
         </form>
       </div>
     </div>
