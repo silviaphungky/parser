@@ -18,6 +18,7 @@ import useOutsideClick from '@/utils/useClickOutside'
 import { Modal } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
+import dayjs from 'dayjs'
 
 type TransactionData = {
   id: string
@@ -26,6 +27,7 @@ type TransactionData = {
   personalBankAccNo: string
   personalBankAccName: string
   transactionDate: string
+  transactionTime?: string
   remark: string
   transactionType: string
   targetBankAccNo: string
@@ -99,6 +101,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     personalBankAccNo: '3456789012',
     personalBankAccName: 'Silvia Phungky',
     transactionDate: '2024-10-05',
+    transactionTime: `${new Date()}`,
     remark: 'Payment to Vendor',
     transactionType: 'Transfer',
     targetBankAccNo: '4567890123',
@@ -436,13 +439,18 @@ const TransactionTable = () => {
   const columns = [
     columnHelper.accessor(
       (row) => (
-        <div className="flex gap-2 items-center">
+        <div>
           <div className="text-xs">{row.transactionDate}</div>
+          {row.transactionTime && (
+            <div className="text-[11px]">
+              {dayjs(row.transactionTime).format('HH:mm:ss')}
+            </div>
+          )}
         </div>
       ),
       {
         id: 'transactionDate',
-        header: 'Tanggal',
+        header: 'Waktu',
         cell: (info) => info.getValue(),
         enableSorting: true,
       }
