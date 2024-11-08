@@ -18,7 +18,7 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
       <div className="flex">
-        <Sidebar children={children} />
+        <Sidebar>{children}</Sidebar>
       </div>
     </div>
   )
