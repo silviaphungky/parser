@@ -8,6 +8,7 @@ import axios from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
 import Button from '@/components/Button'
+import axiosInstance from '@/utils/axiosInstance'
 
 interface FormValues {
   name: string
@@ -36,7 +37,7 @@ const WajibLaporCreate = ({
 }) => {
   const { mutate, isPending } = useMutation({
     mutationFn: (payload: { nik: string; name: string }) =>
-      axios.post(
+      axiosInstance.post(
         `${baseUrl}/${API_URL.CREATE_PN}`,
         {
           ...payload,

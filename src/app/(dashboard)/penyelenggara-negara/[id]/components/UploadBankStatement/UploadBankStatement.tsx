@@ -3,6 +3,7 @@ import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
 import { IconBCA, IconBNI, IconBRI, IconMandiri, IconUpload } from '@/icons'
 import IconFile from '@/icons/IconFile'
+import axiosInstance from '@/utils/axiosInstance'
 import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import React, { Dispatch, useState } from 'react'
@@ -72,7 +73,7 @@ const UploadBankStatement = ({
 
   const { mutate } = useMutation({
     mutationFn: (payload: FormData) =>
-      axios.post(`${baseUrl}/${API_URL.UPLOAD_STATEMENT}`, payload, {
+      axiosInstance.post(`${baseUrl}/${API_URL.UPLOAD_STATEMENT}`, payload, {
         headers: {
           Authorization: `Bearer ${token}`,
           'Content-Type': 'multipart/form-data',

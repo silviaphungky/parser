@@ -34,6 +34,7 @@ import AsyncSelect from 'react-select/async'
 import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
 import useDebounce from '@/utils/useDebounce'
+import axiosInstance from '@/utils/axiosInstance'
 
 type Person = {
   id: string
@@ -143,7 +144,7 @@ const PNTable = ({
 
   const { mutate } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axios.delete(`${baseUrl}/${API_URL.DELETE_PN}`, {
+      axiosInstance.delete(`${baseUrl}/${API_URL.DELETE_PN}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -160,7 +161,7 @@ const PNTable = ({
       parent_family_role: string
       child_family_role: string
     }) =>
-      axios.post(
+      axiosInstance.post(
         `${baseUrl}/${API_URL.LINK_FAMILY}`,
         {
           ...payload,
