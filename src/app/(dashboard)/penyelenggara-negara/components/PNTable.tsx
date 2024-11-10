@@ -107,7 +107,7 @@ const columnHelper = createColumnHelper<Person & { action: string }>()
 
 const baseUrl = 'https://backend-itrtechkpk.replit.app'
 
-const notify = () => toast.success('PN berhasil dihapus')
+const notify = () => toast.success('PN berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
 
 const PNTable = ({
