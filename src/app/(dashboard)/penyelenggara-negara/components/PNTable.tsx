@@ -672,6 +672,20 @@ const PNTable = ({
           )}
         </table>
         {isLoading && <Shimmer />}
+        {!isLoading && (
+          <>
+            {pnList.length === 0 && (
+              <div className="text-center py-10 text-gray-500">
+                <p className="text-lg font-medium">
+                  Tidak ada data yang tersedia
+                </p>
+                <p className="text-sm">
+                  Tambahkan penyelenggara negara yang akan dimonitor
+                </p>
+              </div>
+            )}
+          </>
+        )}
       </div>
     </>
   )
