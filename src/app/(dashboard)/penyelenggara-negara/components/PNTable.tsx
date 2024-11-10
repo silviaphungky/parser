@@ -33,6 +33,7 @@ import { useMemo, useRef, useState } from 'react'
 import AsyncSelect from 'react-select/async'
 import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
+import useDebounce from '@/utils/useDebounce'
 
 type Person = {
   id: string
@@ -55,19 +56,17 @@ interface FormValues {
     value: string
     label: string
   }
-  role: {
+  child_family_role: {
     id: string
     label: string
   }
-  otherRole?: string
+  parent_family_role: {
+    id: string
+    label: string
+  }
+  childOtherRole?: string
+  parentOtherRole?: string
 }
-
-const familyOptions = [
-  { value: '310000002', label: '310000002 - John Doe' },
-  { value: '310000003', label: '310000003 - Jane Doe' },
-  { value: '310000004', label: '310000004 - Susan Lee' },
-  { value: '310000005', label: '310000005 - Mike Smith' },
-]
 
 // Role options
 const roleOptions = [
@@ -84,11 +83,20 @@ const validationSchema = yup.object().shape({
     value: yup.string().required(),
     label: yup.string().required('Identitas keluarga wajib dipilih'),
   }),
-  role: yup.object({
+  parent_family_role: yup.object({
     id: yup.string().required(),
     label: yup.string().required('Hubungan wajib diisi'),
   }),
-  otherRole: yup.string().when('role.id', {
+  child_family_role: yup.object({
+    id: yup.string().required(),
+    label: yup.string().required('Hubungan wajib diisi'),
+  }),
+  parentOtherRole: yup.string().when('parent_famliy_role.id', {
+    is: (val: string) => val === 'other',
+    then: () => yup.string().required('Detail hubungan wajib diisi'),
+    otherwise: () => yup.string(),
+  }),
+  childOtherRole: yup.string().when('child_famliy_role.id', {
     is: (val: string) => val === 'other',
     then: () => yup.string().required('Detail hubungan wajib diisi'),
     otherwise: () => yup.string(),
@@ -97,8 +105,7 @@ const validationSchema = yup.object().shape({
 
 const columnHelper = createColumnHelper<Person & { action: string }>()
 
-const baseUrl =
-  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
+const baseUrl = 'https://backend-itrtechkpk.replit.app'
 
 const notify = () => toast.success('PN berhasil dihapus')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
@@ -113,9 +120,15 @@ const PNTable = ({
   refetch: () => void
 }) => {
   const ref = useRef(null)
+  const [search, setSearch] = useState('')
   const [isOpenFamilyForm, setIsOpenFamilyForm] = useState(false)
   const [isOpenRemove, setIsOpenRemove] = useState(false)
-  const { handleSubmit, control, reset } = useForm<FormValues>({
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { errors },
+  } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
     defaultValues: {
       role: {
@@ -124,6 +137,7 @@ const PNTable = ({
       },
     },
   })
+  console.log({ errors })
   const [sorting, setSorting] = useState([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
@@ -143,11 +157,13 @@ const PNTable = ({
 
   const { mutate: linkFamily } = useMutation({
     mutationFn: (payload: {
-      account_reporter_id: string
-      family_role: string
+      parent_account_reporter_id: string
+      child_account_reporter_id: string
+      parent_family_role: string
+      child_family_role: string
     }) =>
       axios.post(
-        `${baseUrl}/${API_URL.LINK_FAMILY}/${selectedPn.id}`,
+        `${baseUrl}/${API_URL.LINK_FAMILY}`,
         {
           ...payload,
         },
@@ -159,18 +175,32 @@ const PNTable = ({
       ),
   })
 
-  const selectedRole =
+  const selectedParentRole =
     useWatch({
-      name: 'role',
+      name: 'parent_family_role',
+      control,
+    }) || {}
+
+  const selectedChildRole =
+    useWatch({
+      name: 'child_family_role',
       control,
     }) || {}
 
   const handleLinkFamily = (data: FormValues) => {
+    console.log('masuk')
     linkFamily(
       {
-        account_reporter_id: data.familyName.value,
-        family_role:
-          data.role.id === 'other' ? data.otherRole || '' : data.role.label,
+        parent_account_reporter_id: selectedPn.id,
+        child_account_reporter_id: data.familyName.value,
+        parent_family_role:
+          data.parent_family_role.id === 'other'
+            ? (data.parentOtherRole as string)
+            : data.parent_family_role.label,
+        child_family_role:
+          data.child_family_role.id === 'other'
+            ? (data.childOtherRole as string)
+            : data.child_family_role.label,
       },
       {
         onSuccess: () => {
@@ -375,7 +405,10 @@ const PNTable = ({
     // Example: Apply search logic to filter your table data and update state
   }
 
+  const searchValue = useDebounce(search, 500)
+
   const searchNIK = async (value: string) => {
+    setSearch(value)
     // NOTE: sementara masih by name dulu, nanti di atur search by yg lain
     const response = await fetch(
       `${baseUrl}/${API_URL.PN_LIST}?search=${value}&limit=100`,
@@ -474,10 +507,10 @@ const PNTable = ({
           <div>
             <Controller
               control={control}
-              name="role"
+              name="parent_family_role"
               render={({ field, fieldState }) => (
                 <FormItem
-                  label="Hubungan"
+                  label="Hubungan PN terhadap Keluarga"
                   errorMessage={fieldState.error?.message}
                 >
                   <InputDropdown
@@ -491,11 +524,53 @@ const PNTable = ({
             />
           </div>
 
-          {selectedRole.id === 'other' && (
+          {selectedParentRole.id === 'other' && (
             <div>
               <Controller
                 control={control}
-                name="otherRole"
+                name="parentOtherRole"
+                render={({ field, fieldState }) => (
+                  <FormItem
+                    label="Lainnya"
+                    errorMessage={fieldState.error?.message}
+                  >
+                    <Input
+                      {...field}
+                      placeholder="Masukkan hubungan keluarga..."
+                      className="w-full"
+                      errorMessage={fieldState.error?.message}
+                    />
+                  </FormItem>
+                )}
+              />
+            </div>
+          )}
+
+          <div>
+            <Controller
+              control={control}
+              name="child_family_role"
+              render={({ field, fieldState }) => (
+                <FormItem
+                  label="Hubungan Keluarga terhadap PN"
+                  errorMessage={fieldState.error?.message}
+                >
+                  <InputDropdown
+                    {...field}
+                    options={roleOptions}
+                    placeholder="Pilih hubungan..."
+                    errorMessage={fieldState.error?.message}
+                  />
+                </FormItem>
+              )}
+            />
+          </div>
+
+          {selectedChildRole.id === 'other' && (
+            <div>
+              <Controller
+                control={control}
+                name="childOtherRole"
                 render={({ field, fieldState }) => (
                   <FormItem
                     label="Lainnya"

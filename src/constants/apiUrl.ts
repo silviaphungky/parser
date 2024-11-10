@@ -6,7 +6,7 @@ export const API_URL = {
   PN_LIST: 'v1/account-reporter/list',
   CREATE_PN: 'v1/account-reporter/create',
   DELETE_PN: 'v1/account-reporter/remove',
-  LINK_FAMILY: 'v1/account-reporter/assign',
+  LINK_FAMILY: 'v1/account-reporter/family/assign',
   REMOVE_FAMILY: 'v1/account-reporter/revoke',
 
   // statement
