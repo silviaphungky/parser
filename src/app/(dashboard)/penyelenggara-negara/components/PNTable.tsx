@@ -182,7 +182,6 @@ const PNTable = ({
     }) || {}
 
   const handleLinkFamily = (data: FormValues) => {
-    console.log('masuk')
     linkFamily(
       {
         parent_account_reporter_id: selectedPn.id,
@@ -273,26 +272,26 @@ const PNTable = ({
           )
         },
       }),
-      columnHelper.accessor(
-        (row) =>
-          row.total_asset?.map((obj) => {
-            const key = Object.keys(obj)[0]
-            const item = obj[key]
-            return (
-              <div className="text-sm" key={key}>
-                {`${key} ${numberAbbv(item)}`}
-              </div>
-            )
-          }),
-        {
-          id: 'total_asset',
-          header: () => <span>Total Asset</span>,
-          cell: (info) => {
-            return info.getValue()
-          },
-          enableSorting: false,
-        }
-      ),
+      // columnHelper.accessor(
+      //   (row) =>
+      //     row.total_asset?.map((obj) => {
+      //       const key = Object.keys(obj)[0]
+      //       const item = obj[key]
+      //       return (
+      //         <div className="text-sm" key={key}>
+      //           {`${key} ${numberAbbv(item)}`}
+      //         </div>
+      //       )
+      //     })
+      //   // {
+      //   //   id: 'total_asset',
+      //   //   header: () => <span>Total Asset</span>,
+      //   //   cell: (info) => {
+      //   //     return info.getValue()
+      //   //   },
+      //   //   enableSorting: false,
+      //   // }
+      // ),
       columnHelper.accessor('created_at', {
         header: () => <span>Dibuat pada</span>,
         cell: (info) => {
