@@ -6,10 +6,13 @@ import { useState } from 'react'
 import { getPNList } from '@/app/service/getPNList'
 import { API_URL } from '@/constants/apiUrl'
 import { useQuery } from '@tanstack/react-query'
+import useDebounce from '@/utils/useDebounce'
 
 const PNList = ({ token }: { token: string }) => {
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
+  const [keyword, setKeyword] = useState('')
+  const debouncedValue = useDebounce(keyword, 500)
   const {
     data = {
       account_reporter_list: [],
@@ -40,10 +43,10 @@ const PNList = ({ token }: { token: string }) => {
       total_page: number
     }
   }>({
-    queryKey: ['pnList', page, perPage],
+    queryKey: ['pnList', page, perPage, debouncedValue],
     queryFn: async () =>
       await getPNList(
-        `${API_URL.PN_LIST}?page=${page}&limit=${perPage}`,
+        `${API_URL.PN_LIST}?page=${page}&limit=${perPage}&search=${debouncedValue}`,
         token
       ),
   })
@@ -71,6 +74,7 @@ const PNList = ({ token }: { token: string }) => {
                   pnList={data.account_reporter_list}
                   token={token}
                   refetch={refetch}
+                  setKeyword={setKeyword}
                 />
                 <Pagination
                   currentPage={page}

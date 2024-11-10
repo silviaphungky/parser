@@ -29,7 +29,7 @@ import { useMutation } from '@tanstack/react-query'
 import axios from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
-import { useMemo, useRef, useState } from 'react'
+import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react'
 import AsyncSelect from 'react-select/async'
 import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
@@ -114,10 +114,12 @@ const PNTable = ({
   pnList,
   token,
   refetch,
+  setKeyword,
 }: {
   pnList: Array<Person>
   token: string
   refetch: () => void
+  setKeyword: Dispatch<SetStateAction<string>>
 }) => {
   const ref = useRef(null)
   const [search, setSearch] = useState('')
@@ -131,7 +133,7 @@ const PNTable = ({
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
   })
-  console.log({ errors })
+
   const [sorting, setSorting] = useState([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
@@ -393,9 +395,7 @@ const PNTable = ({
   })
 
   const handleSearch = (query: string) => {
-    // Implement your filtering logic based on the query and field here
-    console.log(`Searching for "${query}"`)
-    // Example: Apply search logic to filter your table data and update state
+    setKeyword(query)
   }
 
   const searchValue = useDebounce(search, 500)
