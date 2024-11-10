@@ -130,12 +130,6 @@ const PNTable = ({
     formState: { errors },
   } = useForm<FormValues>({
     resolver: yupResolver(validationSchema),
-    defaultValues: {
-      role: {
-        id: '',
-        label: '',
-      },
-    },
   })
   console.log({ errors })
   const [sorting, setSorting] = useState([])
