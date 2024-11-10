@@ -160,7 +160,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     mutation: 4000000,
     balance: 9500000,
     note: '',
-    isHighlight: false,
+    isHighlight: true,
     actions: true,
     category: {
       id: '2',

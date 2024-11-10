@@ -1,7 +1,5 @@
 'use client'
 import axios from 'axios'
-import { redirect } from 'next/navigation'
-import Router from 'next/router'
 import toast from 'react-hot-toast'
 
 const axiosInstance = axios.create({
