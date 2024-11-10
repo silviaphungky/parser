@@ -55,7 +55,6 @@ const PNList = ({ token }: { token: string }) => {
     <div>
       <PNListHeader token={token} refetch={refetch} />
       <Card className="w-full mt-6">
-        {isLoading && <Shimmer />}
         {!isLoading && (
           <>
             {data.account_reporter_list.length === 0 && (
@@ -68,25 +67,26 @@ const PNList = ({ token }: { token: string }) => {
                 </p>
               </div>
             )}
-            {data.account_reporter_list.length > 0 && (
-              <>
-                <PNTable
-                  pnList={data.account_reporter_list}
-                  token={token}
-                  refetch={refetch}
-                  setKeyword={setKeyword}
-                />
-                <Pagination
-                  currentPage={page}
-                  totalPages={data.meta_data.total_page}
-                  totalItems={data.meta_data.total}
-                  itemsPerPage={perPage}
-                  onPageChange={setPage}
-                  onItemsPerPageChange={setPerPage}
-                />
-              </>
-            )}
           </>
+        )}
+
+        <PNTable
+          isLoading={isLoading}
+          pnList={data.account_reporter_list}
+          token={token}
+          refetch={refetch}
+          setKeyword={setKeyword}
+        />
+
+        {!isLoading && data.account_reporter_list.length > 0 && (
+          <Pagination
+            currentPage={page}
+            totalPages={data.meta_data.total_page}
+            totalItems={data.meta_data.total}
+            itemsPerPage={perPage}
+            onPageChange={setPage}
+            onItemsPerPageChange={setPerPage}
+          />
         )}
       </Card>
     </div>

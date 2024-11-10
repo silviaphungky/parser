@@ -20,7 +20,7 @@ import {
   IconUnlink,
 } from '@/icons'
 import Link from 'next/link'
-import { FormItem, Input, InputSearch, Modal } from '@/components'
+import { FormItem, Input, InputSearch, Modal, Shimmer } from '@/components'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
@@ -111,11 +111,13 @@ const notify = () => toast.success('PN berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
 
 const PNTable = ({
+  isLoading,
   pnList,
   token,
   refetch,
   setKeyword,
 }: {
+  isLoading: boolean
   pnList: Array<Person>
   token: string
   refetch: () => void
@@ -645,24 +647,30 @@ const PNTable = ({
               </tr>
             ))}
           </thead>
-          <tbody className="divide-y divide-gray-300">
-            {table.getRowModel().rows.map((row) => (
-              <tr
-                key={row.id}
-                className="hover:bg-gray-100 transition-colors duration-300"
-              >
-                {row.getVisibleCells().map((cell) => (
-                  <td
-                    key={cell.id}
-                    className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
-                  >
-                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                  </td>
-                ))}
-              </tr>
-            ))}
-          </tbody>
+          {!isLoading && (
+            <tbody className="divide-y divide-gray-300">
+              {table.getRowModel().rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="hover:bg-gray-100 transition-colors duration-300"
+                >
+                  {row.getVisibleCells().map((cell) => (
+                    <td
+                      key={cell.id}
+                      className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+            </tbody>
+          )}
         </table>
+        {isLoading && <Shimmer />}
       </div>
     </>
   )
