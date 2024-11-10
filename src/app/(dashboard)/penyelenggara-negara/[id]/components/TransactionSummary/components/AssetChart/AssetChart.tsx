@@ -68,7 +68,7 @@ const AssetChart = () => {
           height={300}
           width={500}
           yLegend="saldo"
-          xAxis="date"
+          xAxis="name"
         />
       </div>
     </Card>

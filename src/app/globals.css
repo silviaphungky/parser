@@ -31,7 +31,13 @@ body {
       border-radius: 0%;
       background-color: #007dfe;
       border: none;
+      font-size: 12px;
     }
+  }
+  .rdp-day_button {
+    border-radius: 0%;
+    border: none;
+    font-size: 12px;
   }
 
   .rdp-day.rdp-range_end.rdp-selected {
