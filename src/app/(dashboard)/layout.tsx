@@ -4,13 +4,13 @@ import { cookies } from 'next/headers'
 import { ReactNode } from 'react'
 
 const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-poppins',
   subsets: ['latin'],
 })
 
 const barlow = Barlow({
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-barlow',
   subsets: ['latin'],
 })

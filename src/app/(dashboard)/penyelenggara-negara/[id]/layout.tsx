@@ -5,13 +5,13 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 
 const poppins = Poppins({
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-poppins',
   subsets: ['latin'],
 })
 
 const barlow = Barlow({
-  weight: ['400', '500', '600', '700'],
+  weight: ['400', '500', '600', '700', '800', '900'],
   variable: '--font-barlow',
   subsets: ['latin'],
 })

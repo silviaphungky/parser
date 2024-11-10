@@ -191,7 +191,7 @@ const FreqValueHeatmapDate = ({
               <div
                 key={index}
                 className={`text-sm py-1 cursor-pointer ${
-                  selectedYear === item && 'font-bold'
+                  selectedYear === item && 'font-extrabold'
                 }`}
                 onClick={() => handleChangeYear(item)}
               >
