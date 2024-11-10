@@ -228,7 +228,7 @@ const PNTable = ({
       columnHelper.accessor('nik', {
         header: () => <span>NIK</span>,
         cell: (info) => {
-          return <div className="font-semibold">{info.getValue()}</div>
+          return <div>{info.getValue()}</div>
         },
         enableSorting: false,
       }),
@@ -430,7 +430,6 @@ const PNTable = ({
 
   return (
     <>
-      <Toaster />
       <Modal
         width="max-w-[30rem]"
         isOpen={isOpenRemove}

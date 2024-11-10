@@ -114,7 +114,6 @@ const UploadBankStatement = ({
       width="max-w-[30rem]"
       onClose={() => setIsOpen(false)}
     >
-      <Toaster />
       <h2 className="text-xl font-bold mb-4">Unggah Laporan Bank</h2>
       <div className="mb-4">
         <FormItem label="Pilih Bank">

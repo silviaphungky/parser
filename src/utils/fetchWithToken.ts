@@ -27,7 +27,6 @@ export async function fetchWithToken(
   })
 
   if (!response.ok) {
-    console.log(response.status, '******* sisil ***')
     throw new Error(`Failed to fetch: ${response.statusText}`)
   }
   const responseData = (await response.json()) || {}

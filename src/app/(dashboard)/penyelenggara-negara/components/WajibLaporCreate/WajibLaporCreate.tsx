@@ -79,7 +79,6 @@ const WajibLaporCreate = ({
 
   return (
     <div>
-      <Toaster />
       <h2 className="font-semibold mb-4 text-lg">
         Tambah Penyelenggara Negara
       </h2>
