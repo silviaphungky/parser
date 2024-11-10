@@ -14,7 +14,6 @@ import {
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table'
-import useOutsideClick from '@/utils/useClickOutside'
 import { Modal } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
@@ -62,7 +61,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     creditDebit: 'debit',
     mutation: 2000000,
     balance: 10000000,
-    note: 'catatan awal',
+    note: 'transaksi ini terindikasi pelanggaran berat sehingga perlu ditandai',
     isHighlight: true,
     actions: true,
     category: {
@@ -135,7 +134,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     creditDebit: 'credit',
     mutation: 1500000,
     balance: 13500000,
-    note: '',
+    note: 'transaksi ini aman',
     isHighlight: false,
     actions: true,
     category: {
@@ -207,7 +206,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
     creditDebit: 'credit',
     mutation: 3500000,
     balance: 10500000,
-    note: '',
+    note: 'transaksi ini dilakukan tanpa perizinan dan diduga melakukan nepotisme',
     isHighlight: false,
     actions: true,
     category: {
@@ -418,6 +417,31 @@ const iconBankMap = {
   Mandiri: <IconMandiri size={24} />,
 }
 
+const NoteCell = ({ text }: { text: string }) => {
+  const [isExpanded, setIsExpanded] = useState(false)
+  const toggleExpand = () => setIsExpanded(!isExpanded)
+
+  return (
+    <div className="text-sm max-w-[10rem] break-words whitespace-pre-wrap">
+      <div className={`overflow-hidden ${isExpanded ? '' : 'max-h-10'}`}>
+        {isExpanded
+          ? text
+          : `${text.slice(0, 49)} ${
+              text.length > 30 && !isExpanded ? '...' : ''
+            }`}
+      </div>
+      {text && text.length >= 50 && (
+        <button
+          onClick={toggleExpand}
+          className="text-blue-500 cursor-pointer hover:underline mt-1 text-xs"
+        >
+          {isExpanded ? 'Lebih sedikit' : 'Lebih banyak'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 const TransactionTable = () => {
   const ref = useRef(null)
   const [selected, setSelected] = useState({} as TransactionData)
@@ -558,19 +582,12 @@ const TransactionTable = () => {
       cell: (info) => info.getValue().toLocaleString(),
       enableSorting: false,
     }),
-    columnHelper.accessor(
-      (row) => (
-        <div className="overflow-wrap: break-word">
-          <div className="text-sm max-w-[2rem]">{row.note || '-'}</div>
-        </div>
-      ),
-      {
-        id: 'note',
-        header: 'Catatan',
-        cell: (info) => info.getValue(),
-        enableSorting: false,
-      }
-    ),
+    columnHelper.accessor((row) => <NoteCell text={row.note || ''} />, {
+      id: 'note',
+      header: 'Catatan',
+      cell: (info) => info.getValue(),
+      enableSorting: false,
+    }),
     columnHelper.accessor('actions', {
       header: '',
       cell: (info) => (
