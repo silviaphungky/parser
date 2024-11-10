@@ -83,19 +83,59 @@ const TreemapSubjectFreqValue = ({
           <div className=" mt-8 mb-4 flex gap-4 justify-between">
             <div className="flex gap-1 items-end">
               <div className="text-xs">Frekuensi transaksi rendah</div>
-              <div className={`w-[0.75rem] h-[0.75rem] bg-gray-100`} />
-              <div className={`w-[0.75rem] h-[0.75rem] bg-gray-200`} />
-              <div className={`w-[0.75rem] h-[0.75rem] bg-gray-300`} />
-              <div className={`w-[0.75rem] h-[0.75rem] bg-gray-400`} />
+              <div
+                className={`w-[0.75rem] h-[0.75rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][0],
+                }}
+              />
+              <div
+                className={`w-[0.75rem] h-[0.75rem]`}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][1],
+                }}
+              />
+              <div
+                className={`w-[0.75rem] h-[0.75rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][2],
+                }}
+              />
+              <div
+                className={`w-[0.75rem] h-[0.75rem]`}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                }}
+              />
               <div className="text-xs">Frekuensi transaksi tinggi</div>
             </div>
 
             <div className="flex gap-1 items-end">
               <div className="text-xs">Nominal transaksi rendah</div>
-              <div className={`w-[0.75rem] h-[0.75rem] bg-gray-300`} />
-              <div className={`w-[0.9rem] h-[0.9rem] bg-gray-300`} />
-              <div className={`w-[1.1rem] h-[1.1rem] bg-gray-300`} />
-              <div className={`w-[1.25rem] h-[1.25rem] bg-gray-300`} />
+              <div
+                className={`w-[0.75rem] h-[0.75rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                }}
+              />
+              <div
+                className={`w-[0.9rem] h-[0.9rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                }}
+              />
+              <div
+                className={`w-[1.1rem] h-[1.1rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                }}
+              />
+              <div
+                className={`w-[1.25rem] h-[1.25rem] `}
+                style={{
+                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                }}
+              />
               <div className="text-xs">Nominal transaksi tinggi</div>
             </div>
           </div>
