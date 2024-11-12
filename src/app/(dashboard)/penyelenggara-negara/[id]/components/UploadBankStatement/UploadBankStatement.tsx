@@ -32,6 +32,21 @@ const BANK_OPTIONS = [
   },
 ]
 
+const CURRENCY_OPTIONS = [
+  {
+    id: 'idr',
+    label: 'IDR',
+  },
+  {
+    id: 'usd',
+    label: 'USD',
+  },
+  {
+    id: 'JPY',
+    label: 'JPY',
+  },
+]
+
 const baseUrl = 'https://backend-itrtechkpk.replit.app'
 
 const notify = () => toast.success('Laporan bank berhasil dihapus')
@@ -53,6 +68,10 @@ const UploadBankStatement = ({
     id: string | number
     label: string
   }>(BANK_OPTIONS[0])
+  const [selectedCurrency, setSelectedCurrency] = useState<{
+    id: string | number
+    label: string
+  }>(CURRENCY_OPTIONS[0])
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
 
@@ -109,6 +128,13 @@ const UploadBankStatement = ({
     setSelectedBank(option)
   }
 
+  const handleChangeCurrency = (option: {
+    id: string | number
+    label: string
+  }) => {
+    setSelectedCurrency(option)
+  }
+
   return (
     <Modal
       isOpen={isOpen}
@@ -122,6 +148,13 @@ const UploadBankStatement = ({
             value={selectedBank}
             options={BANK_OPTIONS}
             onChange={handleChangeBank}
+          />
+        </FormItem>
+        <FormItem label="Pilih Mata Uang">
+          <InputDropdown
+            value={selectedCurrency}
+            options={CURRENCY_OPTIONS}
+            onChange={handleChangeCurrency}
           />
         </FormItem>
       </div>
