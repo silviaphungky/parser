@@ -42,7 +42,15 @@ const CURRENCY_OPTIONS = [
     label: 'USD',
   },
   {
-    id: 'JPY',
+    id: 'poundsterling',
+    label: 'GBP',
+  },
+  {
+    id: 'sgd',
+    label: 'SGD',
+  },
+  {
+    id: 'jpy',
     label: 'JPY',
   },
 ]
