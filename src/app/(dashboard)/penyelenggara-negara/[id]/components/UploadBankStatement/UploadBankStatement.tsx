@@ -55,7 +55,8 @@ const CURRENCY_OPTIONS = [
   },
 ]
 
-const baseUrl = 'https://backend-itrtechkpk.replit.app'
+const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
 const notify = () => toast.success('Laporan bank berhasil dihapus')
 

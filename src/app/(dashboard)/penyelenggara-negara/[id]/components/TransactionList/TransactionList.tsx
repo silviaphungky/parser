@@ -10,7 +10,7 @@ const searchFields = [
 ]
 
 const transactionTypeOptions = [
-  { id: '', label: 'Semua Tipe Transaksi' },
+  { id: '', label: 'Semua Transaksi' },
   { id: 'cr', label: 'Credit' },
   { id: 'db', label: 'Debit' },
 ]
@@ -29,10 +29,25 @@ const currencyOptions = [
     label: 'Semua Mata Uang',
   },
   {
-    id: 'IDR',
+    id: 'idr',
     label: 'IDR',
   },
-  { id: 'USD', label: 'USD' },
+  {
+    id: 'usd',
+    label: 'USD',
+  },
+  {
+    id: 'poundsterling',
+    label: 'GBP',
+  },
+  {
+    id: 'sgd',
+    label: 'SGD',
+  },
+  {
+    id: 'jpy',
+    label: 'JPY',
+  },
 ]
 
 const TransactionList = () => {

@@ -21,10 +21,25 @@ const currencyOptions = [
     label: 'Semua Mata Uang',
   },
   {
-    id: 'IDR',
+    id: 'idr',
     label: 'IDR',
   },
-  { id: 'USD', label: 'USD' },
+  {
+    id: 'usd',
+    label: 'USD',
+  },
+  {
+    id: 'poundsterling',
+    label: 'GBP',
+  },
+  {
+    id: 'sgd',
+    label: 'SGD',
+  },
+  {
+    id: 'jpy',
+    label: 'JPY',
+  },
 ]
 
 const TransactionStatementList = () => {

@@ -4,6 +4,8 @@ import InputDropdown from '@/components/InputDropdown'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { ContributionCalendar } from 'react-contribution-calendar'
+import { mockTransactionMethod } from '../TreemapSubjectFreqValue/TreemapSubjectFreqValue'
+import ReactSelect from 'react-select'
 
 const mockTransactionType = [
   {
@@ -135,7 +137,10 @@ const FreqValueHeatmapDate = ({
   return (
     <Card className="mb-8">
       <div className="flex justify-between items-center mb-6">
-        <div className="text-sm">Pengelompokan berdasarkan Waktu</div>
+        <div className="text-sm">
+          Pengelompokan berdasarkan{' '}
+          <strong className="font-semibold"> Waktu</strong>
+        </div>
 
         <div className="flex gap-2">
           <div className="w-[14rem]">
@@ -143,6 +148,54 @@ const FreqValueHeatmapDate = ({
               options={mockTransactionType}
               value={selectedType}
               onChange={handleChangeType}
+            />
+          </div>
+          <div className="w-[20rem]">
+            <ReactSelect
+              isMulti
+              name="colors"
+              options={mockTransactionMethod}
+              className="react-select-container"
+              placeholder="Pilih metode transaksi"
+              styles={{
+                option: (styles, state) => ({
+                  ...styles,
+                  backgroundColor: state.isSelected ? '#E6EFF5' : '',
+                  '&:hover': {
+                    // overriding hover
+                    ...styles, // apply initial styles
+                    backgroundColor: '#E6EFF5',
+                  },
+                }),
+                indicatorsContainer: (base, props) => {
+                  return {
+                    ...base,
+                    alignItems: 'start',
+                  }
+                },
+                clearIndicator: (base) => {
+                  return {
+                    ...base,
+                    cursor: 'pointer',
+                  }
+                },
+                dropdownIndicator: (base) => {
+                  return {
+                    ...base,
+                    cursor: 'pointer',
+                  }
+                },
+                control: (baseStyles, state) => {
+                  return {
+                    ...baseStyles,
+                    borderColor: 'rgb(209, 213, 219)',
+                    boxShadow: 'none',
+                    borderRadius: '0.375rem',
+                    height: '34px',
+                    overflow: 'auto',
+                  }
+                },
+              }}
             />
           </div>
           <div className="w-[12rem]">
@@ -185,20 +238,20 @@ const FreqValueHeatmapDate = ({
           onCellClick={(e, data) => console.log({ data })}
           scroll={false}
         />
-        <div>
-          <div className="overflow-auto h-[10rem] pr-6">
-            {yearList.map((item, index) => (
-              <div
-                key={index}
-                className={`text-sm py-1 cursor-pointer ${
-                  selectedYear === item && 'font-extrabold'
-                }`}
-                onClick={() => handleChangeYear(item)}
-              >
-                {item}
-              </div>
-            ))}
-          </div>
+      </div>
+      <div>
+        <div className="overflow-auto pr-6 flex gap-2">
+          {[...yearList.reverse()].map((item, index) => (
+            <div
+              key={index}
+              className={`text-sm py-1 cursor-pointer ${
+                selectedYear === item && 'font-extrabold'
+              }`}
+              onClick={() => handleChangeYear(item)}
+            >
+              {item}
+            </div>
+          ))}
         </div>
       </div>
     </Card>

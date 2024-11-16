@@ -17,6 +17,8 @@ const TransactionCard = ({
   color: string
   data: Array<{
     name: string
+    bank: string
+    bankAccNo: string
     nominal: number
   }>
 }) => {
@@ -41,11 +43,8 @@ const TransactionCard = ({
       {data.map((item, index) => {
         return (
           <div key={`topValueIn-${index}`} className="mb-1">
-            <div className="flex justify-between items-center">
-              <div>{item.name}</div>
-              <div className="text-xs cursor-pointer text-blue-400">
-                lihat semua
-              </div>
+            <div className="flex justify-between items-center text-sm">
+              <div>{`${item.name} (${item.bank} - ${item.bankAccNo})`}</div>
             </div>
             <div className="flex gap-2 items-center">
               <ProgressBar
@@ -75,10 +74,14 @@ const Top5Ranking = ({
     in: Array<{
       name: string
       nominal: number
+      bank: string
+      bankAccNo: string
     }>
     out: Array<{
       name: string
       nominal: number
+      bank: string
+      bankAccNo: string
     }>
   }
 }) => {

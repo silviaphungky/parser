@@ -2,6 +2,7 @@
 import { Card, Treemap } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { useState } from 'react'
+import ReactSelect from 'react-select'
 
 const mockTransactionType = [
   {
@@ -39,6 +40,15 @@ const colorScale = {
   ],
 }
 
+export const mockTransactionMethod = [
+  { id: 'transfer-bank', label: 'Transfer Bank' },
+  { id: 'pembayaran-kartu', label: 'Pembayaran Kartu (Debit/Kredit)' },
+  { id: 'dompet-digital', label: 'Dompet Digital' },
+  { id: 'pembayaran-kode-qr', label: 'Pembayaran dengan Kode QR' },
+  { id: 'transaksi-tunai', label: 'Transaksi Tunai (termasuk ATM)' },
+  { id: 'tidak-diketahui', label: 'Tidak Diketahui (Unknown)' },
+]
+
 const TreemapSubjectFreqValue = ({
   data,
 }: {
@@ -61,14 +71,65 @@ const TreemapSubjectFreqValue = ({
       <Card>
         <div className="flex justify-between items-center mb-4">
           <div className="text-sm">
-            Pengelompokan berdasarkan <strong>Lawan Transaksi</strong>
+            Pengelompokan berdasarkan{' '}
+            <strong className="font-semibold">Lawan Transaksi</strong>
           </div>
-          <div className="w-[10rem]">
-            <InputDropdown
-              options={mockTransactionType}
-              value={selectedType}
-              onChange={handleChangeType}
-            />
+          <div className="flex gap-4">
+            <div className="w-[10rem]">
+              <InputDropdown
+                options={mockTransactionType}
+                value={selectedType}
+                onChange={handleChangeType}
+              />
+            </div>
+            <div className="w-[20rem]">
+              <ReactSelect
+                isMulti
+                name="colors"
+                options={mockTransactionMethod}
+                className="react-select-container"
+                placeholder="Pilih metode transaksi"
+                styles={{
+                  option: (styles, state) => ({
+                    ...styles,
+                    backgroundColor: state.isSelected ? '#E6EFF5' : '',
+                    '&:hover': {
+                      // overriding hover
+                      ...styles, // apply initial styles
+                      backgroundColor: '#E6EFF5',
+                    },
+                  }),
+                  indicatorsContainer: (base, props) => {
+                    return {
+                      ...base,
+                      alignItems: 'start',
+                    }
+                  },
+                  clearIndicator: (base) => {
+                    return {
+                      ...base,
+                      cursor: 'pointer',
+                    }
+                  },
+                  dropdownIndicator: (base) => {
+                    return {
+                      ...base,
+                      cursor: 'pointer',
+                    }
+                  },
+                  control: (baseStyles, state) => {
+                    return {
+                      ...baseStyles,
+                      borderColor: 'rgb(209, 213, 219)',
+                      boxShadow: 'none',
+                      borderRadius: '0.375rem',
+                      height: '34px',
+                      overflow: 'auto',
+                    }
+                  },
+                }}
+              />
+            </div>
           </div>
         </div>
         <div>

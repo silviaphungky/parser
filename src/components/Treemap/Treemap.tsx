@@ -27,32 +27,51 @@ const getColor = (frequency: number, colorScale: Array<string>) => {
 
 // Custom rendering cell function
 const CustomizedContent = (props: any) => {
-  const { x, y, width, height, name, frequency, colorScale, value } = props
+  const {
+    x,
+    y,
+    width,
+    height,
+    name,
+    frequency,
+    colorScale,
+    value,
+    bank,
+    bankAccNo,
+  } = props
 
   return (
-    <g>
-      <rect
-        x={x}
-        y={y}
-        width={width}
-        height={height}
-        fill={getColor(frequency, colorScale) || 'white'}
-        stroke="white"
-      />
-      <text x={x + 10} y={y + 20} fontSize="15" fontWeight="bold" stroke="none">
-        {name}
-      </text>
-      {frequency && (
-        <text x={x + 10} y={y + 40} fontSize="12px" stroke="none">
-          {`Frekuensi: ${frequency}`}
+    name && (
+      <g>
+        <rect
+          x={x}
+          y={y}
+          width={width}
+          height={height}
+          fill={getColor(frequency, colorScale) || 'white'}
+          stroke="white"
+        />
+        <text
+          x={x + 10}
+          y={y + 20}
+          fontSize="12"
+          fontWeight="bold"
+          stroke="none"
+        >
+          {`${name} - ${bank} ${bankAccNo}`}
         </text>
-      )}
-      {value && (
-        <text x={x + 10} y={y + 60} fontSize="12" stroke="none">
-          {`Nominal transaksi: ${numberAbbv(value)}`}
-        </text>
-      )}
-    </g>
+        {frequency && (
+          <text x={x + 10} y={y + 35} fontSize="12px" stroke="none">
+            {`Frekuensi: ${frequency}`}
+          </text>
+        )}
+        {value && (
+          <text x={x + 10} y={y + 50} fontSize="12" stroke="none">
+            {`Nominal transaksi: ${numberAbbv(value)}`}
+          </text>
+        )}
+      </g>
+    )
   )
 }
 

@@ -3,19 +3,31 @@ import { Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { useState } from 'react'
 
-const categoryOptions = [
-  {
-    id: 'shopping',
-    label: 'Belanja',
-  },
-  {
-    id: 'investment',
-    label: 'Investasi',
-  },
-  {
-    id: 'travel',
-    label: 'Wisata',
-  },
+export const mockCategoryOptions = [
+  { id: 'gaji-pendapatan', label: 'Gaji/Pendapatan' },
+  { id: 'pendapatan-sewa', label: 'Pendapatan Sewa' },
+  { id: 'tagihan-utilitas', label: 'Tagihan Utilitas' },
+  { id: 'pembayaran-sewa-kpr', label: 'Pembayaran Sewa/KPR' },
+  { id: 'belanja-harian', label: 'Belanja Harian' },
+  { id: 'transportasi', label: 'Transportasi' },
+  { id: 'makan-di-luar', label: 'Makan di Luar' },
+  { id: 'hiburan', label: 'Hiburan' },
+  { id: 'pembayaran-asuransi', label: 'Pembayaran Asuransi' },
+  { id: 'pelunasan-pinjaman', label: 'Pelunasan Pinjaman' },
+  { id: 'pembayaran-kartu-kredit', label: 'Pembayaran Kartu Kredit' },
+  { id: 'investasi', label: 'Investasi' },
+  { id: 'setoran-tabungan', label: 'Setoran Tabungan' },
+  { id: 'penarikan-tunai', label: 'Penarikan Tunai' },
+  { id: 'biaya-medis', label: 'Biaya Medis' },
+  { id: 'biaya-pendidikan', label: 'Biaya Pendidikan' },
+  { id: 'belanja', label: 'Belanja' },
+  { id: 'hadiah-dan-donasi', label: 'Hadiah dan Donasi' },
+  { id: 'biaya', label: 'Biaya' },
+  { id: 'pajak', label: 'Pajak' },
+  { id: 'transfer', label: 'Transfer' },
+  { id: 'pengembalian-dana', label: 'Pengembalian Dana (Refunds)' },
+  { id: 'pendapatan-lain-lain', label: 'Pendapatan Lain-lain' },
+  { id: 'pengeluaran-lain-lain', label: 'Pengeluaran Lain-lain' },
 ]
 
 const TransactionCategoryModal = ({
@@ -29,7 +41,7 @@ const TransactionCategoryModal = ({
     id: string | number
     label: string
   }>(
-    categoryOptions[0] as {
+    mockCategoryOptions[0] as {
       id: string | number
       label: string
     }
@@ -47,7 +59,7 @@ const TransactionCategoryModal = ({
         Pilih kategori yang paling relevan untuk memastikan data tetap akurat.
       </div>
       <InputDropdown
-        options={categoryOptions}
+        options={mockCategoryOptions}
         value={selectedCategory}
         onChange={setSelectedCategory}
       />
@@ -64,7 +76,7 @@ const TransactionCategoryModal = ({
           Batal
         </button>
         <button
-          className="px-4 py-2 text-sm border border-gray-300 rounded-md hover:bg-gray-100"
+          className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
           onClick={() => {
             onClose()
           }}
@@ -77,7 +89,7 @@ const TransactionCategoryModal = ({
             // hit BE API
             onClose()
           }}
-          className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
+          className="font-semibold bg-primary text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
         >
           Simpan Perubahan
         </button>

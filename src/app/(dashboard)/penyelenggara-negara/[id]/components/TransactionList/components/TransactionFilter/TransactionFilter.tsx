@@ -4,6 +4,7 @@ import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
 import ReactSelect from 'react-select'
+import { mockCategoryOptions } from '../TransactionCategoryModal/TransactionCategoryModal'
 
 interface FilterValues {
   startDate: string
@@ -18,7 +19,7 @@ interface FilterValues {
 const highlightOptions = [
   {
     id: '',
-    label: 'Semua Tanda',
+    label: 'Semua Transaksi',
   },
   {
     id: '0',
@@ -58,6 +59,10 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
     id: string | number
     label: string
   }>(highlightOptions[0])
+  const [category, setCategory] = useState<{
+    id: string | number
+    label: string
+  }>({ id: '', label: 'Semua Transaksi' })
   const [transactionType, setTransactionType] = useState<{
     id: string | number
     label: string
@@ -121,7 +126,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       </div>
 
       {/* Mutation Range Filter */}
-      <div className="flex space-x-4 mb-4">
+      <div className="flex space-x-4">
         <div className="w-1/2">
           <FormItem label="Min. Nominal Transaksi">
             <Input
@@ -146,11 +151,11 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         </div>
       </div>
 
-      <div className="mb-4 flex gap-4">
+      <div className="flex gap-4">
         <div className="flex-1">
-          <FormItem label="Tipe Transaksi">
+          <FormItem label="Db/Cr">
             <InputDropdown
-              placeholder="Pilih tipe transaksi..."
+              placeholder="Pilih Db/Cr..."
               options={transactionTypeOptions}
               value={transactionType}
               onChange={(option) => setTransactionType(option)}
@@ -168,14 +173,27 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         </div>
       </div>
 
-      <div className="mb-4 flex gap-4">
+      <div className="flex gap-4">
         <div className="flex-1">
-          <FormItem label="Tipe Transaksi">
+          <FormItem label="Tanda Transaksi">
             <InputDropdown
               placeholder="Pilih tanda..."
               options={highlightOptions}
               value={highlight}
               onChange={(option) => setHighlight(option)}
+            />
+          </FormItem>
+        </div>
+        <div className="flex-1">
+          <FormItem label="Kategori Transaksi">
+            <InputDropdown
+              placeholder="Pilih kategori transaksi..."
+              options={[
+                { id: '', label: 'Semua Transaksi' },
+                ...mockCategoryOptions,
+              ]}
+              value={category}
+              onChange={(option) => setCategory(option)}
             />
           </FormItem>
         </div>

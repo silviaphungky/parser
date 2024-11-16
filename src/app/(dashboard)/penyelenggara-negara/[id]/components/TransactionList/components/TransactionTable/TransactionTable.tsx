@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { ReactNode, useEffect, useRef, useState } from 'react'
 import {
   IconBCA,
   IconBNI,
@@ -6,7 +6,6 @@ import {
   IconTriangleDown,
   IconKebab,
   IconMandiri,
-  IconStar,
 } from '@/icons'
 import {
   useReactTable,
@@ -18,8 +17,9 @@ import { Modal } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
 import dayjs from 'dayjs'
+import TransactionBankDestModal from '../TransactionBankDestModal'
 
-type TransactionData = {
+export type TransactionData = {
   id: string
   index: number
   personalBankName: string
@@ -28,7 +28,7 @@ type TransactionData = {
   transactionDate: string
   transactionTime?: string
   remark: string
-  transactionType: string
+  transactionMethod: string
   targetBankAccNo: string
   targetBankAccName: string
   targetBankName: string
@@ -38,22 +38,23 @@ type TransactionData = {
   balance: number
   note?: string
   isHighlight: boolean
+  isFamily: boolean
   category: {
     id: string
     label: string
   }
 }
 
-const defaultData: Array<TransactionData & { actions: any }> = [
+const defaultData: Array<TransactionData & { actions: boolean }> = [
   {
     id: '1',
     index: 1,
     personalBankName: 'BNI',
     personalBankAccNo: '1234567890',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Siti Aisyah',
     transactionDate: '2024-10-01',
     remark: 'Transfer to BCA',
-    transactionType: 'Transfer',
+    transactionMethod: 'Transfer Bank',
     targetBankAccNo: '9876543210',
     targetBankAccName: 'John Doe',
     targetBankName: 'BNI',
@@ -68,18 +69,19 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '1',
       label: 'belanja',
     },
+    isFamily: true,
   },
   {
     id: '2',
     index: 2,
     personalBankName: 'BCA',
     personalBankAccNo: '2345678901',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Gumilar',
     transactionDate: '2024-10-03',
     remark: 'Salary Credit',
-    transactionType: 'Credit',
+    transactionMethod: 'Pembayaran Kartu (Debit/Kredit)',
     targetBankAccNo: '',
-    targetBankAccName: 'N/A',
+    targetBankAccName: '',
     targetBankName: 'BNI',
     currency: 'IDR',
     creditDebit: 'credit',
@@ -92,17 +94,18 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '2',
       label: 'investasi',
     },
+    isFamily: false,
   },
   {
     id: '3',
     index: 3,
     personalBankName: 'Mandiri',
     personalBankAccNo: '3456789012',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Gumilar',
     transactionDate: '2024-10-05',
     transactionTime: `${new Date()}`,
     remark: 'Payment to Vendor',
-    transactionType: 'Transfer',
+    transactionMethod: 'Dompet Digital',
     targetBankAccNo: '4567890123',
     targetBankAccName: 'Jane Smith',
     targetBankName: 'BCA',
@@ -117,18 +120,19 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '2',
       label: 'investasi',
     },
+    isFamily: false,
   },
   {
     id: '4',
     index: 4,
     personalBankName: 'BRI',
     personalBankAccNo: '4567890123',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Gumilar',
     transactionDate: '2024-10-07',
     remark: 'Refund',
-    transactionType: 'Credit',
+    transactionMethod: 'Pembayaran dengan Kode QR',
     targetBankAccNo: '',
-    targetBankAccName: 'N/A',
+    targetBankAccName: '',
     targetBankName: 'BNI',
     currency: 'IDR',
     creditDebit: 'credit',
@@ -141,16 +145,17 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '2',
       label: 'investasi',
     },
+    isFamily: false,
   },
   {
     id: '5',
     index: 5,
     personalBankName: 'BNI',
     personalBankAccNo: '5678901234',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Gumilar',
     transactionDate: '2024-10-10',
     remark: 'Transfer to Mandiri',
-    transactionType: 'Transfer',
+    transactionMethod: 'Transaksi Tunai (termasuk ATM)',
     targetBankAccNo: '6789012345',
     targetBankAccName: 'Alice Wong',
     targetBankName: 'Mandiri',
@@ -165,16 +170,17 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '2',
       label: 'investasi',
     },
+    isFamily: false,
   },
   {
     id: '6',
     index: 6,
     personalBankName: 'Mandiri',
     personalBankAccNo: '6789012345',
-    personalBankAccName: 'Silvia Phungky',
+    personalBankAccName: 'Gumilar',
     transactionDate: '2024-10-12',
     remark: 'Bill Payment',
-    transactionType: 'Transfer',
+    transactionMethod: 'Tidak Diketahui (Unknown)',
     targetBankAccNo: '7890123456',
     targetBankAccName: 'Beta Corporation',
     targetBankName: 'BSI',
@@ -189,222 +195,7 @@ const defaultData: Array<TransactionData & { actions: any }> = [
       id: '2',
       label: 'investasi',
     },
-  },
-  {
-    id: '7',
-    index: 7,
-    personalBankName: 'BCA',
-    personalBankAccNo: '7890123456',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-14',
-    remark: 'Payment from Client',
-    transactionType: 'Credit',
-    targetBankAccNo: '',
-    targetBankAccName: 'N/A',
-    targetBankName: 'N/A',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 3500000,
-    balance: 10500000,
-    note: 'transaksi ini dilakukan tanpa perizinan dan diduga melakukan nepotisme',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '8',
-    index: 8,
-    personalBankName: 'BRI',
-    personalBankAccNo: '8901234567',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-16',
-    remark: 'Electricity Bill',
-    transactionType: 'Transfer',
-    targetBankAccNo: '9012345678',
-    targetBankAccName: 'PLN',
-    targetBankName: 'BRI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 1000000,
-    balance: 9500000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '9',
-    index: 9,
-    personalBankName: 'BNI',
-    personalBankAccNo: '9012345678',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-18',
-    remark: 'Transfer to BRI',
-    transactionType: 'Transfer',
-    targetBankAccNo: '0123456789',
-    targetBankAccName: 'Charlie Tan',
-    targetBankName: 'BRI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 4500000,
-    balance: 5000000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '10',
-    index: 10,
-    personalBankName: 'Mandiri',
-    personalBankAccNo: '0123456789',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-20',
-    remark: 'Refund',
-    transactionType: 'Credit',
-    targetBankAccNo: '',
-    targetBankAccName: 'N/A',
-    targetBankName: 'N/A',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 2000000,
-    balance: 7000000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '11',
-    index: 11,
-    personalBankName: 'BCA',
-    personalBankAccNo: '1234567891',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-22',
-    remark: 'Food Expenses',
-    transactionType: 'Transfer',
-    targetBankAccNo: '2345678912',
-    targetBankAccName: 'ABC Cafe',
-    targetBankName: 'BCA',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 500000,
-    balance: 6500000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '12',
-    index: 12,
-    personalBankName: 'BRI',
-    personalBankAccNo: '2345678912',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-23',
-    remark: 'Transfer to BNI',
-    transactionType: 'Transfer',
-    targetBankAccNo: '3456789123',
-    targetBankAccName: 'Diana Lee',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 1200000,
-    balance: 5300000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '13',
-    index: 13,
-    personalBankName: 'BNI',
-    personalBankAccNo: '3456789123',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-24',
-    remark: 'Transfer from Mandiri',
-    transactionType: 'Credit',
-    targetBankAccNo: '4567891234',
-    targetBankAccName: 'N/A',
-    targetBankName: 'Mandiri',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 3000000,
-    balance: 8300000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '14',
-    index: 14,
-    personalBankName: 'Mandiri',
-    personalBankAccNo: '4567891234',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-25',
-    remark: 'Grocery Payment',
-    transactionType: 'Transfer',
-    targetBankAccNo: '5678912345',
-    targetBankAccName: 'Supermart',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 1000000,
-    balance: 7300000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-  },
-  {
-    id: '15',
-    index: 15,
-    personalBankName: 'BCA',
-    personalBankAccNo: '5678912345',
-    personalBankAccName: 'Silvia Phungky',
-    transactionDate: '2024-10-26',
-    remark: 'Transfer from BNI',
-    transactionType: 'Credit',
-    targetBankAccNo: '6789123456',
-    targetBankAccName: 'N/A',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 4000000,
-    balance: 11300000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
+    isFamily: false,
   },
 ]
 
@@ -422,8 +213,8 @@ const NoteCell = ({ text }: { text: string }) => {
   const toggleExpand = () => setIsExpanded(!isExpanded)
 
   return (
-    <div className="text-sm max-w-[10rem] break-words whitespace-pre-wrap">
-      <div className={`overflow-hidden ${isExpanded ? '' : 'max-h-10'}`}>
+    <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+      <div className={`overflow-hidden ${isExpanded ? '' : 'max-h-8'}`}>
         {isExpanded
           ? text
           : `${text.slice(0, 49)} ${
@@ -449,6 +240,7 @@ const TransactionTable = () => {
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
+  const [isOpenDestBankModal, setIsOpenDestBankModal] = useState(false)
   const [sorting, setSorting] = useState([])
 
   const onClose = () => {
@@ -488,9 +280,9 @@ const TransactionTable = () => {
                 row.personalBankName as 'BNI' | 'BCA' | 'BRI' | 'Mandiri'
               ]
             }
-            <div>
+            <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
               <div className="text-xs">{`${row.personalBankName}`}</div>
-              <div className="text-xs">{row.personalBankAccNo}</div>
+              <div className="text-xs">{`${row.personalBankAccName} - ${row.personalBankAccNo}`}</div>
             </div>
           </div>
         </div>
@@ -503,28 +295,32 @@ const TransactionTable = () => {
       }
     ),
 
-    columnHelper.accessor('transactionType', {
+    columnHelper.accessor('transactionMethod', {
       header: (
         <div>
-          <div>Tipe</div>
+          <div>Metode</div>
           <div>Transaksi</div>
         </div>
       ) as any,
-      cell: (info) => info.getValue(),
+      cell: (info) => (
+        <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+          {info.getValue()}
+        </div>
+      ),
       enableSorting: false,
     }),
     columnHelper.accessor(
       (row) => (
-        <div>
+        <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
           <div className="text-xs">{row.targetBankName || 'unknown'}</div>
-          <div className="text-xs">{`${row.targetBankAccNo || 'unknown'} - ${
-            row.targetBankAccName || 'unknown'
+          <div className="text-xs">{`${row.targetBankAccNo || 'N/A'} - ${
+            row.targetBankAccName || 'unnamed'
           }`}</div>
         </div>
       ),
       {
         id: 'targetBankInfo',
-        header: 'Info Bank Lawan Transaksi',
+        header: 'Info Lawan Transaksi',
         cell: (info) => info.getValue(),
         enableSorting: false,
       }
@@ -564,22 +360,26 @@ const TransactionTable = () => {
     }),
     columnHelper.accessor('remark', {
       header: 'Remark',
-      cell: (info) => <div className="text-sm">{info.getValue()}</div>,
+      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
       enableSorting: false,
     }),
     columnHelper.accessor('category.label', {
       header: 'Kategori',
-      cell: (info) => <div className="text-sm">{info.getValue()}</div>,
+      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
       enableSorting: false,
     }),
     columnHelper.accessor('mutation', {
       header: 'Nominal Transkasi',
-      cell: (info) => info.getValue().toLocaleString(),
+      cell: (info) => (
+        <div className="text-xs">{info.getValue().toLocaleString()}</div>
+      ),
       enableSorting: true,
     }),
     columnHelper.accessor('balance', {
       header: 'Saldo',
-      cell: (info) => info.getValue().toLocaleString(),
+      cell: (info) => (
+        <div className="text-xs">{info.getValue().toLocaleString()}</div>
+      ),
       enableSorting: false,
     }),
     columnHelper.accessor((row) => <NoteCell text={row.note || ''} />, {
@@ -618,20 +418,30 @@ const TransactionTable = () => {
               <button
                 onClick={() => {
                   setSelected(info.row.original)
+                  setIsOpen(true)
+                }}
+                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+              >
+                Ubah Catatan
+              </button>
+              <button
+                onClick={() => {
+                  setSelected(info.row.original)
                   setIsOpenCategoryModal(true)
                 }}
                 className="block w-full px-4 py-2 text-left hover:bg-gray-100"
               >
                 Ubah Kategori
               </button>
+
               <button
                 onClick={() => {
                   setSelected(info.row.original)
-                  setIsOpen(true)
+                  setIsOpenDestBankModal(true)
                 }}
                 className="block w-full px-4 py-2 text-left hover:bg-gray-100"
               >
-                Ubah Catatan
+                Ubah Info Lawan Transaksi
               </button>
               <button
                 onClick={() => {
@@ -668,6 +478,14 @@ const TransactionTable = () => {
 
   return (
     <>
+      <TransactionBankDestModal
+        isOpen={isOpenDestBankModal}
+        selected={selected}
+        onClose={() => {
+          setIsOpenDestBankModal(false)
+          setSelected({} as TransactionData)
+        }}
+      />
       <TransactionCategoryModal
         isOpen={isOpenCategoryModal}
         onClose={() => {
@@ -679,7 +497,7 @@ const TransactionTable = () => {
         isOpen={isOpenVerfiModal}
         onClose={() => setIsOpenVerifModal(false)}
       >
-        {selected.targetBankAccNo ? (
+        {selected.targetBankAccNo && selected.targetBankName ? (
           <>
             <h2 className="font-semibold text-lg">
               Konfirmasi Pengecekan Rekening
