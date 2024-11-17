@@ -1050,7 +1050,7 @@ const TransactionBankDestModal = ({
   selected: TransactionData
 }) => {
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
-  console.log(selectedBank)
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="font-semibold text-lg">Sesuaikan Info Lawan Transaksi</h2>

@@ -18,6 +18,7 @@ import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
 import dayjs from 'dayjs'
 import TransactionBankDestModal from '../TransactionBankDestModal'
+import useOutsideClick from '@/utils/useClickOutside'
 
 export type TransactionData = {
   id: string
@@ -208,6 +209,81 @@ const iconBankMap = {
   Mandiri: <IconMandiri size={24} />,
 }
 
+type ActionMenuProps = {
+  row: any
+  onActionSelect: (action: string, row: any) => void
+}
+
+const ActionMenu = ({ row, onActionSelect }: ActionMenuProps) => {
+  const [isOpen, setIsOpen] = useState(false)
+  const ref = useRef<HTMLDivElement | null>(null)
+
+  const toggleMenu = () => setIsOpen((prev) => !prev)
+  const closeMenu = () => setIsOpen(false)
+
+  useOutsideClick(ref, closeMenu)
+
+  return (
+    <div className="relative" ref={ref}>
+      <div className="cursor-pointer" onClick={toggleMenu}>
+        <IconKebab size={20} />
+      </div>
+      {isOpen && (
+        <div
+          className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
+          style={{ zIndex: 1000 }}
+        >
+          <button
+            onClick={() => {
+              onActionSelect('toggleHighlight', row)
+              closeMenu()
+            }}
+            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+          >
+            {row.isHighlight ? 'Hapus Tanda' : 'Tandai Transaksi'}
+          </button>
+          <button
+            onClick={() => {
+              onActionSelect('editNote', row)
+              closeMenu()
+            }}
+            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+          >
+            Ubah Catatan
+          </button>
+          <button
+            onClick={() => {
+              onActionSelect('changeCategory', row)
+              closeMenu()
+            }}
+            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+          >
+            Ubah Kategori
+          </button>
+          <button
+            onClick={() => {
+              onActionSelect('changeBankInfo', row)
+              closeMenu()
+            }}
+            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+          >
+            Ubah Info Lawan Transaksi
+          </button>
+          <button
+            onClick={() => {
+              onActionSelect('verifyBankInfo', row)
+              closeMenu()
+            }}
+            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+          >
+            Verifikasi Info Bank Transaksi
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
+
 const NoteCell = ({ text }: { text: string }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleExpand = () => setIsExpanded(!isExpanded)
@@ -234,7 +310,7 @@ const NoteCell = ({ text }: { text: string }) => {
 }
 
 const TransactionTable = () => {
-  const ref = useRef(null)
+  const refDropdown = useRef(null)
   const [selected, setSelected] = useState({} as TransactionData)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
@@ -242,15 +318,25 @@ const TransactionTable = () => {
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
   const [isOpenDestBankModal, setIsOpenDestBankModal] = useState(false)
   const [sorting, setSorting] = useState([])
-
+  useOutsideClick(refDropdown, () => {
+    setSelected({} as TransactionData)
+    setActionMenu('')
+  })
   const onClose = () => {
     setIsOpen(false)
     setSelected({} as TransactionData)
   }
 
   const handleMenuToggle = (id: string) => {
+    console.log('masuk')
     setActionMenu((prev) => (prev === id ? null : id))
   }
+
+  // useOutsideClick(ref, () => {
+  //   console.log('asd')
+  //   setActionMenu(null)
+  //   setSelected({} as TransactionData)
+  // })
 
   const columns = [
     columnHelper.accessor(
@@ -391,7 +477,7 @@ const TransactionTable = () => {
     columnHelper.accessor('actions', {
       header: '',
       cell: (info) => (
-        <div className="relative ml-4" ref={ref}>
+        <div className="relative ml-4">
           <div
             className="cursor-pointer"
             onClick={() => handleMenuToggle(info.row.id)}
@@ -400,6 +486,7 @@ const TransactionTable = () => {
           </div>
           {actionMenu === info.row.id && (
             <div
+              ref={refDropdown}
               className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
               style={{ zIndex: 1000 }}
             >
@@ -596,7 +683,7 @@ const TransactionTable = () => {
       <div className="p-2">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-300">
-            <thead className="font-semibold bg-gray-100">
+            <thead className="font-semibold bg-gray-100 relative z-20">
               {table.getHeaderGroups().map((headerGroup) => (
                 <tr key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
