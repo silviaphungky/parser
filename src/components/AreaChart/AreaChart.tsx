@@ -160,7 +160,7 @@ function AreaChart({
                 const value = payload[0]?.value as string
                 const customContent = (
                   <Card>
-                    <div>
+                    <div className="text-xs">
                       <div>{` ${label}`}</div>
                       <div>{`${
                         yLegend ?? payload[0].dataKey

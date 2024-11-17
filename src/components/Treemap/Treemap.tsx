@@ -78,7 +78,7 @@ const CustomizedContent = (props: any) => {
 // Custom Tooltip content to show additional info
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const { name, value, frequency } = payload[0].payload
+    const { name, value, frequency, bank, bankAccNo } = payload[0].payload
     return (
       <div
         style={{
@@ -86,13 +86,14 @@ const CustomTooltip = ({ active, payload }: any) => {
           border: '1px solid #ccc',
           padding: '10px',
           borderRadius: '5px',
+          fontSize: '12px',
         }}
       >
         <p>
-          <strong>{name}</strong>
+          <strong> {`${name} - ${bank} ${bankAccNo}`}</strong>
         </p>
-        <p className="text-sm">Nominal Transaksi: {numberAbbv(value)}</p>
-        <p className="text-sm">Frekuensi: {frequency}</p>
+        <p className="text-xs">Nominal Transaksi: {numberAbbv(value)}</p>
+        <p className="text-xs">Frekuensi: {frequency}</p>
       </div>
     )
   }

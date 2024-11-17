@@ -83,7 +83,7 @@ const PieChart = ({ chartData, value, size, colorMap, cx, label }: Props) => {
             fontSize: '0.75rem',
           }}
         />
-        <Tooltip />
+        <Tooltip itemStyle={{ fontSize: 12 }} />
       </RPieChart>
     </ResponsiveContainer>
   )
