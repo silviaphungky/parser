@@ -537,7 +537,8 @@ const TransactionTable = () => {
             <h2 className="font-semibold text-lg">Verifikasi Nomor Rekening</h2>
             <div className="mt-2 text-sm">
               Verifikasi nomor rekening hanya bisa dilakukan untuk transaksi
-              yang memiliki informasi nomor rekening pihak lawan transaksi
+              yang memiliki informasi institusi dan nomor rekening pihak lawan
+              transaksi
             </div>
             <div className="flex justify-end space-x-4 mt-6">
               <button
