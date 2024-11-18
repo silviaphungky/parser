@@ -78,7 +78,7 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
           </button>
         </div>
         <div
-          className={`min-w-full absolute right-0 z-10 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none ${
+          className={`min-w-full absolute right-0 mt-2 w-full origin-top-right rounded-md bg-white shadow-lg ring-1 z-50 ring-black ring-opacity-5 focus:outline-none ${
             isOpen && !props.disabled ? 'block' : 'hidden'
           }`}
           role="menu"
@@ -86,7 +86,10 @@ const InputDropdown = forwardRef<HTMLDivElement, Props>(
           aria-labelledby="menu-button"
           style={{ width: 'max-content' }}
         >
-          <div className="py-3 px-2 overflow-auto max-h-[180px]" role="none">
+          <div
+            className="py-3 px-2 overflow-auto max-h-[180px] relative z-20"
+            role="none"
+          >
             {options.map((item) => {
               return (
                 <div
