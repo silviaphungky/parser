@@ -54,12 +54,24 @@ const FrequencyPieChart = ({
 }: {
   data: {
     category: {
-      in: Array<{ name: string; value: number }>
-      out: Array<{ name: string; value: number }>
+      in: {
+        value: Array<{ name: string; value: number }>
+        freq: Array<{ name: string; value: number }>
+      }
+      out: {
+        value: Array<{ name: string; value: number }>
+        freq: Array<{ name: string; value: number }>
+      }
     }
     transactionMethod: {
-      in: Array<{ name: string; value: number }>
-      out: Array<{ name: string; value: number }>
+      in: {
+        value: Array<{ name: string; value: number }>
+        freq: Array<{ name: string; value: number }>
+      }
+      out: {
+        value: Array<{ name: string; value: number }>
+        freq: Array<{ name: string; value: number }>
+      }
     }
   }
 }) => {
@@ -85,6 +97,8 @@ const FrequencyPieChart = ({
   }) => {
     setSelectedBased(option)
   }
+
+  const dataByGroup = data[selectedGroup.id as 'category' | 'transactionMethod']
 
   return (
     <div className="flex gap-4 mb-4">
@@ -114,9 +128,9 @@ const FrequencyPieChart = ({
             </div>
             <div>
               <PieChart
-                chartData={data[
-                  selectedGroup.id as 'category' | 'transactionMethod'
-                ].in.sort((a, b) => b.value - a.value)}
+                chartData={dataByGroup.in[
+                  selectedBased.id as 'freq' | 'value'
+                ].sort((a, b) => b.value - a.value)}
                 value={50}
                 size={350}
                 colorMap={pieChartColorMap}
@@ -137,9 +151,7 @@ const FrequencyPieChart = ({
                       textAnchor="middle"
                     >
                       {numberAbbv(
-                        data[
-                          selectedGroup.id as 'category' | 'transactionMethod'
-                        ].in
+                        dataByGroup.in[selectedBased.id as 'freq' | 'value']
                           .map((item) => item.value)
                           .reduce((acc, current) => {
                             return acc + current
@@ -161,9 +173,9 @@ const FrequencyPieChart = ({
 
                 <div>
                   <PieChart
-                    chartData={data[
-                      selectedGroup.id as 'category' | 'transactionMethod'
-                    ].out.sort((a, b) => b.value - a.value)}
+                    chartData={dataByGroup.out[
+                      selectedBased.id as 'freq' | 'value'
+                    ].sort((a, b) => b.value - a.value)}
                     value={50}
                     size={350}
                     colorMap={pieChartColorMap}
@@ -184,11 +196,7 @@ const FrequencyPieChart = ({
                           textAnchor="middle"
                         >
                           {numberAbbv(
-                            data[
-                              selectedGroup.id as
-                                | 'category'
-                                | 'transactionMethod'
-                            ].out
+                            dataByGroup.in[selectedBased.id as 'freq' | 'value']
                               .map((item) => item.value)
                               .reduce((acc, current) => {
                                 return acc + current

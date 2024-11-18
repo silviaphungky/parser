@@ -206,28 +206,56 @@ const dataTreemap = {
 
 const dataFreqPiechart = {
   category: {
-    in: [
-      { name: 'Investasi', value: 100000 },
-      { name: 'Gaji', value: 2000000 },
-      { name: 'Dividen', value: 3800000 },
-    ],
-    out: [
-      { name: 'Investasi', value: 711100 },
-      { name: 'Belanja', value: 3000000 },
-      { name: 'Cicilan', value: 2880000 },
-    ],
+    in: {
+      value: [
+        { name: 'Gaji/Pendapatan', value: 100000 },
+        { name: 'Pengembalian Dana (Refunds)', value: 2000000 },
+        { name: 'Pendapatan Sewa', value: 3800000 },
+      ],
+      freq: [
+        { name: 'Gaji/Pendapatan', value: 10 },
+        { name: 'Pengembalian Dana (Refunds)', value: 2 },
+        { name: 'Pendapatan Sewa', value: 8 },
+      ],
+    },
+    out: {
+      value: [
+        { name: 'Tagihan Utilitas', value: 711100 },
+        { name: 'Hiburan', value: 3000000 },
+        { name: 'Investasi', value: 2880000 },
+      ],
+      freq: [
+        { name: 'Tagihan Utilitas', value: 6 },
+        { name: 'Hiburan', value: 7 },
+        { name: 'Investasi', value: 1 },
+      ],
+    },
   },
   transactionMethod: {
-    in: [
-      { name: 'Qris', value: 199920 },
-      { name: 'Mbanking', value: 1111300 },
-      { name: 'Virtual Account', value: 88300 },
-    ],
-    out: [
-      { name: 'Qris', value: 7792100 },
-      { name: 'Mbanking', value: 1231300 },
-      { name: 'Virtual Account', value: 66600 },
-    ],
+    in: {
+      value: [
+        { name: 'Transfer Bank', value: 199920 },
+        { name: 'Dompet Digital', value: 1111300 },
+        { name: 'Pembayaran dengan Kode QR', value: 88300 },
+      ],
+      freq: [
+        { name: 'Transfer Bank', value: 19 },
+        { name: 'Dompet Digital', value: 30 },
+        { name: 'Pembayaran dengan Kode QR', value: 88 },
+      ],
+    },
+    out: {
+      value: [
+        { name: 'Transfer Bank', value: 7792100 },
+        { name: 'Dompet Digital', value: 1231300 },
+        { name: 'Pembayaran dengan Kode QR', value: 66600 },
+      ],
+      freq: [
+        { name: 'Transfer Bank', value: 77 },
+        { name: 'Dompet Digital', value: 882 },
+        { name: 'Tidak Diketahui (Unknown)', value: 888 },
+      ],
+    },
   },
 }
 
