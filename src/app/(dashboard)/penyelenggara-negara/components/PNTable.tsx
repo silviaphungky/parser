@@ -26,7 +26,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
 import { colorToken } from '@/constants/color-token'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import axios, { AxiosError } from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
 import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react'
@@ -208,6 +208,13 @@ const PNTable = ({
           setIsOpenFamilyForm(false)
           reset()
         },
+        onError: (error: any) => {
+          const isConflict = error.status === 409
+
+          if (isConflict) {
+            toast.error(`PN telah terhubung dengan ${data.familyName.label}`)
+          }
+        },
       }
     )
   }
@@ -335,7 +342,7 @@ const PNTable = ({
                 >
                   {/* NOTE: nanti diganti ke NIK, sementara by name dulu */}
                   <Link
-                    href={`/penyelenggara-negara/${info.row.original.name}/summary`}
+                    href={`/penyelenggara-negara/${info.row.original.id}/summary`}
                   >
                     <button className="w-full p-2 flex gap-2 text-left hover:bg-gray-100">
                       <IconExpand size={16} color={colorToken.grayVulkanik} />

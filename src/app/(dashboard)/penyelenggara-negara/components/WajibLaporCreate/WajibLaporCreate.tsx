@@ -4,7 +4,6 @@ import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
 import Button from '@/components/Button'
@@ -30,12 +29,34 @@ const WajibLaporCreate = ({
   setIsOpenFoundModal,
   setIsOpenCreateModal,
   refetch,
+  setExistsPn,
 }: {
   token: string
   setIsOpenFoundModal: Dispatch<SetStateAction<boolean>>
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>
+  setExistsPn: Dispatch<{
+    name?: string
+    nik?: string
+    is_exist: boolean
+    created_at?: string
+  }>
   refetch: () => void
 }) => {
+  const { mutateAsync: checkIsPNExist } = useMutation({
+    mutationFn: (payload: { nik: string }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.PN_EXIST}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   const { mutate, isPending } = useMutation({
     mutationFn: (payload: { nik: string; name: string }) =>
       axiosInstance.post(
@@ -67,11 +88,34 @@ const WajibLaporCreate = ({
     mode: 'onChange',
   })
 
-  const onSubmit = (data: FormValues) => {
+  const validateIsPNExists = async (nik: string) => {
+    const response = await checkIsPNExist({
+      nik,
+    })
+    const data = response.data || {}
+    const validatePNData = data.data || {}
+    if (validatePNData.is_exist) {
+      setExistsPn(
+        validatePNData as {
+          is_exist: boolean
+          name?: string
+          nik?: string
+          created_at?: string
+        }
+      )
+    }
+    return validatePNData
+  }
+
+  const onSubmit = async (data: FormValues) => {
     //  NOTE: search dulu NIK duplicate atau tidak, GET by api
-    const isExists = false
-    if (isExists) {
+    const { is_exist, name, created_at, nik } = await validateIsPNExists(
+      data.nik
+    )
+
+    if (is_exist) {
       setIsOpenFoundModal(true)
+      setIsOpenCreateModal(false)
     } else
       mutate({
         nik: data.nik,

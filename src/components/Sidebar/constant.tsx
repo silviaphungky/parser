@@ -1,5 +1,6 @@
 import { IconFileCheck, IconReceipt, IconUsers } from '@/icons'
 import IconChart from '@/icons/IconChart'
+import IconNotif from '@/icons/IconNotif'
 import IconSetting from '@/icons/IconSetting'
 
 export const SIDEBAR_MENU = [
@@ -17,6 +18,14 @@ export const SIDEBAR_MENU = [
     link: '/overview',
     icon: (isSelected: boolean) => (
       <IconFileCheck color={isSelected ? '#EA454C' : undefined} />
+    ),
+  },
+  {
+    key: 'notif',
+    name: 'Pemberitahuan',
+    link: '/pemberitahuan',
+    icon: (isSelected: boolean) => (
+      <IconNotif color={isSelected ? '#EA454C' : undefined} />
     ),
   },
   {

@@ -59,7 +59,7 @@ const currencyOptions = [
   },
 ]
 
-const FamilyList = () => {
+const FamilyList = ({ token }: { token: string }) => {
   const [selectedSort, setSelectedSort] = useState<{
     id: string | number
     label: string
@@ -79,7 +79,7 @@ const FamilyList = () => {
   return (
     <div>
       <Card className="mb-8">
-        <FamilyTable />
+        <FamilyTable token={token} />
       </Card>
     </div>
   )

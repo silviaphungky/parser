@@ -7,79 +7,75 @@ import {
   createColumnHelper,
 } from '@tanstack/react-table'
 import Link from 'next/link'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import axiosInstance from '@/utils/axiosInstance'
+import { API_URL } from '@/constants/apiUrl'
+import { useParams } from 'next/navigation'
+import { Shimmer } from '@/components'
+import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
+import toast from 'react-hot-toast'
 
-type FamilyData = {
-  id: string
-  NIK: string
-  name: string
-  relation: 'Suami/Istri' | 'Orang tua' | 'Anak' | 'Lainnya'
-  other_relation?: string
-}
+const columnHelper = createColumnHelper<
+  {
+    account_reporter_id: string
+    child_role: string
+    name: string
+    nik: string
+    parent_role: string
+  } & { actions: any }
+>()
 
-const familyRelations: Array<FamilyData & { actions: ReactNode }> = [
-  {
-    id: '2',
-    NIK: '3201010101010002',
-    name: 'Siti Aisyah',
-    relation: 'Suami/Istri',
-    actions: '',
-  },
-  {
-    id: '3',
-    NIK: '3201010101010003',
-    name: 'Budi Pratama',
-    relation: 'Anak',
-    actions: '',
-  },
-  {
-    id: '4',
-    NIK: '3201010101010004',
-    name: 'Dewi Kartika',
-    relation: 'Anak',
-    actions: '',
-  },
-  {
-    id: '5',
-    NIK: '3201010101010005',
-    name: 'Toni Wibowo',
-    relation: 'Orang tua',
-    actions: '',
-  },
-  {
-    id: '6',
-    NIK: '3201010101010006',
-    name: 'Sri Wahyuni',
-    relation: 'Orang tua',
-    actions: '',
-  },
-  {
-    id: '7',
-    NIK: '3201010101010007',
-    name: 'Rahmat Saputra',
-    relation: 'Lainnya',
-    other_relation: 'Saudara Kandung',
-    actions: '',
-  },
-  {
-    id: '8',
-    NIK: '3201010101010008',
-    name: 'Lia Suryani',
-    relation: 'Lainnya',
-    other_relation: 'Bibi',
-    actions: '',
-  },
-]
+const FamilyTable = ({ token }: { token: string }) => {
+  const { id } = useParams()
 
-const columnHelper = createColumnHelper<FamilyData & { actions: any }>()
+  const { mutate: unlinkFamily } = useMutation({
+    mutationFn: (payload: {
+      parent_account_reporter_id: string
+      child_account_reporter_id: string
+    }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UNLINK_FAMILY}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
 
-const FamilyTable = () => {
-  const ref = useRef(null)
-  const [selected, setSelected] = useState<FamilyData | null>(null)
-  const [actionMenu, setActionMenu] = useState<string | null>(null)
-  const [isOpen, setIsOpen] = useState(false)
+  const {
+    data = { account_reporter_family_list: [] },
+    isLoading,
+    refetch,
+  } = useQuery<{
+    account_reporter_family_list: Array<{
+      account_reporter_id: string
+      child_role: string
+      name: string
+      nik: string
+      parent_role: string
+    }>
+  }>({
+    queryKey: ['familyList'],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.FAMILY_LIST}/${id}/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+  })
 
   const columns = [
-    columnHelper.accessor('NIK', {
+    columnHelper.accessor('nik', {
       header: 'NIK',
       cell: (info) => (
         <div className="text-sm font-semibold">{info.getValue()}</div>
@@ -91,12 +87,9 @@ const FamilyTable = () => {
         <div className="text-sm font-semibold">{info.getValue()}</div>
       ),
     }),
-    columnHelper.accessor('relation', {
-      header: 'Hubungan',
-      cell: (info) =>
-        info.getValue() === 'Lainnya'
-          ? `${info.getValue()} - ${info.row.original.other_relation}`
-          : info.getValue(),
+    columnHelper.accessor('child_role', {
+      header: 'Hubungan terhadap PN',
+      cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('actions', {
       header: '',
@@ -107,7 +100,24 @@ const FamilyTable = () => {
               <div className="text-xs text-black">Detail</div>
             </button>
           </Link>
-          <button className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400">
+          <button
+            className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400"
+            onClick={() => {
+              unlinkFamily(
+                {
+                  parent_account_reporter_id: id as string,
+                  child_account_reporter_id:
+                    info.row.original.account_reporter_id,
+                },
+                {
+                  onSuccess: () => {
+                    toast.success('Berhasil menghapus hubungan keluarga')
+                    refetch()
+                  },
+                }
+              )
+            }}
+          >
             <div className="text-xs">Hapus relasi</div>
             <IconUnlink size={14} color="#EA454C" />
           </button>
@@ -117,7 +127,15 @@ const FamilyTable = () => {
   ]
 
   const table = useReactTable({
-    data: familyRelations,
+    data: (data?.account_reporter_family_list || []) as Array<
+      {
+        account_reporter_id: string
+        child_role: string
+        name: string
+        nik: string
+        parent_role: string
+      } & { actions: any }
+    >,
     columns,
     getCoreRowModel: getCoreRowModel(),
   })
@@ -131,7 +149,7 @@ const FamilyTable = () => {
             width: 'calc(100vw - 21rem)',
           }}
         >
-          {familyRelations.length === 0 && (
+          {data.account_reporter_family_list.length === 0 && (
             <div className="text-center py-10 text-gray-500">
               <p className="text-lg font-medium">
                 Tidak ada data yang tersedia
@@ -142,7 +160,7 @@ const FamilyTable = () => {
               </p>
             </div>
           )}
-          {familyRelations.length > 0 && (
+          {data.account_reporter_family_list.length > 0 && (
             <table className="min-w-full divide-y divide-gray-300">
               <thead className="font-semibold bg-gray-100">
                 {table.getHeaderGroups().map((headerGroup) => (
@@ -164,27 +182,44 @@ const FamilyTable = () => {
                 ))}
               </thead>
 
-              <tbody className="divide-y divide-gray-300">
-                {table.getRowModel().rows.map((row) => (
-                  <tr
-                    key={row.id}
-                    className="hover:bg-gray-100 transition-colors duration-300"
-                  >
-                    {row.getVisibleCells().map((cell) => (
-                      <td
-                        key={cell.id}
-                        className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
-                      >
-                        {flexRender(
-                          cell.column.columnDef.cell,
-                          cell.getContext()
-                        )}
-                      </td>
-                    ))}
-                  </tr>
-                ))}
-              </tbody>
+              {!isLoading && (
+                <tbody className="divide-y divide-gray-300">
+                  {table.getRowModel().rows.map((row) => (
+                    <tr
+                      key={row.id}
+                      className="hover:bg-gray-100 transition-colors duration-300"
+                    >
+                      {row.getVisibleCells().map((cell) => (
+                        <td
+                          key={cell.id}
+                          className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
+                        >
+                          {flexRender(
+                            cell.column.columnDef.cell,
+                            cell.getContext()
+                          )}
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              )}
             </table>
+          )}
+          {isLoading && <Shimmer />}
+          {!isLoading && (
+            <>
+              {data.account_reporter_family_list.length === 0 && (
+                <div className="text-center py-10 text-gray-500">
+                  <p className="text-lg font-medium">
+                    Tidak ada data yang tersedia
+                  </p>
+                  <p className="text-sm">
+                    Tambahkan relasi keluarga untuk PN ini
+                  </p>
+                </div>
+              )}
+            </>
           )}
         </div>
       </div>

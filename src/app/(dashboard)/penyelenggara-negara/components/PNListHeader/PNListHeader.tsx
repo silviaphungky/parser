@@ -16,9 +16,10 @@ const PNListHeader = ({
   const [isOpenFoundModal, setIsOpenFoundModal] = useState(false)
   const [existsPn, setExistsPn] = useState(
     {} as {
-      NIK: string
-      name: string
-      created_at: string
+      nik?: string
+      name?: string
+      created_at?: string
+      is_exist: boolean
     }
   )
 
@@ -32,13 +33,13 @@ const PNListHeader = ({
           Tambahkan Penyelenggara Negara
         </h2>
         <div className="mt-2 text-sm">
-          <span className="font-semibold">{existsPn.NIK} </span>
+          <span className="font-semibold">{existsPn.nik} </span>
           <span>telah terdaftar sebagai Penyelenggara Negara dengan nama</span>
           <span className="font-semibold"> {existsPn.name} </span>
           <span>pada {dayjs(existsPn.created_at).format('DD/MM/YYYY')}.</span>
         </div>
         <div className="text-sm mt-2">
-          Apakah Anda ingin menambahkan {<strong>{existsPn.NIK}</strong>}{' '}
+          Apakah Anda ingin menambahkan {<strong>{existsPn.nik}</strong>}{' '}
           sebagai daftar yang akan Anda pantau?
         </div>
         <div className="flex justify-end space-x-4 mt-4">
@@ -71,6 +72,7 @@ const PNListHeader = ({
           setIsOpenFoundModal={setIsOpenFoundModal}
           setIsOpenCreateModal={setIsOpenCreateModal}
           refetch={refetch}
+          setExistsPn={setExistsPn}
         />
       </Modal>
       <div className="flex justify-between">
