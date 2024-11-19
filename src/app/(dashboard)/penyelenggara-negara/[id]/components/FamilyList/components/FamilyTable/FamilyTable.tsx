@@ -149,76 +149,63 @@ const FamilyTable = ({ token }: { token: string }) => {
             width: 'calc(100vw - 21rem)',
           }}
         >
-          {data.account_reporter_family_list.length === 0 && (
-            <div className="text-center py-10 text-gray-500">
-              <p className="text-lg font-medium">
-                Tidak ada data yang tersedia
-              </p>
-              <p className="text-sm">
-                Relasi keluarga akan ditampilkan di sini. Silahkan hubungkan
-                relasi keluarga
-              </p>
-            </div>
-          )}
-          {data.account_reporter_family_list.length > 0 && (
-            <table className="min-w-full divide-y divide-gray-300">
-              <thead className="font-semibold bg-gray-100">
-                {table.getHeaderGroups().map((headerGroup) => (
-                  <tr key={headerGroup.id}>
-                    {headerGroup.headers.map((header) => (
-                      <th
-                        key={header.id}
-                        className="sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100"
+          <table className="min-w-full divide-y divide-gray-300">
+            <thead className="font-semibold bg-gray-100">
+              {table.getHeaderGroups().map((headerGroup) => (
+                <tr key={headerGroup.id}>
+                  {headerGroup.headers.map((header) => (
+                    <th
+                      key={header.id}
+                      className="sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100"
+                    >
+                      {header.isPlaceholder
+                        ? null
+                        : flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                    </th>
+                  ))}
+                </tr>
+              ))}
+            </thead>
+
+            {!isLoading && (
+              <tbody className="divide-y divide-gray-300">
+                {table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="hover:bg-gray-100 transition-colors duration-300"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
                       >
-                        {header.isPlaceholder
-                          ? null
-                          : flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
-                      </th>
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
                     ))}
                   </tr>
                 ))}
-              </thead>
+              </tbody>
+            )}
+          </table>
 
-              {!isLoading && (
-                <tbody className="divide-y divide-gray-300">
-                  {table.getRowModel().rows.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="hover:bg-gray-100 transition-colors duration-300"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-                </tbody>
-              )}
-            </table>
-          )}
           {isLoading && <Shimmer />}
-          {!isLoading && (
+          {!isLoading && data.account_reporter_family_list.length === 0 && (
             <>
-              {data.account_reporter_family_list.length === 0 && (
-                <div className="text-center py-10 text-gray-500">
-                  <p className="text-lg font-medium">
-                    Tidak ada data yang tersedia
-                  </p>
-                  <p className="text-sm">
-                    Tambahkan relasi keluarga untuk PN ini
-                  </p>
-                </div>
-              )}
+              <div className="text-center py-10 text-gray-500">
+                <p className="text-lg font-medium">
+                  Tidak ada data yang tersedia
+                </p>
+                <p className="text-sm">
+                  Relasi keluarga akan ditampilkan di sini. Silahkan hubungkan
+                  relasi keluarga
+                </p>
+              </div>
             </>
           )}
         </div>
