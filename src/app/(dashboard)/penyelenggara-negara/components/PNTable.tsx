@@ -483,7 +483,10 @@ const PNTable = ({
       <Modal
         width="max-w-[30rem]"
         isOpen={isOpenFamilyForm}
-        onClose={() => setIsOpenFamilyForm(false)}
+        onClose={() => {
+          setIsOpenFamilyForm(false)
+          reset()
+        }}
       >
         <h2 className="font-semibold mb-4 text-lg">Hubungkan Keluarga</h2>
         <form onSubmit={handleSubmit(handleLinkFamily)}>
