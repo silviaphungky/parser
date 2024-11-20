@@ -4,6 +4,14 @@ import WajibLaporCreate from '../WajibLaporCreate'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { IconPlus } from '@/icons'
+import { useMutation } from '@tanstack/react-query'
+import axiosInstance from '@/utils/axiosInstance'
+import { baseUrl } from '../../[id]/components/UploadBankStatement/UploadBankStatement'
+import { API_URL } from '@/constants/apiUrl'
+import toast from 'react-hot-toast'
+
+const notify = () =>
+  toast.success('PN berhasil ditambahkan sebagai daftar monitor')
 
 const PNListHeader = ({
   token,
@@ -22,6 +30,30 @@ const PNListHeader = ({
       is_exist: boolean
     }
   )
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: { nik: string; name: string }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.CREATE_PN}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    onSuccess: () => {
+      refetch()
+      setIsOpenCreateModal(false)
+      setIsOpenFoundModal(false)
+      notify()
+    },
+    onError: () => {
+      toast.error('Gagal menambahkan PN sebagai daftar monitor')
+    },
+  })
 
   return (
     <div>
@@ -54,11 +86,14 @@ const PNListHeader = ({
           </button>
           <button
             onClick={() => {
-              setIsOpenFoundModal(false)
+              mutate({
+                name: existsPn.name as string,
+                nik: existsPn.nik as string,
+              })
             }}
             className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
           >
-            Simpan
+            Tambahkan
           </button>
         </div>
       </Modal>

@@ -319,7 +319,13 @@ const PNTable = ({
         header: () => <span>Diperbarui pada</span>,
         cell: (info) => {
           return (
-            <div className="text-xs text-left">{info.getValue() || '-'}</div>
+            <div className="text-xs text-left">
+              {info.getValue()
+                ? dayjs(new Date(info.getValue() as string)).format(
+                    'DD/MM/YYYY HH:mm:ss'
+                  )
+                : '-'}
+            </div>
           )
         },
       }),
