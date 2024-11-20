@@ -4,10 +4,10 @@ import { API_URL } from '@/constants/apiUrl'
 import { IconBCA, IconBNI, IconBRI, IconMandiri, IconUpload } from '@/icons'
 import IconFile from '@/icons/IconFile'
 import axiosInstance from '@/utils/axiosInstance'
-import { useMutation } from '@tanstack/react-query'
-import axios from 'axios'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
 import React, { Dispatch, useState } from 'react'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 
 const BANK_OPTIONS = [
   {
@@ -34,23 +34,23 @@ const BANK_OPTIONS = [
 
 const CURRENCY_OPTIONS = [
   {
-    id: 'idr',
+    id: 'IDR',
     label: 'IDR',
   },
   {
-    id: 'usd',
+    id: 'USD',
     label: 'USD',
   },
   {
-    id: 'poundsterling',
+    id: 'GBP',
     label: 'GBP',
   },
   {
-    id: 'sgd',
+    id: 'SGD',
     label: 'SGD',
   },
   {
-    id: 'jpy',
+    id: 'JPY',
     label: 'JPY',
   },
 ]
@@ -58,14 +58,13 @@ const CURRENCY_OPTIONS = [
 export const baseUrl =
   'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
-const notify = () => toast.success('Laporan bank berhasil dihapus')
+const notify = () => toast.success('Laporan bank berhasil ditambahkan')
 
 const UploadBankStatement = ({
   token,
   isOpen,
   setIsOpen,
   name,
-  nik,
 }: {
   token: string
   isOpen: boolean
@@ -73,6 +72,8 @@ const UploadBankStatement = ({
   name: string
   nik: string
 }) => {
+  const queryClient = useQueryClient()
+  const { id } = useParams()
   const [selectedBank, setSelectedBank] = useState<{
     id: string | number
     label: string
@@ -118,17 +119,19 @@ const UploadBankStatement = ({
     }
 
     const formData = new FormData()
-    formData.append('name', name)
-    formData.append('nik', nik)
+    formData.append('account_reporter_id', id as string)
     formData.append('institution_id', `${selectedBank.id}`)
     formData.append('statement', file)
-    formData.append('type', 'INDIVIDUAL')
+    formData.append('currency', selectedCurrency.id as string)
 
-    // NOTE: tunggu api BE
     mutate(formData, {
       onSuccess: () => {
         notify()
         setIsOpen(false)
+        // NOTE: cek invalidate all queries
+        queryClient.invalidateQueries({
+          queryKey: ['statementList'],
+        })
       },
     })
   }

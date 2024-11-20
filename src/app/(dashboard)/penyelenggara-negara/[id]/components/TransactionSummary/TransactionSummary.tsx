@@ -131,7 +131,7 @@ const dataTreemap = {
     },
     {
       name: 'Gihi',
-      bank: 'MANDIRI',
+      bank: 'Mandiri',
       bankAccNo: '284428282',
       value: 800000,
       frequency: 2,
@@ -154,7 +154,7 @@ const dataTreemap = {
     },
     {
       name: 'Bibi',
-      bank: 'MANDIRI',
+      bank: 'Mandiri',
       bankAccNo: '284428282',
       value: 990000,
       frequency: 3,
@@ -168,7 +168,7 @@ const dataTreemap = {
     },
     {
       name: 'Nami',
-      bank: 'MANDIRI',
+      bank: 'Mandiri',
       bankAccNo: '999999',
       value: 450000,
       frequency: 1,

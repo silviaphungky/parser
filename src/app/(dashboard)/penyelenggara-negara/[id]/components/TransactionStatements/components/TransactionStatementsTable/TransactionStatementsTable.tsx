@@ -1,4 +1,6 @@
 'use client'
+import { Shimmer } from '@/components'
+
 import { colorToken } from '@/constants/color-token'
 import {
   IconBCA,
@@ -8,6 +10,7 @@ import {
   IconTrash,
   IconTriangleDown,
 } from '@/icons'
+
 import {
   useReactTable,
   createColumnHelper,
@@ -15,6 +18,8 @@ import {
   flexRender,
 } from '@tanstack/react-table'
 import { useState } from 'react'
+import { IStatement } from '../../TransactionStatementList'
+import dayjs from 'dayjs'
 
 export type TransactionBankStatementData = {
   id: string
@@ -25,7 +30,7 @@ export type TransactionBankStatementData = {
     to: string
   }
   bank: {
-    name: 'BCA' | 'BNI' | 'MANDIRI' | 'BRI'
+    name: 'BCA' | 'BNI' | 'Mandiri' | 'BRI'
     accountNo: string
     accountName: string
   }
@@ -76,7 +81,7 @@ export const transactionBankStatements: Array<
       to: '2024-03-31',
     },
     bank: {
-      name: 'MANDIRI',
+      name: 'Mandiri',
       accountNo: '3456789012',
       accountName: 'Robert Brown',
     },
@@ -140,7 +145,7 @@ export const transactionBankStatements: Array<
       to: '2024-07-31',
     },
     bank: {
-      name: 'MANDIRI',
+      name: 'Mandiri',
       accountNo: '7890123456',
       accountName: 'Olivia Martin',
     },
@@ -201,19 +206,17 @@ const iconBankMap = {
   BCA: <IconBCA size={24} />,
   BRI: <IconBRI size={24} />,
   BNI: <IconBNI size={24} />,
-  MANDIRI: <IconMandiri size={24} />,
+  Mandiri: <IconMandiri size={24} />,
 }
 
-const columnHelper = createColumnHelper<
-  TransactionBankStatementData & { action: string }
->()
+const columnHelper = createColumnHelper<IStatement & { action: string }>()
 
 const columns = [
-  columnHelper.accessor('uploaded_at', {
+  columnHelper.accessor('created_at', {
     header: 'Tanggal Upload',
-    cell: (info) => new Date(info.getValue()).toLocaleDateString(),
+    cell: (info) => dayjs(new Date(info.getValue())).format('DD/MM/YYYY'),
   }),
-  columnHelper.accessor('name', {
+  columnHelper.accessor('file_name', {
     header: 'Nama File',
     cell: (info) => info.getValue(),
     enableSorting: false,
@@ -222,8 +225,12 @@ const columns = [
     (row) => (
       <div>
         <div className="flex gap-2 mt-2 items-center">
-          {iconBankMap[row.bank.name]}
-          <div className="text-x">{row.bank.name}</div>
+          {
+            iconBankMap[
+              row.bank_short_code as 'BNI' | 'Mandiri' | 'BCA' | 'BRI'
+            ]
+          }
+          <div className="text-x">{row.bank_name}</div>
         </div>
       </div>
     ),
@@ -239,8 +246,8 @@ const columns = [
       <div>
         <div className="flex gap-2 mt-2 items-center">
           <div>
-            <div className="text-xs">{row.bank.accountName}</div>
-            <div className="text-xs">{`${row.bank.accountNo}`}</div>
+            <div className="text-xs">{'row.bank.accountName'}</div>
+            <div className="text-xs">{`${row.account_number}`}</div>
           </div>
         </div>
       </div>
@@ -252,23 +259,62 @@ const columns = [
       enableSorting: false,
     }
   ),
-  columnHelper.accessor((row) => `${row.period.from} - ${row.period.to}`, {
-    id: 'period',
-    header: 'Periode',
-    cell: (info) => info.getValue(),
+  columnHelper.accessor('currency', {
+    header: 'Mata Uang',
+    cell: (info) => <div className={'text-sm'}>{info.getValue()}</div>,
+    enableSorting: false,
   }),
-  columnHelper.accessor('url', {
-    header: 'URL',
+  columnHelper.accessor('status', {
+    header: 'Status Ekstrak',
     cell: (info) => (
-      <a
-        href={info.getValue()}
-        target="_blank"
-        rel="noopener noreferrer"
-        className="text-blue-500 hover:underline"
+      <div
+        className={`${
+          info.getValue() === 'FAILED'
+            ? 'rounded p-2 py-1 text-[#B71D18] font-bold text-xs w-fit'
+            : 'bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs w-fit'
+        }`}
+        style={{
+          background:
+            info.getValue() === 'FAILED'
+              ? 'rgba(255, 86,48, 0.2)'
+              : 'rgba(34, 197,98, 0.2)',
+        }}
       >
-        Lihat Dokumen
-      </a>
+        {info.getValue() === 'FAILED' ? 'Gagal' : 'Berhasil'}
+      </div>
     ),
+    enableSorting: false,
+  }),
+  columnHelper.accessor(
+    (row) =>
+      `${
+        row.status !== 'FAILED'
+          ? `${dayjs(new Date(row.start_period)).format(
+              'DD/MM/YYYY'
+            )} - ${dayjs(new Date(row.end_period)).format('DD/MM/YYYY')}`
+          : '-'
+      }`,
+    {
+      id: 'period',
+      header: 'Periode',
+      cell: (info) => info.getValue(),
+    }
+  ),
+  columnHelper.accessor('file_url', {
+    header: 'URL',
+    cell: (info) =>
+      info.getValue() ? (
+        <a
+          href={info.getValue()}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-500 hover:underline"
+        >
+          Lihat Dokumen
+        </a>
+      ) : (
+        '-'
+      ),
     enableSorting: false,
   }),
   columnHelper.accessor('action', {
@@ -286,10 +332,16 @@ const columns = [
   }),
 ]
 
-const TransactionStatementsTable: React.FC = () => {
+const TransactionStatementsTable = ({
+  statementList,
+  isLoading,
+}: {
+  statementList: Array<IStatement>
+  isLoading: boolean
+}) => {
   const [sorting, setSorting] = useState([])
   const table = useReactTable({
-    data: transactionBankStatements,
+    data: statementList as Array<IStatement> & { action: string },
     columns,
     state: {
       sorting,
@@ -347,24 +399,40 @@ const TransactionStatementsTable: React.FC = () => {
             </tr>
           ))}
         </thead>
-        <tbody className="divide-y divide-gray-300">
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              className="hover:bg-gray-100 transition-colors duration-300"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
+        {!isLoading && (
+          <tbody className="divide-y divide-gray-300">
+            {table.getRowModel().rows.map((row) => (
+              <tr
+                key={row.id}
+                className="hover:bg-gray-100 transition-colors duration-300"
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <td
+                    key={cell.id}
+                    className="px-2 py-2 whitespace-nowrap text-sm text-gray-800"
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        )}
       </table>
+
+      {isLoading && <Shimmer />}
+      {!isLoading && (
+        <>
+          {statementList.length === 0 && (
+            <div className="text-center py-10 text-gray-500">
+              <p className="text-lg font-medium">
+                Tidak ada data yang tersedia
+              </p>
+              <p className="text-sm">Tambahkan mutasi bank.</p>
+            </div>
+          )}
+        </>
+      )}
     </div>
   )
 }
