@@ -341,7 +341,7 @@ const TransactionStatementsTable = ({
 }) => {
   const [sorting, setSorting] = useState([])
   const table = useReactTable({
-    data: statementList as Array<IStatement> & { action: string },
+    data: statementList as Array<IStatement & { action: string }>,
     columns,
     state: {
       sorting,
