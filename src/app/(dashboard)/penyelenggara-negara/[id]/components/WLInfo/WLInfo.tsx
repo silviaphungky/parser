@@ -36,7 +36,6 @@ const WLInfo = ({
         token={token}
         isOpen={isOpenUploadForm}
         setIsOpen={setIsOpenUploadForm}
-        name={pn.name}
         nik={pn.nik}
       />
       <div>

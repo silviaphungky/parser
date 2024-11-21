@@ -14,8 +14,11 @@ export const API_URL = {
   FAMILY_LIST: 'v1/account-reporter/family',
   UNLINK_FAMILY: 'v1/account-reporter/family/revoke',
 
-  // statement
+  // statements
   UPLOAD_STATEMENT: 'v1/statement/upload',
   STATEMENT_LIST: 'v1/statement',
   VALIDATE_STATEMENT_DUPLICATE: 'v1/statement/file/check-hash',
+
+  //transactions
+  TRANSACTION_LIST: '/v1/transaction/list',
 }

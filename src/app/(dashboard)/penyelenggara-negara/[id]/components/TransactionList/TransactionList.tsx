@@ -3,6 +3,10 @@ import { Card, Pagination, SearchDropdown } from '@/components'
 import { TransactionFilter, TransactionTable } from './components'
 import { useState } from 'react'
 import { IconFilter } from '@/icons'
+import { useParams } from 'next/navigation'
+import axiosInstance from '@/utils/axiosInstance'
+import { API_URL } from '@/constants/apiUrl'
+import { useQuery } from '@tanstack/react-query'
 
 const searchFields = [
   { label: 'Nama Akun Lawan Transaksi', id: 'targetBankName' },
@@ -50,7 +54,8 @@ const currencyOptions = [
   },
 ]
 
-const TransactionList = () => {
+const TransactionList = ({ token }: { token: string }) => {
+  const { id } = useParams()
   const [currentPage, setCurrentPage] = useState(1)
   const [selectedSort, setSelectedSort] = useState<{
     id: string | number
@@ -68,6 +73,38 @@ const TransactionList = () => {
   const handleSort = (option: { id: string | number; label: string }) => {
     setSelectedSort(option)
   }
+
+  const { data, isLoading, refetch, isFetching } = useQuery<{
+    transaction_list: Array<{}>
+    meta_data: {
+      total: number
+      limit: number
+      current_page: number
+      total_page: number
+    }
+  }>({
+    queryKey: ['transactionList', currentPage, itemsPerPage, id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TRANSACTION_LIST}`,
+
+        {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            account_reporter_id: id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+  })
+
+  console.log({ data })
 
   return (
     <div>
