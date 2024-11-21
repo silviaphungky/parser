@@ -4,9 +4,9 @@ import { API_URL } from '@/constants/apiUrl'
 import { IconBCA, IconBNI, IconBRI, IconMandiri, IconUpload } from '@/icons'
 import IconFile from '@/icons/IconFile'
 import axiosInstance from '@/utils/axiosInstance'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import React, { Dispatch, useState } from 'react'
+import React, { Dispatch, useEffect, useState } from 'react'
 import toast from 'react-hot-toast'
 
 const BANK_OPTIONS = [
@@ -64,12 +64,10 @@ const UploadBankStatement = ({
   token,
   isOpen,
   setIsOpen,
-  name,
 }: {
   token: string
   isOpen: boolean
   setIsOpen: Dispatch<boolean>
-  name: string
   nik: string
 }) => {
   const queryClient = useQueryClient()
@@ -84,6 +82,25 @@ const UploadBankStatement = ({
   }>(CURRENCY_OPTIONS[0])
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
+
+  const { mutate: checkDuplicateFile } = useMutation({
+    mutationFn: async (payload: FormData) => {
+      const response = await axiosInstance.post(
+        `${baseUrl}/${API_URL.VALIDATE_STATEMENT_DUPLICATE}`,
+        payload,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+  })
+
+  useEffect(() => {}, [])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -124,14 +141,24 @@ const UploadBankStatement = ({
     formData.append('statement', file)
     formData.append('currency', selectedCurrency.id as string)
 
-    mutate(formData, {
-      onSuccess: () => {
-        notify()
-        setIsOpen(false)
-        // NOTE: cek invalidate all queries
-        queryClient.invalidateQueries({
-          queryKey: ['statementList'],
-        })
+    checkDuplicateFile(formData, {
+      onSuccess: (data) => {
+        const { is_exist } = data
+        if (!is_exist) {
+          mutate(formData, {
+            onSuccess: () => {
+              notify()
+              setIsOpen(false)
+              queryClient.invalidateQueries({
+                queryKey: ['statementList'],
+              })
+            },
+          })
+        } else {
+          toast.error(
+            'Duplikat terdeteksi: Laporan bank ini telah diupload sebelumnya.'
+          )
+        }
       },
     })
   }

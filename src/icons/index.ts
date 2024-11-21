@@ -27,6 +27,7 @@ import IconTriangleDown from './IconTriangleDown'
 import IconLink from './IconLink'
 import IconStar from './IconStar'
 import IconLoading from './IconLoading'
+import IconRefresh from './IconRefresh'
 
 export {
   IconFileCheck,
@@ -58,4 +59,5 @@ export {
   IconLink,
   IconStar,
   IconLoading,
+  IconRefresh,
 }

@@ -37,171 +37,6 @@ export type TransactionBankStatementData = {
   uploaded_at: string
 }
 
-export const transactionBankStatements: Array<
-  TransactionBankStatementData & { action: string }
-> = [
-  {
-    id: '1',
-    name: 'Bank Statement Jan 2024',
-    url: 'https://example.com/bank-statement-jan-2024',
-    period: {
-      from: '2024-01-01',
-      to: '2024-01-31',
-    },
-    bank: {
-      name: 'BCA',
-      accountNo: '1234567890',
-      accountName: 'John Doe',
-    },
-    uploaded_at: '2024-02-01',
-    action: '',
-  },
-  {
-    id: '2',
-    name: 'Bank Statement Feb 2024',
-    url: 'https://example.com/bank-statement-feb-2024',
-    period: {
-      from: '2024-02-01',
-      to: '2024-02-28',
-    },
-    bank: {
-      name: 'BNI',
-      accountNo: '2345678901',
-      accountName: 'Jane Smith',
-    },
-    uploaded_at: '2024-03-01',
-    action: '',
-  },
-  {
-    id: '3',
-    name: 'Bank Statement Mar 2024',
-    url: 'https://example.com/bank-statement-mar-2024',
-    period: {
-      from: '2024-03-01',
-      to: '2024-03-31',
-    },
-    bank: {
-      name: 'Mandiri',
-      accountNo: '3456789012',
-      accountName: 'Robert Brown',
-    },
-    uploaded_at: '2024-04-01',
-    action: '',
-  },
-  {
-    id: '4',
-    name: 'Bank Statement Apr 2024',
-    url: 'https://example.com/bank-statement-apr-2024',
-    period: {
-      from: '2024-04-01',
-      to: '2024-04-30',
-    },
-    bank: {
-      name: 'BRI',
-      accountNo: '4567890123',
-      accountName: 'Alice Johnson',
-    },
-    uploaded_at: '2024-05-01',
-    action: '',
-  },
-  {
-    id: '5',
-    name: 'Bank Statement May 2024',
-    url: 'https://example.com/bank-statement-may-2024',
-    period: {
-      from: '2024-05-01',
-      to: '2024-05-31',
-    },
-    bank: {
-      name: 'BCA',
-      accountNo: '5678901234',
-      accountName: 'Michael Clark',
-    },
-    uploaded_at: '2024-06-01',
-    action: '',
-  },
-  {
-    id: '6',
-    name: 'Bank Statement Jun 2024',
-    url: 'https://example.com/bank-statement-jun-2024',
-    period: {
-      from: '2024-06-01',
-      to: '2024-06-30',
-    },
-    bank: {
-      name: 'BNI',
-      accountNo: '6789012345',
-      accountName: 'Emma Wilson',
-    },
-    uploaded_at: '2024-07-01',
-    action: '',
-  },
-  {
-    id: '7',
-    name: 'Bank Statement Jul 2024',
-    url: 'https://example.com/bank-statement-jul-2024',
-    period: {
-      from: '2024-07-01',
-      to: '2024-07-31',
-    },
-    bank: {
-      name: 'Mandiri',
-      accountNo: '7890123456',
-      accountName: 'Olivia Martin',
-    },
-    uploaded_at: '2024-08-01',
-    action: '',
-  },
-  {
-    id: '8',
-    name: 'Bank Statement Aug 2024',
-    url: 'https://example.com/bank-statement-aug-2024',
-    period: {
-      from: '2024-08-01',
-      to: '2024-08-31',
-    },
-    bank: {
-      name: 'BRI',
-      accountNo: '8901234567',
-      accountName: 'Sophia Lee',
-    },
-    uploaded_at: '2024-09-01',
-    action: '',
-  },
-  {
-    id: '9',
-    name: 'Bank Statement Sep 2024',
-    url: 'https://example.com/bank-statement-sep-2024',
-    period: {
-      from: '2024-09-01',
-      to: '2024-09-30',
-    },
-    bank: {
-      name: 'BCA',
-      accountNo: '9012345678',
-      accountName: 'James White',
-    },
-    uploaded_at: '2024-10-01',
-    action: '',
-  },
-  {
-    id: '10',
-    name: 'Bank Statement Oct 2024',
-    url: 'https://example.com/bank-statement-oct-2024',
-    period: {
-      from: '2024-10-01',
-      to: '2024-10-31',
-    },
-    bank: {
-      name: 'BNI',
-      accountNo: '0123456789',
-      accountName: 'Amelia Davis',
-    },
-    uploaded_at: '2024-11-01',
-    action: '',
-  },
-]
-
 const iconBankMap = {
   BCA: <IconBCA size={24} />,
   BRI: <IconBRI size={24} />,
@@ -246,8 +81,10 @@ const columns = [
       <div>
         <div className="flex gap-2 mt-2 items-center">
           <div>
-            <div className="text-xs">{'row.bank.accountName'}</div>
-            <div className="text-xs">{`${row.account_number}`}</div>
+            <div className="text-xs">{`nama: ${row.name}`}</div>
+            <div className="text-xs">{`norek: ${
+              row.account_number || '-'
+            }`}</div>
           </div>
         </div>
       </div>
@@ -271,16 +108,24 @@ const columns = [
         className={`${
           info.getValue() === 'FAILED'
             ? 'rounded p-2 py-1 text-[#B71D18] font-bold text-xs w-fit'
+            : info.getValue() === 'PENDING'
+            ? ''
             : 'bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs w-fit'
         }`}
         style={{
           background:
             info.getValue() === 'FAILED'
               ? 'rgba(255, 86,48, 0.2)'
+              : info.getValue() === 'PENDING'
+              ? ''
               : 'rgba(34, 197,98, 0.2)',
         }}
       >
-        {info.getValue() === 'FAILED' ? 'Gagal' : 'Berhasil'}
+        {info.getValue() === 'FAILED'
+          ? 'Gagal'
+          : info.getValue() === 'PENDING'
+          ? 'Memproses'
+          : 'Berhasil'}
       </div>
     ),
     enableSorting: false,
@@ -428,7 +273,7 @@ const TransactionStatementsTable = ({
               <p className="text-lg font-medium">
                 Tidak ada data yang tersedia
               </p>
-              <p className="text-sm">Tambahkan mutasi bank.</p>
+              <p className="text-sm">Tambahkan laporan bank.</p>
             </div>
           )}
         </>

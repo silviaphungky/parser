@@ -31,13 +31,14 @@ const Button = forwardRef<HTMLButtonElement, Props>(
   ({ children, variant, loading, full = false, ...props }, ref) => {
     return (
       <button
+        {...props}
         className={
           TYPE_MAPPING[variant] +
           ` ${full ? 'w-full' : 'w-auto'}  ${
             loading ? 'flex justify-center gap-1 items-center opacity-70' : ''
-          } ${props.disabled ? 'opacity-70' : ''} mt-6`
+          } ${props.disabled ? 'opacity-70' : ''}` +
+          props.className
         }
-        {...props}
         disabled={props.disabled || loading}
         ref={ref}
       >

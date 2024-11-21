@@ -5,11 +5,12 @@ import {
   TransactionStatementsFilter,
 } from './components'
 import { useState } from 'react'
-import { IconFilter } from '@/icons'
+import { IconFilter, IconRefresh } from '@/icons'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
+import Button from '@/components/Button'
 
 const bankOptions = [
   { value: '', label: 'Semua Akun Bank' },
@@ -59,7 +60,7 @@ export interface IStatement {
   file_name: string
   start_period: string
   end_period: string
-  status: 'FAILED' | 'SUCCESS'
+  status: 'FAILED' | 'SUCCESS' | 'PENDING'
   created_at: string
   account_number?: string
 }
@@ -69,7 +70,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
   const { id } = useParams()
-  const { data, isLoading } = useQuery<{
+  const { data, isLoading, refetch, isFetching } = useQuery<{
     statement_list: Array<IStatement>
     meta_data: {
       total: number
@@ -95,19 +96,21 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   return (
     <div>
       <Card className="mb-8">
-        <TransactionStatementsFilter
-          isOpen={isOpen}
-          bankOptions={bankOptions}
-          currencyOptions={currencyOptions}
-          onClose={() => setIsOpen(false)}
-          onApplyFilter={(value) => {
-            console.log({ value })
-          }}
-        />
-        <div className="mb-4 flex justify-end">
-          <div className="flex gap-4 w-[26rem] justify-end">
+        <div className="flex items-center">
+          <TransactionStatementsFilter
+            isOpen={isOpen}
+            bankOptions={bankOptions}
+            currencyOptions={currencyOptions}
+            onClose={() => setIsOpen(false)}
+            onApplyFilter={(value) => {
+              console.log({ value })
+            }}
+          />
+        </div>
+        <div className="mb-6 flex gap-4 justify-end items-center">
+          <div className="flex gap-4 justify-end">
             <button
-              className={`w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
+              className={`h-fit w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
               onClick={() => setIsOpen(true)}
             >
               <div className="flex gap-2 items-center justify-center">
@@ -119,10 +122,20 @@ const TransactionStatementList = ({ token }: { token: string }) => {
               </div>
             </button>
           </div>
+          <Button
+            variant="dark"
+            onClick={() => refetch()}
+            className="font-light"
+          >
+            <div className="flex gap-1 items-center">
+              Refresh
+              <IconRefresh color="white" size={14} />
+            </div>
+          </Button>
         </div>
         <TransactionStatementsTable
           statementList={data?.statement_list || []}
-          isLoading={isLoading}
+          isLoading={isLoading || isFetching}
         />
         <Pagination
           currentPage={currentPage}

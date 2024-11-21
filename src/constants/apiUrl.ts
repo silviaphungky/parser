@@ -17,4 +17,5 @@ export const API_URL = {
   // statement
   UPLOAD_STATEMENT: 'v1/statement/upload',
   STATEMENT_LIST: 'v1/statement',
+  VALIDATE_STATEMENT_DUPLICATE: 'v1/statement/file/check-hash',
 }
