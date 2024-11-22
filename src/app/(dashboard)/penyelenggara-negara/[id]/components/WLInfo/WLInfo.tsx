@@ -26,6 +26,8 @@ const WLInfo = ({
     queryKey: ['wlInfo', id],
     queryFn: async () =>
       await getPNList(`${API_URL.PN_LIST}?search=${id}&limit=1`, token),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   })
 
   const pn = data?.account_reporter_list?.[0] || {}

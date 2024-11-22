@@ -20,5 +20,7 @@ export const API_URL = {
   VALIDATE_STATEMENT_DUPLICATE: 'v1/statement/file/check-hash',
 
   //transactions
-  TRANSACTION_LIST: '/v1/transaction/list',
+  TRANSACTION_LIST: 'v1/transaction/list',
+  GENERATE_TRANSACTION_CSV: 'v1/transaction/generate/csv',
+  UPDATE_TRANSACTION: 'v1/transaction',
 }

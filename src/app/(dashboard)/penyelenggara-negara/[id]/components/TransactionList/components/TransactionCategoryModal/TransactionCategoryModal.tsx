@@ -1,42 +1,53 @@
 'use client'
 import { Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
-import { useState } from 'react'
+import axiosInstance from '@/utils/axiosInstance'
+import { useMutation } from '@tanstack/react-query'
+import { Dispatch, useState } from 'react'
+import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
+import { API_URL } from '@/constants/apiUrl'
+import toast from 'react-hot-toast'
+import { useParams } from 'next/navigation'
 
 export const mockCategoryOptions = [
-  { id: 'gaji-pendapatan', label: 'Gaji/Pendapatan' },
-  { id: 'pendapatan-sewa', label: 'Pendapatan Sewa' },
-  { id: 'tagihan-utilitas', label: 'Tagihan Utilitas' },
-  { id: 'pembayaran-sewa-kpr', label: 'Pembayaran Sewa/KPR' },
-  { id: 'belanja-harian', label: 'Belanja Harian' },
-  { id: 'transportasi', label: 'Transportasi' },
-  { id: 'makan-di-luar', label: 'Makan di Luar' },
-  { id: 'hiburan', label: 'Hiburan' },
-  { id: 'pembayaran-asuransi', label: 'Pembayaran Asuransi' },
-  { id: 'pelunasan-pinjaman', label: 'Pelunasan Pinjaman' },
-  { id: 'pembayaran-kartu-kredit', label: 'Pembayaran Kartu Kredit' },
-  { id: 'investasi', label: 'Investasi' },
-  { id: 'setoran-tabungan', label: 'Setoran Tabungan' },
-  { id: 'penarikan-tunai', label: 'Penarikan Tunai' },
-  { id: 'biaya-medis', label: 'Biaya Medis' },
-  { id: 'biaya-pendidikan', label: 'Biaya Pendidikan' },
-  { id: 'belanja', label: 'Belanja' },
-  { id: 'hadiah-dan-donasi', label: 'Hadiah dan Donasi' },
-  { id: 'biaya', label: 'Biaya' },
-  { id: 'pajak', label: 'Pajak' },
-  { id: 'transfer', label: 'Transfer' },
-  { id: 'pengembalian-dana', label: 'Pengembalian Dana (Refunds)' },
-  { id: 'pendapatan-lain-lain', label: 'Pendapatan Lain-lain' },
-  { id: 'pengeluaran-lain-lain', label: 'Pengeluaran Lain-lain' },
+  { id: 'Gaji/Pendapatan', label: 'Gaji/Pendapatan' },
+  { id: 'Pendapatan Sewa', label: 'Pendapatan Sewa' },
+  { id: 'Tagihan Utilitas', label: 'Tagihan Utilitas' },
+  { id: 'Pembayaran Sewa/KPR', label: 'Pembayaran Sewa/KPR' },
+  { id: 'Belanja Harian', label: 'Belanja Harian' },
+  { id: 'Transportasi', label: 'Transportasi' },
+  { id: 'Makan di Luar', label: 'Makan di Luar' },
+  { id: 'Hiburan', label: 'Hiburan' },
+  { id: 'Pembayaran Asuransi', label: 'Pembayaran Asuransi' },
+  { id: 'Pelunasan Pinjaman', label: 'Pelunasan Pinjaman' },
+  { id: 'Pembayaran Kartu Kredit', label: 'Pembayaran Kartu Kredit' },
+  { id: 'Investasi', label: 'Investasi' },
+  { id: 'Setoran Tabungan', label: 'Setoran Tabungan' },
+  { id: 'Penarikan Tunai', label: 'Penarikan Tunai' },
+  { id: 'Biaya Medis', label: 'Biaya Medis' },
+  { id: 'Biaya Pendidikan', label: 'Biaya Pendidikan' },
+  { id: 'Belanja', label: 'Belanja' },
+  { id: 'Hadiah dan Donasi', label: 'Hadiah dan Donasi' },
+  { id: 'Biaya', label: 'Biaya' },
+  { id: 'Pajak', label: 'Pajak' },
+  { id: 'Transfer', label: 'Transfer' },
+  { id: 'Pengembalian Dana (Refunds)', label: 'Pengembalian Dana (Refunds)' },
+  { id: 'Pendapatan Lain-lain', label: 'Pendapatan Lain-lain' },
+  { id: 'Pengeluaran Lain-lain', label: 'Pengeluaran Lain-lain' },
 ]
 
 const TransactionCategoryModal = ({
+  token,
   isOpen,
   onClose,
+  setIsOpenCategoryModal,
 }: {
+  token: string
   isOpen: boolean
   onClose: () => void
+  setIsOpenCategoryModal: Dispatch<boolean>
 }) => {
+  const { id } = useParams()
   const [selectedCategory, setSelectedCategory] = useState<{
     id: string | number
     label: string
@@ -47,8 +58,23 @@ const TransactionCategoryModal = ({
     }
   )
 
+  const { mutate } = useMutation({
+    mutationFn: (payload: { category_name: string }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/category`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpenCategoryModal(false)}>
       <h2 className="font-semibold text-lg">Sesuaikan Kategori</h2>
       <div className="mt-2 text-sm">
         Kategori untuk transaksi ini telah ditentukan secara otomatis oleh
@@ -69,7 +95,7 @@ const TransactionCategoryModal = ({
       <div className="flex justify-end space-x-4 mt-8">
         <button
           onClick={() => {
-            onClose()
+            setIsOpenCategoryModal(false)
           }}
           className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
         >
@@ -78,7 +104,7 @@ const TransactionCategoryModal = ({
         <button
           className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
           onClick={() => {
-            onClose()
+            setIsOpenCategoryModal(false)
           }}
         >
           Atur Ulang ke Kategori Awal
@@ -86,8 +112,24 @@ const TransactionCategoryModal = ({
 
         <button
           onClick={() => {
-            // hit BE API
-            onClose()
+            mutate(
+              {
+                category_name: selectedCategory.id as string,
+              },
+              {
+                onSuccess: () => {
+                  toast.success('Berhasil memperbarui kategori')
+                  onClose()
+                  setSelectedCategory({ id: '', label: '' })
+                },
+                onError: (error: any) => {
+                  console.log('gagal update category', error)
+                  toast.error(
+                    `Gagal memperbarui kategori: ${error?.response?.data?.message}`
+                  )
+                },
+              }
+            )
           }}
           className="font-semibold bg-primary text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
         >

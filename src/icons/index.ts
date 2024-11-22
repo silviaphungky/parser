@@ -28,6 +28,7 @@ import IconLink from './IconLink'
 import IconStar from './IconStar'
 import IconLoading from './IconLoading'
 import IconRefresh from './IconRefresh'
+import IconDownload from './IconDownload'
 
 export {
   IconFileCheck,
@@ -60,4 +61,5 @@ export {
   IconStar,
   IconLoading,
   IconRefresh,
+  IconDownload,
 }

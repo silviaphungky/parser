@@ -5,6 +5,7 @@ import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
 import ReactSelect from 'react-select'
 import { mockCategoryOptions } from '../TransactionCategoryModal/TransactionCategoryModal'
+import Button from '@/components/Button'
 
 interface FilterValues {
   startDate: string
@@ -206,6 +207,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         >
           Batal
         </button>
+        <Button variant="white-outline">Reset Filter</Button>
         <button
           className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:opacity-80"
           onClick={handleApplyFilter}

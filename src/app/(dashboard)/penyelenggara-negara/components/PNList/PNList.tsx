@@ -49,6 +49,8 @@ const PNList = ({ token }: { token: string }) => {
         `${API_URL.PN_LIST}?page=${page}&limit=${perPage}&search=${debouncedValue}`,
         token
       ),
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   })
 
   return (

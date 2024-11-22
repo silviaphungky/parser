@@ -5,7 +5,7 @@ import { FormItem, Input } from '@/components'
 import { Dispatch, SetStateAction, useState } from 'react'
 import { useMutation } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
-import toast, { Toaster } from 'react-hot-toast'
+import toast from 'react-hot-toast'
 import Button from '@/components/Button'
 import axiosInstance from '@/utils/axiosInstance'
 

@@ -1,8 +1,17 @@
 'use client'
 import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
-import { useState } from 'react'
+import { Dispatch, SetStateAction, useState } from 'react'
 import { TransactionData } from '../TransactionTable/TransactionTable'
+import axiosInstance from '@/utils/axiosInstance'
+import { useMutation } from '@tanstack/react-query'
+import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
+import { API_URL } from '@/constants/apiUrl'
+import toast from 'react-hot-toast'
+import { Controller, useForm } from 'react-hook-form'
+import { yupResolver } from '@hookform/resolvers/yup'
+import * as yup from 'yup'
+import { useParams } from 'next/navigation'
 
 const bankOptions = [
   {
@@ -1040,93 +1049,164 @@ const bankOptions = [
   },
 ]
 
+const validationSchema = yup.object().shape({
+  name: yup.string().required('Nama wajib diisi'),
+  accountNo: yup.string(),
+})
+
 const TransactionBankDestModal = ({
+  token,
   isOpen,
   onClose,
   selected,
+  setIsOpenDestBankModal,
 }: {
+  token: string
   isOpen: boolean
   onClose: () => void
   selected: TransactionData
+  setIsOpenDestBankModal: Dispatch<SetStateAction<boolean>>
 }) => {
+  const { id } = useParams()
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
 
+  const { control, handleSubmit } = useForm({
+    defaultValues: {
+      name: '',
+      accountNo: '',
+    },
+    resolver: yupResolver(validationSchema),
+  })
+
+  const { mutate } = useMutation({
+    mutationFn: (payload: {
+      entity_name?: string
+      entity_bank?: string
+      entity_account_number?: string
+    }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
+  const handleUpdate = async (value: { name: string; accountNo?: string }) => {
+    mutate(
+      {
+        entity_name: value.name,
+        entity_account_number: value.accountNo,
+        entity_bank: selectedBank.id,
+      },
+      {
+        onSuccess: () => {
+          toast.success('Berhasil memperbarui info lawan transaksi')
+          onClose()
+          setSelectedBank({ id: '', label: '' })
+        },
+        onError: (error: any) => {
+          toast.error(
+            `Gagal memperbarui info lawan transaksi: ${error?.response?.data?.message}`
+          )
+        },
+      }
+    )
+  }
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={() => setIsOpenDestBankModal(false)}>
       <h2 className="font-semibold text-lg">Sesuaikan Info Lawan Transaksi</h2>
       <div className="mt-2 text-sm mb-4">
         Gunakan form ini untuk mengedit informasi lawan transaksi. Pastikan
         informasi sudah benar sebelum menyimpan perubahan.
       </div>
-      <FormItem label="Nama">
-        <Input
-          className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          onChange={() => {}}
-          placeholder="Masukkan nama..."
+      <form>
+        <Controller
+          name="name"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <FormItem label="Nama" errorMessage={error?.message}>
+              <Input
+                className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="Masukkan nama..."
+                {...field}
+                errorMessage={error?.message}
+              />
+            </FormItem>
+          )}
         />
-      </FormItem>
-
-      <FormItem label="Nomor Lawan Transaksi (opsional)">
-        <Input
-          className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-          onChange={() => {}}
-          placeholder="Masukkan nomor lawan transaksi..."
+        <Controller
+          name="accountNo"
+          control={control}
+          render={({ field, fieldState: { error } }) => (
+            <FormItem label="Nomor Lawan Transaksi (opsional)">
+              <Input
+                className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                placeholder="Masukkan nomor lawan transaksi..."
+                {...field}
+                errorMessage={error?.message}
+              />
+            </FormItem>
+          )}
         />
-      </FormItem>
 
-      <FormItem label="Institusi Lawan Transaksi (opsional)">
-        <InputDropdown
-          placeholder="Pilih institusi lawan transaksi..."
-          options={bankOptions}
-          value={selectedBank}
-          onChange={(option) => {
-            setSelectedBank(option as { id: string; label: string })
-          }}
-        />
-      </FormItem>
-
-      {selectedBank.id === 'other' && (
-        <FormItem label="Nama Institusi Lawan Transaksi (opsional)">
-          <Input
-            className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-            onChange={() => {}}
-            placeholder="Masukkan nama institusi lawan transaksi..."
+        <FormItem label="Institusi Lawan Transaksi (opsional)">
+          <InputDropdown
+            placeholder="Pilih institusi lawan transaksi..."
+            options={bankOptions}
+            value={selectedBank}
+            onChange={(option) => {
+              setSelectedBank(option as { id: string; label: string })
+            }}
           />
         </FormItem>
-      )}
 
-      <div className="text-xs mt-2 text-gray-600">
-        {`*Info lawan transaksi awal: ${selected.targetBankName} - ${selected.targetBankAccNo} - ${selected.targetBankAccName}`}
-      </div>
+        {selectedBank.id === 'other' && (
+          <FormItem label="Nama Institusi Lawan Transaksi (opsional)">
+            <Input
+              className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+              onChange={() => {}}
+              placeholder="Masukkan nama institusi lawan transaksi..."
+            />
+          </FormItem>
+        )}
 
-      <div className="flex justify-end space-x-4 mt-8">
-        <button
-          onClick={() => {
-            onClose()
-          }}
-          className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-        >
-          Batal
-        </button>
-        <button
-          className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
-          onClick={() => {
-            onClose()
-          }}
-        >
-          Atur Ulang ke Kategori Awal
-        </button>
+        <div className="text-xs mt-2 text-gray-600">
+          {`*Info lawan transaksi awal: ${selected.targetBankName} - ${selected.targetBankAccNo} - ${selected.targetBankAccName}`}
+        </div>
 
-        <button
-          onClick={() => {
-            // hit BE API
-            onClose()
-          }}
-          className="font-semibold bg-primary text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
-        >
-          Simpan Perubahan
-        </button>
-      </div>
+        <div className="flex justify-end space-x-4 mt-8">
+          <button
+            onClick={() => {
+              setIsOpenDestBankModal(false)
+            }}
+            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+          >
+            Batal
+          </button>
+          <button
+            className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
+            onClick={() => {
+              setIsOpenDestBankModal(false)
+            }}
+          >
+            Atur Ulang ke Kategori Awal
+          </button>
+
+          <button
+            onClick={handleSubmit(handleUpdate)}
+            className="font-semibold bg-primary text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
+          >
+            Simpan Perubahan
+          </button>
+        </div>
+      </form>
     </Modal>
   )
 }

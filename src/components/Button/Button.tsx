@@ -12,17 +12,24 @@ interface Props
     HTMLButtonElement
   > {
   children: string | ReactNode
-  variant: 'primary' | 'text' | 'primary-outline' | 'dark'
+  variant: 'primary' | 'text' | 'primary-outline' | 'dark' | 'white-outline'
   loading?: boolean
   full?: boolean
 }
 
 const TYPE_MAPPING: {
-  [key in 'primary' | 'text' | 'primary-outline' | 'dark']: string
+  [key in
+    | 'primary'
+    | 'text'
+    | 'primary-outline'
+    | 'white-outline'
+    | 'dark']: string
 } = {
+  'white-outline':
+    'rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100',
   primary:
     'bg-primary text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70',
-  dark: 'bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70',
+  dark: 'bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70 disabled:bg-gray-700 disabled:hover:opacity-100',
   text: 'text-gray-600 px-4 py-2 text-sm',
   'primary-outline':
     'bg-white px-4 py-2 text-primary text-sm font-semibold rounded-md border border-gray-300 disabled:border-0 disabled:bg-gray-100',

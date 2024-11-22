@@ -13,12 +13,19 @@ import {
   flexRender,
   createColumnHelper,
 } from '@tanstack/react-table'
-import { Modal } from '@/components'
+import { Modal, Shimmer } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
 import dayjs from 'dayjs'
 import TransactionBankDestModal from '../TransactionBankDestModal'
 import useOutsideClick from '@/utils/useClickOutside'
+import TransactionNoteModal from '../TransactionNoteModal/TransactionNoteModal'
+import { useMutation } from '@tanstack/react-query'
+import axiosInstance from '@/utils/axiosInstance'
+import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
+import { API_URL } from '@/constants/apiUrl'
+import { useParams } from 'next/navigation'
+import toast from 'react-hot-toast'
 
 export type TransactionData = {
   id: string
@@ -209,81 +216,6 @@ const iconBankMap = {
   Mandiri: <IconMandiri size={24} />,
 }
 
-type ActionMenuProps = {
-  row: any
-  onActionSelect: (action: string, row: any) => void
-}
-
-const ActionMenu = ({ row, onActionSelect }: ActionMenuProps) => {
-  const [isOpen, setIsOpen] = useState(false)
-  const ref = useRef<HTMLDivElement | null>(null)
-
-  const toggleMenu = () => setIsOpen((prev) => !prev)
-  const closeMenu = () => setIsOpen(false)
-
-  useOutsideClick(ref, closeMenu)
-
-  return (
-    <div className="relative" ref={ref}>
-      <div className="cursor-pointer" onClick={toggleMenu}>
-        <IconKebab size={20} />
-      </div>
-      {isOpen && (
-        <div
-          className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
-          style={{ zIndex: 1000 }}
-        >
-          <button
-            onClick={() => {
-              onActionSelect('toggleHighlight', row)
-              closeMenu()
-            }}
-            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-          >
-            {row.isHighlight ? 'Hapus Tanda' : 'Tandai Transaksi'}
-          </button>
-          <button
-            onClick={() => {
-              onActionSelect('editNote', row)
-              closeMenu()
-            }}
-            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-          >
-            Ubah Catatan
-          </button>
-          <button
-            onClick={() => {
-              onActionSelect('changeCategory', row)
-              closeMenu()
-            }}
-            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-          >
-            Ubah Kategori
-          </button>
-          <button
-            onClick={() => {
-              onActionSelect('changeBankInfo', row)
-              closeMenu()
-            }}
-            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-          >
-            Ubah Info Lawan Transaksi
-          </button>
-          <button
-            onClick={() => {
-              onActionSelect('verifyBankInfo', row)
-              closeMenu()
-            }}
-            className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-          >
-            Verifikasi Info Bank Transaksi
-          </button>
-        </div>
-      )}
-    </div>
-  )
-}
-
 const NoteCell = ({ text }: { text: string }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleExpand = () => setIsExpanded(!isExpanded)
@@ -309,7 +241,18 @@ const NoteCell = ({ text }: { text: string }) => {
   )
 }
 
-const TransactionTable = () => {
+const TransactionTable = ({
+  token,
+  transactionList,
+  refetch,
+  isLoading,
+}: {
+  token: string
+  refetch: () => void
+  transactionList: Array<{}>
+  isLoading: boolean
+}) => {
+  const { id } = useParams()
   const refDropdown = useRef(null)
   const [selected, setSelected] = useState({} as TransactionData)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
@@ -322,21 +265,25 @@ const TransactionTable = () => {
     setSelected({} as TransactionData)
     setActionMenu('')
   })
-  const onClose = () => {
-    setIsOpen(false)
-    setSelected({} as TransactionData)
-  }
 
   const handleMenuToggle = (id: string) => {
-    console.log('masuk')
     setActionMenu((prev) => (prev === id ? null : id))
   }
 
-  // useOutsideClick(ref, () => {
-  //   console.log('asd')
-  //   setActionMenu(null)
-  //   setSelected({} as TransactionData)
-  // })
+  const { mutate } = useMutation({
+    mutationFn: (payload: { is_starred: boolean }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/is-starred`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
 
   const columns = [
     columnHelper.accessor(
@@ -493,7 +440,25 @@ const TransactionTable = () => {
               <button
                 onClick={() => {
                   // handle mark transaction action here
-                  setActionMenu(null)
+                  // NOTE: TERGANTUNG BALIKAN BE
+                  mutate(
+                    {
+                      is_starred: false,
+                    },
+                    {
+                      onSuccess: () => {
+                        toast.success('Berhasil memperbarui tanda')
+                        setSelected({} as TransactionData)
+                        setActionMenu(null)
+                        refetch()
+                      },
+                      onError: (error: any) => {
+                        toast.error(
+                          `Gagal memperbarui tanda: ${error?.response?.data?.message}`
+                        )
+                      },
+                    }
+                  )
                   setSelected({} as TransactionData)
                 }}
                 className="block w-full px-4 py-2 text-left hover:bg-gray-100"
@@ -566,18 +531,24 @@ const TransactionTable = () => {
   return (
     <>
       <TransactionBankDestModal
+        token={token}
         isOpen={isOpenDestBankModal}
+        setIsOpenDestBankModal={setIsOpenDestBankModal}
         selected={selected}
         onClose={() => {
+          refetch()
           setIsOpenDestBankModal(false)
           setSelected({} as TransactionData)
         }}
       />
       <TransactionCategoryModal
+        token={token}
         isOpen={isOpenCategoryModal}
+        setIsOpenCategoryModal={setIsOpenCategoryModal}
         onClose={() => {
-          setIsOpenCategoryModal(false)
+          refetch()
           setSelected({} as TransactionData)
+          setIsOpenCategoryModal(false)
         }}
       />
       <Modal
@@ -642,44 +613,19 @@ const TransactionTable = () => {
           </>
         )}
       </Modal>
-      <Modal isOpen={isOpen} onClose={onClose}>
-        <h2 className="text-lg font-semibold mb-4">Catatan</h2>
-        <textarea
-          value={selected.note}
-          onChange={(e) => {
-            const value = e.target.value
-            setSelected({
-              ...selected,
-              note: value,
-            })
-          }}
-          className="w-full text-sm h-20 p-2 border border-gray-300 rounded 
-            focus:outline-none focus:ring-2
-           focus:ring-blue-500 resize-none"
-          placeholder="Masukkan catatan..."
-        />
-        <div className="flex justify-end space-x-4 mt-4">
-          <button
-            onClick={() => {
-              onClose()
-              setSelected({} as TransactionData)
-            }}
-            className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-          >
-            Batal
-          </button>
-          <button
-            onClick={() => {
-              // hit patch api
-              setIsOpen(false)
-              setSelected({} as TransactionData)
-            }}
-            className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
-          >
-            Simpan
-          </button>
-        </div>
-      </Modal>
+
+      <TransactionNoteModal
+        token={token}
+        setIsOpen={setIsOpen}
+        initialNote={selected.note}
+        isOpen={isOpen}
+        onClose={() => {
+          refetch()
+          setIsOpen(false)
+          setSelected({} as TransactionData)
+        }}
+      />
+
       <div className="p-2">
         <div className="overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-300">
@@ -731,29 +677,45 @@ const TransactionTable = () => {
                 </tr>
               ))}
             </thead>
-            <tbody className="divide-y divide-gray-300">
-              {table.getRowModel().rows.map((row) => (
-                <tr
-                  key={row.id}
-                  className={`hover:bg-gray-100 transition-colors duration-300 ${
-                    row.original.isHighlight ? 'bg-orange-50' : ''
-                  }`}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <td
-                      key={cell.id}
-                      className={`px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
-                    >
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext()
-                      )}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-            </tbody>
+            {!isLoading && (
+              <tbody className="divide-y divide-gray-300">
+                {table.getRowModel().rows.map((row) => (
+                  <tr
+                    key={row.id}
+                    className={`hover:bg-gray-100 transition-colors duration-300 ${
+                      row.original.isHighlight ? 'bg-orange-50' : ''
+                    }`}
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className={`px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
+                      </td>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            )}
           </table>
+          {isLoading && <Shimmer />}
+          {/*NOTE: temporary comment */}
+          {/* {!isLoading && (
+            <>
+              {transactionList.length === 0 && (
+                <div className="text-center py-10 text-gray-500">
+                  <p className="text-lg font-medium">
+                    Tidak ada data yang tersedia
+                  </p>
+                  <p className="text-sm">Tambahkan laporan bank.</p>
+                </div>
+              )}
+            </>
+          )} */}
         </div>
       </div>
     </>

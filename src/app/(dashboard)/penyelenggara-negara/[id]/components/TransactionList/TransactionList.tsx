@@ -2,11 +2,13 @@
 import { Card, Pagination, SearchDropdown } from '@/components'
 import { TransactionFilter, TransactionTable } from './components'
 import { useState } from 'react'
-import { IconFilter } from '@/icons'
+import { IconDownload, IconFilter } from '@/icons'
 import { useParams } from 'next/navigation'
 import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import Button from '@/components/Button'
+import { baseUrl } from '../UploadBankStatement/UploadBankStatement'
 
 const searchFields = [
   { label: 'Nama Akun Lawan Transaksi', id: 'targetBankName' },
@@ -75,7 +77,7 @@ const TransactionList = ({ token }: { token: string }) => {
   }
 
   const { data, isLoading, refetch, isFetching } = useQuery<{
-    transaction_list: Array<{}>
+    transaction_list: Array<any>
     meta_data: {
       total: number
       limit: number
@@ -102,9 +104,49 @@ const TransactionList = ({ token }: { token: string }) => {
       const data = response.data
       return data.data
     },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   })
 
-  console.log({ data })
+  const { mutate: downloadCsv } = useMutation({
+    mutationFn: (payload: {
+      account_reporter_id: string
+      start_period?: string
+      end_period?: string
+      page?: number
+      limit?: number
+      search?: string
+      search_entity_name?: ''
+      minimum_amount?: 0.0
+      maximum_amount?: 0.0
+      direction?: 'IN' | 'OUT'
+      currency?: ''
+      is_starred?: boolean
+      category?: ''
+      sort_by?: ''
+      sort?: ''
+      statement_id?: Array<string>
+      account_number?: Array<string>
+    }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.GENERATE_TRANSACTION_CSV}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
+  const handleDownloadFile = () => {
+    downloadCsv({
+      account_reporter_id: id as string,
+      search: '',
+    })
+  }
 
   return (
     <div>
@@ -131,8 +173,9 @@ const TransactionList = ({ token }: { token: string }) => {
             />
           </div>
           <div className="flex gap-4 w-[26rem] justify-end">
-            <button
-              className={`w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
+            <Button
+              variant="white-outline"
+              className={`w-[7.5rem]  `}
               onClick={() => setIsOpen(true)}
             >
               <div className="flex gap-2 items-center justify-center">
@@ -142,10 +185,25 @@ const TransactionList = ({ token }: { token: string }) => {
                 </div>
                 <IconFilter />
               </div>
-            </button>
+            </Button>
+            <Button
+              variant="dark"
+              onClick={handleDownloadFile}
+              disabled={!data?.transaction_list?.length}
+            >
+              <div className="flex gap-2 items-center">
+                Ekspor ke CSV
+                <IconDownload size={16} color="white" />
+              </div>
+            </Button>
           </div>
         </div>
-        <TransactionTable />
+        <TransactionTable
+          token={token}
+          refetch={refetch}
+          transactionList={data?.transaction_list || []}
+          isLoading={isLoading || isFetching}
+        />
         <Pagination
           currentPage={currentPage}
           totalPages={10}
