@@ -22,8 +22,11 @@ export const API_URL = {
   DELETE_STATEMENT: 'v1/statement/remove',
   DOWNLOAD_STATEMENT: 'v1/statement/file/download-temp-statement',
 
-  //transactions
+  // transactions
   TRANSACTION_LIST: 'v1/transaction/list',
   GENERATE_TRANSACTION_CSV: 'v1/transaction/generate/csv',
   UPDATE_TRANSACTION: 'v1/transaction',
+
+  // notification
+  NOTIF_LIST: 'v1/notification/list',
 }

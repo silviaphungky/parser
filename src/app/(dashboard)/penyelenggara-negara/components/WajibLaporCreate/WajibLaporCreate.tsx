@@ -166,9 +166,11 @@ const WajibLaporCreate = ({
             )}
           />
         </div>
-        <Button variant="dark" type="submit" loading={isPending} full>
-          Tambah
-        </Button>
+        <div className="mt-4">
+          <Button variant="dark" type="submit" loading={isPending} full>
+            Tambah
+          </Button>
+        </div>
       </form>
     </div>
   )

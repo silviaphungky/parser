@@ -32,11 +32,17 @@ const Sidebar = ({
       `}
       >
         {/* Sidebar Header with Logo */}
-        <div className="flex items-center justify-center mb-10">
+        <div className="flex items-center justify-center mb-8">
           {isCollapsed ? (
-            <Logo width={40} height={40} />
+            <div>
+              <img src="/logo-kpk.png" alt="logo" width={60} />
+              <div className="font-semibold text-base text-center">Parser</div>
+            </div>
           ) : (
-            <Logo width={180} height={35} />
+            <div className="flex gap-0 items-center">
+              <img src="/logo-kpk.png" width={125} alt="logo" />
+              <div className="font-semibold text-lg ">Parser</div>
+            </div>
           )}
         </div>
 
