@@ -266,13 +266,13 @@ const mockData: {
       value: number
     }
   }>
-  in: Array<{
+  IN: Array<{
     [key: string]: {
       frequency: number
       value: number
     }
   }>
-  out: Array<{
+  OUT: Array<{
     [key: string]: {
       frequency: number
       value: number
@@ -317,7 +317,7 @@ const mockData: {
       },
     },
   ],
-  in: [
+  IN: [
     {
       '2024-04-02': {
         frequency: 5,
@@ -355,7 +355,7 @@ const mockData: {
       },
     },
   ],
-  out: [
+  OUT: [
     {
       '2024-05-01': {
         frequency: 1,
@@ -401,7 +401,7 @@ const mockGroupByDate = {
       [key]: { ...item[key], levelFreq, levelVal },
     }
   }),
-  in: mockData.in.map((item) => {
+  IN: mockData.IN.map((item) => {
     const key = Object.keys(item)[0]
     let levelFreq = 0
     let levelVal = 0
@@ -424,7 +424,7 @@ const mockGroupByDate = {
       [key]: { ...item[key], levelFreq, levelVal },
     }
   }),
-  out: mockData.out.map((item) => {
+  OUT: mockData.OUT.map((item) => {
     const key = Object.keys(item)[0]
     let levelFreq = 0
     let levelVal = 0
@@ -536,7 +536,11 @@ const TransactionSummary = ({ token }: { token: string }) => {
           selectedDate={selectedDate}
           token={token}
         />
-        <FreqValueHeatmapDate data={mockGroupByDate} />
+        <FreqValueHeatmapDate
+          data={mockGroupByDate}
+          selectedCurrency={selectedCurrency}
+          token={token}
+        />
       </div>
     </div>
   )

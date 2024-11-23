@@ -1,11 +1,15 @@
 'use client'
-import { Card } from '@/components'
+import { Card, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import dayjs from 'dayjs'
 import { useState } from 'react'
 import { ContributionCalendar } from 'react-contribution-calendar'
 import { mockTransactionMethod } from '../TreemapSubjectFreqValue/TreemapSubjectFreqValue'
 import ReactSelect from 'react-select'
+import { useQuery } from '@tanstack/react-query'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import { useParams } from 'next/navigation'
 
 const mockTransactionType = [
   {
@@ -13,11 +17,11 @@ const mockTransactionType = [
     label: 'Transaksi Masuk/Keluar',
   },
   {
-    id: 'in',
+    id: 'IN',
     label: 'Transaksi Masuk',
   },
   {
-    id: 'out',
+    id: 'OUT',
     label: 'Transaksi Keluar',
   },
 ]
@@ -45,13 +49,13 @@ const yearList = [
 ]
 
 const color = {
-  in: [
+  IN: [
     'rgb(168, 230, 207, 0.8)',
     'rgb(112, 193, 179, 0.8)',
     'rgb(46, 133, 110, 0.8)',
     'rgb(19, 68, 52, 0.8)',
   ],
-  out: [
+  OUT: [
     'rgba(255, 204, 204, 0.8)',
     'rgba(255, 102, 102, 0.8)',
     'rgba(255, 51, 51, 0.8)',
@@ -67,7 +71,15 @@ const color = {
 
 const FreqValueHeatmapDate = ({
   data,
+  selectedCurrency,
+  token,
 }: {
+  selectedCurrency: {
+    id: string | number
+    label: string
+  }
+
+  token: string
   data: {
     all: Array<{
       [key in string]: {
@@ -77,7 +89,7 @@ const FreqValueHeatmapDate = ({
         levelVal: number
       }
     }>
-    in: Array<{
+    IN: Array<{
       [key in string]: {
         frequency: number
         value: number
@@ -85,7 +97,7 @@ const FreqValueHeatmapDate = ({
         levelVal: number
       }
     }>
-    out: Array<{
+    OUT: Array<{
       [key in string]: {
         levelFreq: number
         levelVal: number
@@ -95,6 +107,7 @@ const FreqValueHeatmapDate = ({
     }>
   }
 }) => {
+  const { id } = useParams()
   const [selectedYear, setSelectedYear] = useState(yearList[0])
   const [selectedType, setSelectedType] = useState<{
     id: string | number
@@ -120,7 +133,7 @@ const FreqValueHeatmapDate = ({
     setSelectedYear(year)
   }
 
-  const dataBasedOnType = data[selectedType.id as 'in' | 'out' | 'all']
+  const dataBasedOnType = data[selectedType.id as 'IN' | 'OUT' | 'all']
   const formattedData = dataBasedOnType.map((item) => {
     const key = Object.keys(item)[0]
     return {
@@ -132,6 +145,38 @@ const FreqValueHeatmapDate = ({
             : item[key].levelVal,
       },
     }
+  })
+
+  const {
+    data: heatmapData,
+    isLoading,
+    isFetching,
+  } = useQuery<{
+    data: {
+      summary_calendar: Array<any>
+    }
+  }>({
+    queryKey: ['heatmapData', selectedYear, selectedCurrency.id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TOP_TRANSACTION}/${id}/summary/calendar`,
+
+        {
+          params: {
+            year: selectedYear,
+            currency: selectedCurrency.id,
+            direction: '',
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
   })
 
   return (
@@ -208,36 +253,42 @@ const FreqValueHeatmapDate = ({
         </div>
       </div>
       <div className="contributionCalendar__Container flex justify-between">
-        <ContributionCalendar
-          data={formattedData}
-          start={
-            selectedYear
-              ? dayjs(new Date(`${selectedYear}/1/1`)).format('YYYY-MM-DD')
-              : `${dayjs(new Date()).subtract(1, 'year').format('YYYY-MM-DD')}`
-          }
-          end={
-            selectedYear
-              ? dayjs(new Date(`${selectedYear}/12/31`)).format('YYYY-MM-DD')
-              : `${dayjs(new Date()).format('YYYY-MM-DD')}`
-          }
-          daysOfTheWeek={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
-          textColor="#1F2328"
-          startsOnSunday={true}
-          includeBoundary={true}
-          style={{
-            borderCollapse: 'unset !important',
-          }}
-          theme={{
-            level0: '#E6EFF5',
-            level1: color[selectedType.id as 'in' | 'out'][0],
-            level2: color[selectedType.id as 'in' | 'out'][1],
-            level3: color[selectedType.id as 'in' | 'out'][2],
-            level4: color[selectedType.id as 'in' | 'out'][3],
-          }}
-          cr={2}
-          onCellClick={(e, data) => console.log({ data })}
-          scroll={false}
-        />
+        {isLoading ? (
+          <Shimmer />
+        ) : (
+          <ContributionCalendar
+            data={formattedData}
+            start={
+              selectedYear
+                ? dayjs(new Date(`${selectedYear}/1/1`)).format('YYYY-MM-DD')
+                : `${dayjs(new Date())
+                    .subtract(1, 'year')
+                    .format('YYYY-MM-DD')}`
+            }
+            end={
+              selectedYear
+                ? dayjs(new Date(`${selectedYear}/12/31`)).format('YYYY-MM-DD')
+                : `${dayjs(new Date()).format('YYYY-MM-DD')}`
+            }
+            daysOfTheWeek={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
+            textColor="#1F2328"
+            startsOnSunday={true}
+            includeBoundary={true}
+            style={{
+              borderCollapse: 'unset !important',
+            }}
+            theme={{
+              level0: '#E6EFF5',
+              level1: color[selectedType.id as 'IN' | 'OUT'][0],
+              level2: color[selectedType.id as 'IN' | 'OUT'][1],
+              level3: color[selectedType.id as 'IN' | 'OUT'][2],
+              level4: color[selectedType.id as 'IN' | 'OUT'][3],
+            }}
+            cr={2}
+            onCellClick={(e, data) => console.log({ data })}
+            scroll={false}
+          />
+        )}
       </div>
       <div>
         <div className="overflow-auto pr-6 flex gap-2">

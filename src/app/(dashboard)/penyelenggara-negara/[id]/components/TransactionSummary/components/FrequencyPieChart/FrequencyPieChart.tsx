@@ -1,5 +1,5 @@
 'use client'
-import { Card, PieChart } from '@/components'
+import { Card, PieChart, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
@@ -222,40 +222,44 @@ const FrequencyPieChart = ({
               Transfer Masuk
             </div>
             <div>
-              <PieChart
-                chartData={dataByGroup.in[
-                  selectedBased.id as 'freq' | 'value'
-                ].sort((a, b) => b.value - a.value)}
-                value={50}
-                size={350}
-                colorMap={pieChartColorMap}
-                label={(props: any) => (
-                  <>
-                    <text
-                      className="text-sm"
-                      x={props.cx}
-                      y={props.cy - 16}
-                      textAnchor="middle"
-                    >
-                      {selectedGroup.label}
-                    </text>
-                    <text
-                      className="font-semibold"
-                      x={props.cx}
-                      y={props.cy + 16}
-                      textAnchor="middle"
-                    >
-                      {numberAbbv(
-                        dataByGroup.in[selectedBased.id as 'freq' | 'value']
-                          .map((item) => item.value)
-                          .reduce((acc, current) => {
-                            return acc + current
-                          })
-                      )}
-                    </text>
-                  </>
-                )}
-              />
+              {isLoading ? (
+                <Shimmer />
+              ) : (
+                <PieChart
+                  chartData={dataByGroup.in[
+                    selectedBased.id as 'freq' | 'value'
+                  ].sort((a, b) => b.value - a.value)}
+                  value={50}
+                  size={350}
+                  colorMap={pieChartColorMap}
+                  label={(props: any) => (
+                    <>
+                      <text
+                        className="text-sm"
+                        x={props.cx}
+                        y={props.cy - 16}
+                        textAnchor="middle"
+                      >
+                        {selectedGroup.label}
+                      </text>
+                      <text
+                        className="font-semibold"
+                        x={props.cx}
+                        y={props.cy + 16}
+                        textAnchor="middle"
+                      >
+                        {numberAbbv(
+                          dataByGroup.in[selectedBased.id as 'freq' | 'value']
+                            .map((item) => item.value)
+                            .reduce((acc, current) => {
+                              return acc + current
+                            })
+                        )}
+                      </text>
+                    </>
+                  )}
+                />
+              )}
             </div>
           </div>
 
@@ -267,40 +271,46 @@ const FrequencyPieChart = ({
                 </div>
 
                 <div>
-                  <PieChart
-                    chartData={dataByGroup.out[
-                      selectedBased.id as 'freq' | 'value'
-                    ].sort((a, b) => b.value - a.value)}
-                    value={50}
-                    size={350}
-                    colorMap={pieChartColorMap}
-                    label={(props: any) => (
-                      <>
-                        <text
-                          className="text-sm"
-                          x={props.cx}
-                          y={props.cy - 16}
-                          textAnchor="middle"
-                        >
-                          {selectedGroup.label}
-                        </text>
-                        <text
-                          className="font-semibold"
-                          x={props.cx}
-                          y={props.cy + 16}
-                          textAnchor="middle"
-                        >
-                          {numberAbbv(
-                            dataByGroup.in[selectedBased.id as 'freq' | 'value']
-                              .map((item) => item.value)
-                              .reduce((acc, current) => {
-                                return acc + current
-                              })
-                          )}
-                        </text>
-                      </>
-                    )}
-                  />
+                  {isLoadingOut ? (
+                    <Shimmer />
+                  ) : (
+                    <PieChart
+                      chartData={dataByGroup.out[
+                        selectedBased.id as 'freq' | 'value'
+                      ].sort((a, b) => b.value - a.value)}
+                      value={50}
+                      size={350}
+                      colorMap={pieChartColorMap}
+                      label={(props: any) => (
+                        <>
+                          <text
+                            className="text-sm"
+                            x={props.cx}
+                            y={props.cy - 16}
+                            textAnchor="middle"
+                          >
+                            {selectedGroup.label}
+                          </text>
+                          <text
+                            className="font-semibold"
+                            x={props.cx}
+                            y={props.cy + 16}
+                            textAnchor="middle"
+                          >
+                            {numberAbbv(
+                              dataByGroup.in[
+                                selectedBased.id as 'freq' | 'value'
+                              ]
+                                .map((item) => item.value)
+                                .reduce((acc, current) => {
+                                  return acc + current
+                                })
+                            )}
+                          </text>
+                        </>
+                      )}
+                    />
+                  )}
                 </div>
               </div>
             </div>
