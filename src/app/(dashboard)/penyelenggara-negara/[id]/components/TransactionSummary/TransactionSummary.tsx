@@ -449,7 +449,7 @@ const mockGroupByDate = {
   }),
 }
 
-const TransactionSummary = () => {
+const TransactionSummary = ({ token }: { token: string }) => {
   const [selectedBank, setSelectedBank] = useState<{
     id: string | number
     label: string
@@ -509,13 +509,27 @@ const TransactionSummary = () => {
         />
       </div>
       <div className="flex gap-4">
-        <AssetChart />
-        <Top5Ranking data={topTransactionValueData} />
+        <AssetChart
+          selectedCurrency={selectedCurrency}
+          selectedDate={selectedDate}
+          token={token}
+        />
+        <Top5Ranking
+          selectedCurrency={selectedCurrency}
+          selectedDate={selectedDate}
+          token={token}
+          data={topTransactionValueData}
+        />
       </div>
 
       <div className="mt-10">
         <h2 className="text-xl font-semibold mb-4">Analisis Transaksi</h2>
-        <TreemapSubjectFreqValue data={dataTreemap} />
+        <TreemapSubjectFreqValue
+          selectedCurrency={selectedCurrency}
+          selectedDate={selectedDate}
+          token={token}
+          data={dataTreemap}
+        />
         <FrequencyPieChart data={dataFreqPiechart} />
         <FreqValueHeatmapDate data={mockGroupByDate} />
       </div>

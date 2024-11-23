@@ -73,6 +73,19 @@ const TransactionCategoryModal = ({
       ),
   })
 
+  const { mutate: resetCategory } = useMutation({
+    mutationFn: () =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/category/reset`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpenCategoryModal(false)}>
       <h2 className="font-semibold text-lg">Sesuaikan Kategori</h2>
@@ -104,7 +117,17 @@ const TransactionCategoryModal = ({
         <button
           className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
           onClick={() => {
-            setIsOpenCategoryModal(false)
+            resetCategory(undefined, {
+              onSuccess: () => {
+                toast.success(`Berhasil mengatur ulang ke kategori awal`)
+                onClose()
+              },
+              onError: (error: any) => {
+                toast.error(
+                  `Gagal mengatur ulang ke kategori awal: ${error?.response?.data?.message}`
+                )
+              },
+            })
           }}
         >
           Atur Ulang ke Kategori Awal
@@ -123,7 +146,6 @@ const TransactionCategoryModal = ({
                   setSelectedCategory({ id: '', label: '' })
                 },
                 onError: (error: any) => {
-                  console.log('gagal update category', error)
                   toast.error(
                     `Gagal memperbarui kategori: ${error?.response?.data?.message}`
                   )

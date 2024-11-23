@@ -26,6 +26,7 @@ import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import { useParams } from 'next/navigation'
 import toast from 'react-hot-toast'
+import Button from '@/components/Button'
 
 export type TransactionData = {
   id: string
@@ -528,6 +529,19 @@ const TransactionTable = ({
     }
   }, [selected.id])
 
+  const { mutate: verifyBank, isPending: isPendingVerif } = useMutation({
+    mutationFn: () =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity/verify`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   return (
     <>
       <TransactionBankDestModal
@@ -578,16 +592,29 @@ const TransactionTable = ({
               >
                 Batal
               </button>
-              <button
+              <Button
+                loading={isPendingVerif}
+                variant="dark"
                 onClick={() => {
-                  // hit BE API
-                  setIsOpenVerifModal(false)
-                  setSelected({} as TransactionData)
+                  verifyBank(undefined, {
+                    onSuccess: () => {
+                      toast.success('Berhasil mengecek info rekening transaksi')
+                      setIsOpenVerifModal(false)
+                      setSelected({} as TransactionData)
+                      refetch()
+                    },
+                    onError: (error: any) => {
+                      setIsOpenVerifModal(false)
+                      setSelected({} as TransactionData)
+                      toast.error(
+                        `Gagal mengecek info rekening transaksi: ${error?.response?.data?.message}`
+                      )
+                    },
+                  })
                 }}
-                className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
               >
                 Cek
-              </button>
+              </Button>
             </div>
           </>
         ) : (

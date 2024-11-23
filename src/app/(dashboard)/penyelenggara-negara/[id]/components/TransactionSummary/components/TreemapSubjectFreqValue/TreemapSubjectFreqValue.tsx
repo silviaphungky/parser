@@ -1,16 +1,21 @@
 'use client'
-import { Card, Treemap } from '@/components'
+import { Card, Shimmer, Treemap } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import ReactSelect from 'react-select'
 
 const mockTransactionType = [
   {
-    id: 'in',
+    id: 'IN',
     label: 'Transaksi Masuk',
   },
   {
-    id: 'out',
+    id: 'OUT',
     label: 'Transaksi Keluar',
   },
 ]
@@ -50,13 +55,26 @@ export const mockTransactionMethod = [
 ]
 
 const TreemapSubjectFreqValue = ({
+  selectedCurrency,
+  selectedDate,
+  token,
   data,
 }: {
+  selectedCurrency: {
+    id: string | number
+    label: string
+  }
+  selectedDate: {
+    from: Date | undefined
+    to: Date | undefined
+  }
+  token: string
   data: {
     in: Array<Record<string, string | number | Array<{}>>>
     out: Array<Record<string, string | number | Array<{}>>>
   }
 }) => {
+  const { id } = useParams()
   const [selectedType, setSelectedType] = useState<{
     id: string | number
     label: string
@@ -65,6 +83,60 @@ const TreemapSubjectFreqValue = ({
   const handleChangeType = (option: { id: string | number; label: string }) => {
     setSelectedType(option)
   }
+
+  const {
+    data: treemapData,
+    isLoading,
+    isFetching,
+  } = useQuery<{
+    data: {
+      in: {
+        summary: {
+          count_transaction: number
+          total_transaction: number
+          currency: Array<string>
+        }
+        summary_entity: Array<string>
+      }
+      out: {
+        summary: {
+          count_transaction: number
+          total_transaction: number
+          currency: Array<string>
+        }
+        summary_entity: Array<string>
+      }
+    }
+  }>({
+    queryKey: [
+      'treemapData',
+      selectedDate.from,
+      selectedDate.to,
+      selectedCurrency.id,
+      selectedType.id,
+    ],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TOP_TRANSACTION}/${id}/summary/frequency`,
+
+        {
+          params: {
+            start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
+            end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
+            currency: selectedCurrency.id,
+            direction: selectedType.id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
 
   return (
     <div className="mb-4">
@@ -133,14 +205,19 @@ const TreemapSubjectFreqValue = ({
           </div>
         </div>
         <div>
-          <Treemap
-            data={data[selectedType.id as 'in' | 'out']}
-            colorScale={
-              colorScale[selectedType.id as 'in' | 'out'] as Array<string>
-            }
-            width={600}
-            height={400}
-          />
+          {(isLoading || isFetching) && <Shimmer />}
+          {!isLoading && !isFetching && (
+            <>
+              <Treemap
+                data={data[selectedType.id as 'in' | 'out']}
+                colorScale={
+                  colorScale[selectedType.id as 'in' | 'out'] as Array<string>
+                }
+                width={600}
+                height={400}
+              />
+            </>
+          )}
           <div className=" mt-8 mb-4 flex gap-4 justify-between">
             <div className="flex gap-1 items-end">
               <div className="text-xs">Frekuensi transaksi rendah</div>

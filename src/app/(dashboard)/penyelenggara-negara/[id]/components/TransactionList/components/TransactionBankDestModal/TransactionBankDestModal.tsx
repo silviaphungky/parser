@@ -1097,6 +1097,19 @@ const TransactionBankDestModal = ({
       ),
   })
 
+  const { mutate: resetDestBank } = useMutation({
+    mutationFn: () =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity/reset`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
   const handleUpdate = async (value: { name: string; accountNo?: string }) => {
     mutate(
       {
@@ -1120,13 +1133,17 @@ const TransactionBankDestModal = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpenDestBankModal(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => setIsOpenDestBankModal(false)}
+      width={'w-[600px]'}
+    >
       <h2 className="font-semibold text-lg">Sesuaikan Info Lawan Transaksi</h2>
       <div className="mt-2 text-sm mb-4">
         Gunakan form ini untuk mengedit informasi lawan transaksi. Pastikan
         informasi sudah benar sebelum menyimpan perubahan.
       </div>
-      <form>
+      <form onSubmit={(e) => e.preventDefault()}>
         <Controller
           name="name"
           control={control}
@@ -1193,10 +1210,23 @@ const TransactionBankDestModal = ({
           <button
             className="bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-80"
             onClick={() => {
-              setIsOpenDestBankModal(false)
+              resetDestBank(undefined, {
+                onSuccess: () => {
+                  toast.success(
+                    'Berhasil mengatur ulang ke info lawan transaksi awal'
+                  )
+                  onClose()
+                  setSelectedBank({ id: '', label: '' })
+                },
+                onError: (error: any) => {
+                  toast.error(
+                    `Gagal mengatur ulang ke info lawan transaksi awal: ${error?.response?.data?.message}`
+                  )
+                },
+              })
             }}
           >
-            Atur Ulang ke Kategori Awal
+            Atur Ulang ke Info Lawan Transaksi Awal
           </button>
 
           <button

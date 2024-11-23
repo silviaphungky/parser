@@ -506,6 +506,7 @@ const PNTable = ({
                   errorMessage={fieldState.error?.message}
                 >
                   <AsyncSelect
+                    cacheOptions={true}
                     placeholder="Masukkan NIK anggota keluarga..."
                     {...field}
                     loadOptions={searchNIK}

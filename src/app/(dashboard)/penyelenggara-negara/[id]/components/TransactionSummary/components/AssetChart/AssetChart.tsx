@@ -1,7 +1,12 @@
 import IconWallet from '@/icons/IconWallet'
 import { transactionData } from '../../TransactionSummary'
 import { thousandSeparator } from '@/utils/thousanSeparator'
-import { AreaChart, Card } from '@/components'
+import { AreaChart, Card, Shimmer } from '@/components'
+import { useParams } from 'next/navigation'
+import { useQuery } from '@tanstack/react-query'
+import { API_URL } from '@/constants/apiUrl'
+import dayjs from 'dayjs'
+import axiosInstance from '@/utils/axiosInstance'
 
 const data = [
   {
@@ -48,7 +53,58 @@ const data = [
   },
 ]
 
-const AssetChart = () => {
+const AssetChart = ({
+  selectedCurrency,
+  selectedDate,
+  token,
+}: {
+  selectedCurrency: {
+    id: string | number
+    label: string
+  }
+  selectedDate: {
+    from: Date | undefined
+    to: Date | undefined
+  }
+  token: string
+}) => {
+  const { id } = useParams()
+  const {
+    data: chartData,
+    isLoading,
+    isFetching,
+  } = useQuery<{
+    transaction_list: Array<any>
+  }>({
+    queryKey: [
+      'chartData',
+      selectedDate.from,
+      selectedDate.to,
+      selectedCurrency.id,
+    ],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TOP_TRANSACTION}/${id}/summary/line-chart`,
+
+        {
+          params: {
+            start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
+            end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
+            currency: selectedCurrency.id,
+            group_by: 'weekly',
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
   return (
     <Card className="flex-1">
       <div className="flex gap-2">
@@ -58,18 +114,21 @@ const AssetChart = () => {
         <div>
           <div className="text-sm">Saldo</div>
           <div className="text-xl font-bold">{`Rp ${thousandSeparator(
-            transactionData.balance.total
+            transactionData.balance.total || 0
           )}`}</div>
         </div>
       </div>
       <div className="mt-4">
-        <AreaChart
-          data={data}
-          height={300}
-          width={500}
-          yLegend="saldo"
-          xAxis="name"
-        />
+        {(isLoading || isFetching) && <Shimmer />}
+        {!isLoading && !isFetching && (
+          <AreaChart
+            data={data}
+            height={300}
+            width={500}
+            yLegend="saldo"
+            xAxis="name"
+          />
+        )}
       </div>
     </Card>
   )

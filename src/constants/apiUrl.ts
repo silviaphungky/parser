@@ -18,6 +18,7 @@ export const API_URL = {
   UPLOAD_STATEMENT: 'v1/statement/upload',
   STATEMENT_LIST: 'v1/statement',
   VALIDATE_STATEMENT_DUPLICATE: 'v1/statement/file/check-hash',
+  TOP_TRANSACTION: 'v1/statement',
 
   //transactions
   TRANSACTION_LIST: 'v1/transaction/list',
