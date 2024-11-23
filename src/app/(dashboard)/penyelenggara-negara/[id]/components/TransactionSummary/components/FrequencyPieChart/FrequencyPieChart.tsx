@@ -1,7 +1,12 @@
 'use client'
 import { Card, PieChart } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
 import { numberAbbv } from '@/utils/numberAbbv'
+import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import { useParams } from 'next/navigation'
 import { useState } from 'react'
 
 const pieChartColorMap = [
@@ -29,11 +34,11 @@ const pieChartColorMap = [
 
 const mockFreqFilter = [
   {
-    id: 'category',
+    id: 'CATEGORY',
     label: 'Kategori',
   },
   {
-    id: 'transactionMethod',
+    id: 'TRANSACTION_METHOD',
     label: 'Metode Transaksi',
   },
 ]
@@ -51,9 +56,21 @@ const mockBasedOn = [
 
 const FrequencyPieChart = ({
   data,
+  selectedCurrency,
+  selectedDate,
+  token,
 }: {
+  selectedCurrency: {
+    id: string | number
+    label: string
+  }
+  selectedDate: {
+    from: Date | undefined
+    to: Date | undefined
+  }
+  token: string
   data: {
-    category: {
+    CATEGORY: {
       in: {
         value: Array<{ name: string; value: number }>
         freq: Array<{ name: string; value: number }>
@@ -63,7 +80,7 @@ const FrequencyPieChart = ({
         freq: Array<{ name: string; value: number }>
       }
     }
-    transactionMethod: {
+    TRANSACTION_METHOD: {
       in: {
         value: Array<{ name: string; value: number }>
         freq: Array<{ name: string; value: number }>
@@ -75,6 +92,7 @@ const FrequencyPieChart = ({
     }
   }
 }) => {
+  const { id } = useParams()
   const [selectedGroup, setSelectedGroup] = useState<{
     id: string | number
     label: string
@@ -98,7 +116,84 @@ const FrequencyPieChart = ({
     setSelectedBased(option)
   }
 
-  const dataByGroup = data[selectedGroup.id as 'category' | 'transactionMethod']
+  const {
+    data: pieChartDataIn,
+    isLoading,
+    isFetching,
+  } = useQuery<{
+    data: {
+      summary_pie_chart: Array<any>
+    }
+  }>({
+    queryKey: [
+      'pieChartDataIn',
+      selectedDate.from,
+      selectedDate.to,
+      selectedCurrency.id,
+    ],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
+
+        {
+          params: {
+            start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
+            end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
+            currency: selectedCurrency.id,
+            direction: 'IN',
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
+  const {
+    data: pieChartDataOut,
+    isLoading: isLoadingOut,
+    isFetching: isFetcingOut,
+  } = useQuery<{
+    data: {
+      summary_pie_chart: Array<any>
+    }
+  }>({
+    queryKey: [
+      'pieChartDataOut',
+      selectedDate.from,
+      selectedDate.to,
+      selectedCurrency.id,
+    ],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
+
+        {
+          params: {
+            start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
+            end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
+            currency: selectedCurrency.id,
+            direction: 'IN',
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
+  const dataByGroup =
+    data[selectedGroup.id as 'CATEGORY' | 'TRANSACTION_METHOD']
 
   return (
     <div className="flex gap-4 mb-4">

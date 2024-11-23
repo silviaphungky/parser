@@ -86,7 +86,7 @@ const topTransactionValueData = {
 }
 
 const dataTreemap = {
-  in: [
+  IN: [
     {
       name: 'Ana',
       bank: 'BCA',
@@ -144,7 +144,7 @@ const dataTreemap = {
       frequency: 3,
     },
   ],
-  out: [
+  OUT: [
     {
       name: 'Ana',
       bank: 'BCA',
@@ -205,7 +205,7 @@ const dataTreemap = {
 }
 
 const dataFreqPiechart = {
-  category: {
+  CATEGORY: {
     in: {
       value: [
         { name: 'Gaji/Pendapatan', value: 100000 },
@@ -231,7 +231,7 @@ const dataFreqPiechart = {
       ],
     },
   },
-  transactionMethod: {
+  TRANSACTION_METHOD: {
     in: {
       value: [
         { name: 'Transfer Bank', value: 199920 },
@@ -530,7 +530,12 @@ const TransactionSummary = ({ token }: { token: string }) => {
           token={token}
           data={dataTreemap}
         />
-        <FrequencyPieChart data={dataFreqPiechart} />
+        <FrequencyPieChart
+          data={dataFreqPiechart}
+          selectedCurrency={selectedCurrency}
+          selectedDate={selectedDate}
+          token={token}
+        />
         <FreqValueHeatmapDate data={mockGroupByDate} />
       </div>
     </div>

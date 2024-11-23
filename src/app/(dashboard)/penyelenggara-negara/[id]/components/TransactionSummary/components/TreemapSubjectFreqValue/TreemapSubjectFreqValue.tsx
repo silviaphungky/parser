@@ -21,7 +21,7 @@ const mockTransactionType = [
 ]
 
 const colorScale = {
-  in: [
+  IN: [
     'rgb(168, 230, 207, 0.7)',
     'rgb(112, 193, 179, 0.7)',
     'rgb(69, 162, 158, 0.7)',
@@ -32,7 +32,7 @@ const colorScale = {
     'rgb(19, 68, 52, 0.7)',
     'rgb(11, 48, 38, 0.7)',
   ],
-  out: [
+  OUT: [
     'rgba(246, 164, 164, 0.7)',
     'rgba(255, 153, 153, 0.7)',
     'rgba(255, 102, 102, 0.7)',
@@ -70,8 +70,8 @@ const TreemapSubjectFreqValue = ({
   }
   token: string
   data: {
-    in: Array<Record<string, string | number | Array<{}>>>
-    out: Array<Record<string, string | number | Array<{}>>>
+    IN: Array<Record<string, string | number | Array<{}>>>
+    OUT: Array<Record<string, string | number | Array<{}>>>
   }
 }) => {
   const { id } = useParams()
@@ -90,22 +90,7 @@ const TreemapSubjectFreqValue = ({
     isFetching,
   } = useQuery<{
     data: {
-      in: {
-        summary: {
-          count_transaction: number
-          total_transaction: number
-          currency: Array<string>
-        }
-        summary_entity: Array<string>
-      }
-      out: {
-        summary: {
-          count_transaction: number
-          total_transaction: number
-          currency: Array<string>
-        }
-        summary_entity: Array<string>
-      }
+      summary_frequency: Array<any>
     }
   }>({
     queryKey: [
@@ -209,13 +194,14 @@ const TreemapSubjectFreqValue = ({
           {!isLoading && !isFetching && (
             <>
               <Treemap
-                data={data[selectedType.id as 'in' | 'out']}
+                data={data[selectedType.id as 'IN' | 'OUT']}
                 colorScale={
-                  colorScale[selectedType.id as 'in' | 'out'] as Array<string>
+                  colorScale[selectedType.id as 'IN' | 'OUT'] as Array<string>
                 }
                 width={600}
                 height={400}
               />
+              {/* TODO: KASIH EMPTY STATE */}
             </>
           )}
           <div className=" mt-8 mb-4 flex gap-4 justify-between">
@@ -224,25 +210,25 @@ const TreemapSubjectFreqValue = ({
               <div
                 className={`w-[0.75rem] h-[0.75rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][0],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][0],
                 }}
               />
               <div
                 className={`w-[0.75rem] h-[0.75rem]`}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][1],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][1],
                 }}
               />
               <div
                 className={`w-[0.75rem] h-[0.75rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][2],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][2],
                 }}
               />
               <div
                 className={`w-[0.75rem] h-[0.75rem]`}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][3],
                 }}
               />
               <div className="text-xs">Frekuensi transaksi tinggi</div>
@@ -253,25 +239,25 @@ const TreemapSubjectFreqValue = ({
               <div
                 className={`w-[0.75rem] h-[0.75rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][3],
                 }}
               />
               <div
                 className={`w-[0.9rem] h-[0.9rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][3],
                 }}
               />
               <div
                 className={`w-[1.1rem] h-[1.1rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][3],
                 }}
               />
               <div
                 className={`w-[1.25rem] h-[1.25rem] `}
                 style={{
-                  background: colorScale[selectedType.id as 'in' | 'out'][3],
+                  background: colorScale[selectedType.id as 'IN' | 'OUT'][3],
                 }}
               />
               <div className="text-xs">Nominal transaksi tinggi</div>
