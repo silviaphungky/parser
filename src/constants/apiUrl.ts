@@ -19,6 +19,8 @@ export const API_URL = {
   STATEMENT_LIST: 'v1/statement',
   VALIDATE_STATEMENT_DUPLICATE: 'v1/statement/file/check-hash',
   TOP_TRANSACTION: 'v1/statement',
+  DELETE_STATEMENT: 'v1/statement/remove',
+  DOWNLOAD_STATEMENT: 'v1/statement/file/download-temp-statement',
 
   //transactions
   TRANSACTION_LIST: 'v1/transaction/list',

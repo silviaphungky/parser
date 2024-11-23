@@ -136,6 +136,8 @@ const TransactionStatementList = ({ token }: { token: string }) => {
           </Button>
         </div>
         <TransactionStatementsTable
+          token={token}
+          refetch={refetch}
           statementList={data?.statement_list || []}
           isLoading={isLoading || isFetching}
         />

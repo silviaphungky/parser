@@ -497,6 +497,7 @@ const TransactionSummary = ({ token }: { token: string }) => {
     <div className="mt-0">
       <div className="mb-12">
         <SumaryGlobalFilter
+          token={token}
           selectedBank={selectedBank}
           initialRange={{
             from: dayjs(new Date()).subtract(1, 'months').toDate(),

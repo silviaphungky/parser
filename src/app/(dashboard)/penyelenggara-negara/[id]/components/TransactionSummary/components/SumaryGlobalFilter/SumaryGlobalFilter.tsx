@@ -1,5 +1,9 @@
 import DatePickerRange from '@/components/DatePickerRange'
 import InputDropdown from '@/components/InputDropdown'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import { useQuery } from '@tanstack/react-query'
+import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
 import ReactSelect from 'react-select'
 
@@ -19,6 +23,7 @@ const currencyOptions = [
 ]
 
 const SumaryGlobalFilter = ({
+  token,
   selectedCurrency,
   selectedBank,
   initialRange,
@@ -26,6 +31,7 @@ const SumaryGlobalFilter = ({
   handleChangeDate,
   handleChangeCurrency,
 }: {
+  token: string
   selectedCurrency: { id: string | number; label: string }
   selectedBank: { id: string | number; label: string }
   initialRange?: { from: Date | undefined; to: Date | undefined }
@@ -48,9 +54,36 @@ const SumaryGlobalFilter = ({
     to: Date | undefined
   }) => void
 }) => {
+  const { id } = useParams()
+
   useEffect(() => {
     handleChangeCurrency(currencyOptions[0])
   }, [])
+
+  const {
+    data = { account_reporter_and_family_statement_list: [] },
+    isLoading,
+    refetch,
+  } = useQuery<{
+    account_reporter_and_family_statement_list: Array<any>
+  }>({
+    queryKey: ['accountBankList'],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.STATEMENT_LIST}/${id}/family/list`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
   return (
     <div className="flex gap-4 justify-end">
       <div className="w-[10rem]">
