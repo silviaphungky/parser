@@ -305,7 +305,7 @@ const TransactionStatementsTable = ({
                   key={header.id}
                   className={`sticky top-0 px-2 py-3 text-left text-sm font-semibold capitalize tracking-wider bg-gray-100 ${
                     header.column.getIsSorted() ? 'bg-gray-200' : 'bg-gray-100'
-                  }`}
+                  } ${header.column.getCanSort() ? 'cursor-pointer' : ''}`}
                   onClick={header.column.getToggleSortingHandler()}
                 >
                   {header.isPlaceholder ? null : (

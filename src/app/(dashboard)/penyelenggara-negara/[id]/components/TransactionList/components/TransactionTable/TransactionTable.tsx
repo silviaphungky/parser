@@ -684,7 +684,7 @@ const TransactionTable = ({
                         header.column.getIsSorted()
                           ? 'bg-gray-200'
                           : 'bg-gray-100'
-                      }`}
+                      } ${header.column.getCanSort() ? 'cursor-pointer' : ''}`}
                       onClick={header.column.getToggleSortingHandler()}
                     >
                       {header.isPlaceholder ? null : (

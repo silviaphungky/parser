@@ -147,7 +147,7 @@ const PNTable = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const [sorting, setSorting] = useState<ColumnSort[]>([])
+  const [sorting, setSorting]
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const refDropdown = useRef(null)
@@ -641,7 +641,7 @@ const PNTable = ({
                       header.column.getIsSorted()
                         ? 'bg-gray-200'
                         : 'bg-gray-100'
-                    }`}
+                    } ${header.column.getCanSort() ? 'cursor-pointer' : ''}`}
                     onClick={header.column.getToggleSortingHandler()}
                   >
                     {header.isPlaceholder ? null : (
