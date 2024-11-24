@@ -1,7 +1,7 @@
 'use client'
 import { Card, Pagination, SearchDropdown } from '@/components'
 import { TransactionFilter, TransactionTable } from './components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconDownload, IconFilter } from '@/icons'
 import { useParams } from 'next/navigation'
 import axiosInstance from '@/utils/axiosInstance'
@@ -9,10 +9,11 @@ import { API_URL } from '@/constants/apiUrl'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '@/components/Button'
 import { baseUrl } from '../UploadBankStatement/UploadBankStatement'
+import useDebounce from '@/utils/useDebounce'
 
 const searchFields = [
-  { label: 'Nama Akun Lawan Transaksi', id: 'targetBankName' },
-  { label: 'Remark', id: 'remark' },
+  { label: 'Nama Akun Lawan Transaksi', id: 'search_entity_name' },
+  { label: 'Remark', id: 'search' },
 ]
 
 const transactionTypeOptions = [
@@ -59,22 +60,19 @@ const currencyOptions = [
 const TransactionList = ({ token }: { token: string }) => {
   const { id } = useParams()
   const [currentPage, setCurrentPage] = useState(1)
-  const [selectedSort, setSelectedSort] = useState<{
-    id: string | number
-    label: string
-  }>({ id: '', label: '' })
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
+  const [searchBy, setSearchBy] = useState('')
+  const [keyword, setKeyword] = useState('')
 
   const handleSearch = (query: string, field: string) => {
-    // Implement your filtering logic based on the query and field here
-    console.log(`Searching for "${query}" in field "${field}"`)
-    // Example: Apply search logic to filter your table data and update state
+    setKeyword(query)
+    setSearchBy(field)
   }
 
-  const handleSort = (option: { id: string | number; label: string }) => {
-    setSelectedSort(option)
-  }
+  const debouncedValue = useDebounce(keyword, 500)
 
   const { data, isLoading, refetch, isFetching } = useQuery<{
     transaction_list: Array<any>
@@ -85,7 +83,16 @@ const TransactionList = ({ token }: { token: string }) => {
       total_page: number
     }
   }>({
-    queryKey: ['transactionList', currentPage, itemsPerPage, id],
+    queryKey: [
+      'transactionList',
+      currentPage,
+      itemsPerPage,
+      id,
+      sortBy,
+      sortDir,
+      debouncedValue,
+      searchBy,
+    ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TRANSACTION_LIST}`,
@@ -95,6 +102,7 @@ const TransactionList = ({ token }: { token: string }) => {
             page: currentPage,
             limit: itemsPerPage,
             account_reporter_id: id,
+            [searchBy]: debouncedValue,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -147,6 +155,10 @@ const TransactionList = ({ token }: { token: string }) => {
       search: '',
     })
   }
+
+  useEffect(() => {
+    setCurrentPage(1)
+  }, [debouncedValue, searchBy, itemsPerPage])
 
   return (
     <div>
@@ -203,6 +215,8 @@ const TransactionList = ({ token }: { token: string }) => {
           refetch={refetch}
           transactionList={data?.transaction_list || []}
           isLoading={isLoading || isFetching}
+          setSortBy={setSortBy}
+          setSortDir={setSortDir}
         />
         <Pagination
           currentPage={currentPage}

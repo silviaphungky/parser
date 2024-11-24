@@ -1,4 +1,11 @@
-import { ReactNode, useEffect, useRef, useState } from 'react'
+import {
+  Dispatch,
+  ReactNode,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import {
   IconBCA,
   IconBNI,
@@ -12,6 +19,7 @@ import {
   getCoreRowModel,
   flexRender,
   createColumnHelper,
+  ColumnSort,
 } from '@tanstack/react-table'
 import { Modal, Shimmer } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
@@ -247,7 +255,11 @@ const TransactionTable = ({
   transactionList,
   refetch,
   isLoading,
+  setSortBy,
+  setSortDir,
 }: {
+  setSortBy: Dispatch<SetStateAction<string | undefined>>
+  setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   token: string
   refetch: () => void
   transactionList: Array<{}>
@@ -261,7 +273,13 @@ const TransactionTable = ({
   const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
   const [isOpenDestBankModal, setIsOpenDestBankModal] = useState(false)
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState<ColumnSort[]>([])
+
+  useEffect(() => {
+    setSortBy(sorting[0]?.id)
+    setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
+  }, [sorting])
+
   useOutsideClick(refDropdown, () => {
     setSelected({} as TransactionData)
     setActionMenu('')

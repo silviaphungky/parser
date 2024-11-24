@@ -75,7 +75,7 @@ const PNList = ({ token }: { token: string }) => {
     if (debouncedValue) {
       setPage(1)
     }
-  }, [debouncedValue])
+  }, [debouncedValue, perPage])
 
   return (
     <div>
