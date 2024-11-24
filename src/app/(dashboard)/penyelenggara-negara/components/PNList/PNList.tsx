@@ -1,14 +1,18 @@
 'use client'
-import { Card, Pagination, Shimmer } from '@/components'
+import { Card, Pagination } from '@/components'
 import PNListHeader from '../PNListHeader/PNListHeader'
 import PNTable from '../PNTable'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { getPNList } from '@/app/service/getPNList'
 import { API_URL } from '@/constants/apiUrl'
 import { useQuery } from '@tanstack/react-query'
 import useDebounce from '@/utils/useDebounce'
+import axiosInstance from '@/utils/axiosInstance'
+import { baseUrl } from '../../[id]/components/UploadBankStatement/UploadBankStatement'
 
 const PNList = ({ token }: { token: string }) => {
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [page, setPage] = useState(1)
   const [perPage, setPerPage] = useState(10)
   const [keyword, setKeyword] = useState('')
@@ -43,15 +47,35 @@ const PNList = ({ token }: { token: string }) => {
       total_page: number
     }
   }>({
-    queryKey: ['pnList', page, perPage, debouncedValue],
-    queryFn: async () =>
-      await getPNList(
-        `${API_URL.PN_LIST}?page=${page}&limit=${perPage}&search=${debouncedValue}`,
-        token
-      ),
+    queryKey: ['pnList', page, perPage, debouncedValue, sortBy, sortDir],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.PN_LIST}`,
+        {
+          params: {
+            page,
+            limit: perPage,
+            search: debouncedValue,
+            sort_by: sortBy,
+            sort: sortDir,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
+
+  useEffect(() => {
+    if (debouncedValue) {
+      setPage(1)
+    }
+  }, [debouncedValue])
 
   return (
     <div>
@@ -63,6 +87,8 @@ const PNList = ({ token }: { token: string }) => {
           token={token}
           refetch={refetch}
           setKeyword={setKeyword}
+          setSortBy={setSortBy}
+          setSortDir={setSortDir}
         />
 
         {!isLoading && data.account_reporter_list.length > 0 && (

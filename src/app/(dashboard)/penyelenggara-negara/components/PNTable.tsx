@@ -2,6 +2,7 @@
 
 import * as yup from 'yup'
 import {
+  ColumnSort,
   createColumnHelper,
   flexRender,
   getCoreRowModel,
@@ -14,10 +15,7 @@ import {
   IconExpand,
   IconKebab,
   IconLink,
-  IconSort,
-  IconTrash,
   IconTriangleDown,
-  IconUnlink,
 } from '@/icons'
 import Link from 'next/link'
 import { FormItem, Input, InputSearch, Modal, Shimmer } from '@/components'
@@ -29,7 +27,14 @@ import { useMutation } from '@tanstack/react-query'
 import axios, { AxiosError } from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
-import { Dispatch, SetStateAction, useMemo, useRef, useState } from 'react'
+import {
+  Dispatch,
+  SetStateAction,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import AsyncSelect from 'react-select/async'
 import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
@@ -118,7 +123,11 @@ const PNTable = ({
   token,
   refetch,
   setKeyword,
+  setSortBy,
+  setSortDir,
 }: {
+  setSortBy: Dispatch<SetStateAction<string | undefined>>
+  setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   isLoading: boolean
   pnList: Array<Person>
   token: string
@@ -138,7 +147,7 @@ const PNTable = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const refDropdown = useRef(null)
@@ -236,7 +245,7 @@ const PNTable = ({
         cell: (info) => {
           return <div>{info.getValue()}</div>
         },
-        enableSorting: false,
+        enableSorting: true,
       }),
       columnHelper.accessor('total_family_member', {
         header: () => (
@@ -273,18 +282,18 @@ const PNTable = ({
             </div>
           )
         },
-        enableSorting: false,
+        enableSorting: true,
       }),
-      columnHelper.accessor('total_transaction', {
-        header: () => <span>Jumlah Transaksi</span>,
-        cell: (info) => {
-          return (
-            <div className="text-sm text-right">
-              {thousandSeparator(info.getValue())}
-            </div>
-          )
-        },
-      }),
+      // columnHelper.accessor('total_transaction', {
+      //   header: () => <span>Jumlah Transaksi</span>,
+      //   cell: (info) => {
+      //     return (
+      //       <div className="text-sm text-right">
+      //         {thousandSeparator(info.getValue())}
+      //       </div>
+      //     )
+      //   },
+      // }),
       // columnHelper.accessor(
       //   (row) =>
       //     row.total_asset?.map((obj) => {
@@ -408,18 +417,22 @@ const PNTable = ({
       sorting,
     },
     getCoreRowModel: getCoreRowModel(),
-    onSortingChange: setSorting as any,
+    onSortingChange: setSorting,
   })
 
   const handleSearch = (query: string) => {
     setKeyword(query)
   }
 
+  useEffect(() => {
+    setSortBy(sorting[0]?.id)
+    setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
+  }, [sorting])
+
   const searchValue = useDebounce(search, 500)
 
   const searchNIK = async (value: string) => {
     setSearch(value)
-    // NOTE: sementara masih by name dulu, nanti di atur search by yg lain
     const response = await fetch(
       `${baseUrl}/${API_URL.PN_LIST}?search=${value}&limit=100`,
       {
@@ -507,7 +520,7 @@ const PNTable = ({
                 >
                   <AsyncSelect
                     cacheOptions={true}
-                    placeholder="Masukkan NIK anggota keluarga..."
+                    placeholder="Masukkan NIK atau nama keluarga..."
                     {...field}
                     loadOptions={searchNIK}
                     className="react-select-container"
