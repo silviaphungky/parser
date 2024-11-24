@@ -147,7 +147,7 @@ const PNTable = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const [sorting, setSorting]
+  const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const refDropdown = useRef(null)
