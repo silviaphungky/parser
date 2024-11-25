@@ -252,10 +252,9 @@ const FreqValueHeatmapDate = ({
           </div>
         </div>
       </div>
+      {isLoading && <Shimmer />}
       <div className="contributionCalendar__Container flex justify-between">
-        {isLoading ? (
-          <Shimmer />
-        ) : (
+        {!isLoading && (
           <ContributionCalendar
             data={formattedData}
             start={

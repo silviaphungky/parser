@@ -66,8 +66,8 @@ const NotificationList = ({ token }: { token: string }) => {
   const notifList = data?.notification_list || []
 
   const { mutate: markAsRead } = useMutation({
-    mutationFn: (payload: { notification_id: string }) =>
-      axiosInstance.post(
+    mutationFn: (payload: { notification_id: Array<string> }) =>
+      axiosInstance.patch(
         `${baseUrl}/${API_URL.NOTIF_READ}`,
         {
           ...payload,
@@ -80,10 +80,10 @@ const NotificationList = ({ token }: { token: string }) => {
       ),
   })
 
-  const handleMarkAsRead = (id: string) => {
+  const handleMarkAsRead = (payload: Array<string>) => {
     markAsRead(
       {
-        notification_id: id,
+        notification_id: payload,
       },
       {
         onSuccess: () => {
@@ -102,6 +102,14 @@ const NotificationList = ({ token }: { token: string }) => {
   return (
     <div className="mt-4">
       <div className="ml-auto mb-4 w-60">
+        <div>
+          <button
+            onClick={() => handleMarkAsRead([''])}
+            className="mt-2 text-xs text-blue-500 hover:underline"
+          >
+            Tandai semua telah dibaca
+          </button>
+        </div>
         <InputDropdown
           options={filterOptions}
           value={selectedFilter}
@@ -121,7 +129,7 @@ const NotificationList = ({ token }: { token: string }) => {
               <h2 className="text-sm">{notif.message}</h2>
               {!notif.read_at && (
                 <button
-                  onClick={() => handleMarkAsRead(notif.id)}
+                  onClick={() => handleMarkAsRead([notif.id])}
                   className="mt-2 text-xs text-blue-500 hover:underline"
                 >
                   Tandai telah dibaca

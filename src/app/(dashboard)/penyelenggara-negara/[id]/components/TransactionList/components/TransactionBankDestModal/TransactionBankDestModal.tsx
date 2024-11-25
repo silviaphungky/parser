@@ -2,7 +2,6 @@
 import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { TransactionData } from '../TransactionTable/TransactionTable'
 import axiosInstance from '@/utils/axiosInstance'
 import { useMutation } from '@tanstack/react-query'
 import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
@@ -12,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { useParams } from 'next/navigation'
+import { ITransactionItem } from '../../TransactionList'
 
 const bankOptions = [
   {
@@ -1064,7 +1064,7 @@ const TransactionBankDestModal = ({
   token: string
   isOpen: boolean
   onClose: () => void
-  selected: TransactionData
+  selected: ITransactionItem
   setIsOpenDestBankModal: Dispatch<SetStateAction<boolean>>
 }) => {
   const { id } = useParams()
@@ -1195,7 +1195,11 @@ const TransactionBankDestModal = ({
         )}
 
         <div className="text-xs mt-2 text-gray-600">
-          {`*Info lawan transaksi awal: ${selected.targetBankName} - ${selected.targetBankAccNo} - ${selected.targetBankAccName}`}
+          {`*Info lawan transaksi awal: ${
+            selected.entity_bank || 'unknown'
+          } - ${selected.entity_name || 'unnamed'} - ${
+            selected.entity_account_number || 'N/A'
+          }`}
         </div>
 
         <div className="flex justify-end space-x-4 mt-8">

@@ -1,8 +1,8 @@
 import {
   Dispatch,
-  ReactNode,
   SetStateAction,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react'
@@ -35,188 +35,10 @@ import { API_URL } from '@/constants/apiUrl'
 import { useParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 import Button from '@/components/Button'
+import { ITransactionItem } from '../../TransactionList'
+import { thousandSeparator } from '@/utils/thousanSeparator'
 
-export type TransactionData = {
-  id: string
-  index: number
-  personalBankName: string
-  personalBankAccNo: string
-  personalBankAccName: string
-  transactionDate: string
-  transactionTime?: string
-  remark: string
-  transactionMethod: string
-  targetBankAccNo: string
-  targetBankAccName: string
-  targetBankName: string
-  currency: string
-  creditDebit: 'credit' | 'debit'
-  mutation: number
-  balance: number
-  note?: string
-  isHighlight: boolean
-  isFamily: boolean
-  category: {
-    id: string
-    label: string
-  }
-}
-
-const defaultData: Array<TransactionData & { actions: boolean }> = [
-  {
-    id: '1',
-    index: 1,
-    personalBankName: 'BNI',
-    personalBankAccNo: '1234567890',
-    personalBankAccName: 'Siti Aisyah',
-    transactionDate: '2024-10-01',
-    remark: 'Transfer to BCA',
-    transactionMethod: 'Transfer Bank',
-    targetBankAccNo: '9876543210',
-    targetBankAccName: 'John Doe',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 2000000,
-    balance: 10000000,
-    note: 'transaksi ini terindikasi pelanggaran berat sehingga perlu ditandai',
-    isHighlight: true,
-    actions: true,
-    category: {
-      id: '1',
-      label: 'belanja',
-    },
-    isFamily: true,
-  },
-  {
-    id: '2',
-    index: 2,
-    personalBankName: 'BCA',
-    personalBankAccNo: '2345678901',
-    personalBankAccName: 'Gumilar',
-    transactionDate: '2024-10-03',
-    remark: 'Salary Credit',
-    transactionMethod: 'Pembayaran Kartu (Debit/Kredit)',
-    targetBankAccNo: '',
-    targetBankAccName: '',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 5000000,
-    balance: 15000000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-    isFamily: false,
-  },
-  {
-    id: '3',
-    index: 3,
-    personalBankName: 'Mandiri',
-    personalBankAccNo: '3456789012',
-    personalBankAccName: 'Gumilar',
-    transactionDate: '2024-10-05',
-    transactionTime: `${new Date()}`,
-    remark: 'Payment to Vendor',
-    transactionMethod: 'Dompet Digital',
-    targetBankAccNo: '4567890123',
-    targetBankAccName: 'Jane Smith',
-    targetBankName: 'BCA',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 3000000,
-    balance: 12000000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-    isFamily: false,
-  },
-  {
-    id: '4',
-    index: 4,
-    personalBankName: 'BRI',
-    personalBankAccNo: '4567890123',
-    personalBankAccName: 'Gumilar',
-    transactionDate: '2024-10-07',
-    remark: 'Refund',
-    transactionMethod: 'Pembayaran dengan Kode QR',
-    targetBankAccNo: '',
-    targetBankAccName: '',
-    targetBankName: 'BNI',
-    currency: 'IDR',
-    creditDebit: 'credit',
-    mutation: 1500000,
-    balance: 13500000,
-    note: 'transaksi ini aman',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-    isFamily: false,
-  },
-  {
-    id: '5',
-    index: 5,
-    personalBankName: 'BNI',
-    personalBankAccNo: '5678901234',
-    personalBankAccName: 'Gumilar',
-    transactionDate: '2024-10-10',
-    remark: 'Transfer to Mandiri',
-    transactionMethod: 'Transaksi Tunai (termasuk ATM)',
-    targetBankAccNo: '6789012345',
-    targetBankAccName: 'Alice Wong',
-    targetBankName: 'Mandiri',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 4000000,
-    balance: 9500000,
-    note: '',
-    isHighlight: true,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-    isFamily: false,
-  },
-  {
-    id: '6',
-    index: 6,
-    personalBankName: 'Mandiri',
-    personalBankAccNo: '6789012345',
-    personalBankAccName: 'Gumilar',
-    transactionDate: '2024-10-12',
-    remark: 'Bill Payment',
-    transactionMethod: 'Tidak Diketahui (Unknown)',
-    targetBankAccNo: '7890123456',
-    targetBankAccName: 'Beta Corporation',
-    targetBankName: 'BSI',
-    currency: 'IDR',
-    creditDebit: 'debit',
-    mutation: 2500000,
-    balance: 7000000,
-    note: '',
-    isHighlight: false,
-    actions: true,
-    category: {
-      id: '2',
-      label: 'investasi',
-    },
-    isFamily: false,
-  },
-]
-
-const columnHelper = createColumnHelper<TransactionData & { actions: any }>()
+const columnHelper = createColumnHelper<ITransactionItem & { actions: any }>()
 
 const iconBankMap = {
   BCA: <IconBCA size={24} />,
@@ -262,12 +84,12 @@ const TransactionTable = ({
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   token: string
   refetch: () => void
-  transactionList: Array<{}>
+  transactionList: Array<ITransactionItem>
   isLoading: boolean
 }) => {
   const { id } = useParams()
   const refDropdown = useRef(null)
-  const [selected, setSelected] = useState({} as TransactionData)
+  const [selected, setSelected] = useState({} as ITransactionItem)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
   const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
@@ -281,7 +103,7 @@ const TransactionTable = ({
   }, [sorting])
 
   useOutsideClick(refDropdown, () => {
-    setSelected({} as TransactionData)
+    setSelected({} as ITransactionItem)
     setActionMenu('')
   })
 
@@ -304,235 +126,265 @@ const TransactionTable = ({
       ),
   })
 
-  const columns = [
-    columnHelper.accessor(
-      (row) => (
-        <div>
-          <div className="text-xs">{row.transactionDate}</div>
-          {row.transactionTime && (
-            <div className="text-[11px]">
-              {dayjs(row.transactionTime).format('HH:mm:ss')}
-            </div>
-          )}
-        </div>
+  const columns = useMemo(
+    () => [
+      columnHelper.accessor(
+        (row) => (
+          <div>
+            <div className="text-xs">{row.date}</div>
+            {row.time && (
+              <div className="text-[11px]">
+                {dayjs(row.time).format('HH:mm:ss')}
+              </div>
+            )}
+          </div>
+        ),
+        {
+          id: 'transactionDate',
+          header: 'Waktu',
+          cell: (info) => info.getValue(),
+          enableSorting: true,
+        }
       ),
-      {
-        id: 'transactionDate',
-        header: 'Waktu',
-        cell: (info) => info.getValue(),
+      columnHelper.accessor(
+        (row) => (
+          <div>
+            <div className="flex gap-2 mt-2 items-center">
+              {
+                iconBankMap[
+                  row.personalBankName as 'BNI' | 'BCA' | 'BRI' | 'Mandiri'
+                ]
+              }
+              <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+                <div className="text-xs">{`${
+                  row.personalBankName || 'unnamed'
+                }`}</div>
+                <div className="text-xs">{`${
+                  row.personalBankAccName || 'unknown'
+                } - ${row.personalBankAccNo || 'N/A'}`}</div>
+              </div>
+            </div>
+          </div>
+        ),
+        {
+          id: 'personalBankInfo',
+          header: 'Info Bank PN',
+          cell: (info) => info.getValue(),
+          enableSorting: false,
+        }
+      ),
+      columnHelper.accessor('method', {
+        header: (
+          <div>
+            <div>Metode</div>
+            <div>Transaksi</div>
+          </div>
+        ) as any,
+        cell: (info) => (
+          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+            {info.getValue()}
+          </div>
+        ),
+        enableSorting: false,
+      }),
+      columnHelper.accessor(
+        (row) => (
+          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+            <div className="text-xs">
+              {row.entity_bank_adjusted
+                ? row.entity_bank_adjusted || 'unknown'
+                : row.entity_bank || 'unknown'}
+            </div>
+            <div className="text-xs">{`${
+              row.entity_account_number_adjusted
+                ? row.entity_account_number_adjusted || 'N/A'
+                : row.entity_account_number || 'N/A'
+            } - ${
+              row.entity_name_adjusted
+                ? row.entity_name_adjusted || 'unnamed'
+                : row.entity_name || 'unnamed'
+            }`}</div>
+          </div>
+        ),
+        {
+          id: 'targetBankInfo',
+          header: 'Info Lawan Transaksi',
+          cell: (info) => info.getValue(),
+          enableSorting: false,
+        }
+      ),
+      columnHelper.accessor(
+        (row) => (
+          <>
+            {row.direction === 'OUT' && (
+              <span
+                className="rounded p-2 py-1 text-[#B71D18] font-bold text-xs"
+                style={{ background: 'rgba(255, 86,48, 0.2)' }}
+              >
+                Db
+              </span>
+            )}
+            {row.direction === 'IN' && (
+              <span
+                className="bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs"
+                style={{ background: 'rgba(34, 197,98, 0.2)' }}
+              >
+                Cr
+              </span>
+            )}
+          </>
+        ),
+        {
+          id: 'creditDebit',
+          header: 'Db / Cr',
+          cell: (info) => info.getValue(),
+          enableSorting: false,
+        }
+      ),
+      columnHelper.accessor('currency', {
+        header: 'Mata Uang',
+        cell: (info) => info.getValue() || 'IDR',
+        enableSorting: false,
+      }),
+      columnHelper.accessor('remark', {
+        header: 'Remark',
+        cell: (info) => <div className="text-xs">{info.getValue() || '-'}</div>,
+        enableSorting: false,
+      }),
+      columnHelper.accessor(
+        (row) => (
+          <div className="text-xs">
+            {row.category_name_adjusted
+              ? row.category_name_adjusted || '-'
+              : row.category_name || '-'}
+          </div>
+        ),
+        {
+          id: 'category_name',
+          header: 'Kategori',
+          cell: (info) => info.getValue(),
+          enableSorting: false,
+        }
+      ),
+      columnHelper.accessor('balance', {
+        header: 'Nominal Transkasi',
+        cell: (info) => (
+          <div className="text-xs">
+            {thousandSeparator(info.getValue() || 0)}
+          </div>
+        ),
         enableSorting: true,
-      }
-    ),
-    columnHelper.accessor(
-      (row) => (
-        <div>
-          <div className="flex gap-2 mt-2 items-center">
-            {
-              iconBankMap[
-                row.personalBankName as 'BNI' | 'BCA' | 'BRI' | 'Mandiri'
-              ]
-            }
-            <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
-              <div className="text-xs">{`${row.personalBankName}`}</div>
-              <div className="text-xs">{`${row.personalBankAccName} - ${row.personalBankAccNo}`}</div>
-            </div>
+      }),
+      columnHelper.accessor('balance', {
+        header: 'Saldo',
+        cell: (info) => (
+          <div className="text-xs">
+            {thousandSeparator(info.getValue() || 0)}
           </div>
-        </div>
-      ),
-      {
-        id: 'personalBankInfo',
-        header: 'Info Bank PN',
+        ),
+        enableSorting: false,
+      }),
+      columnHelper.accessor((row) => <NoteCell text={row.note || ''} />, {
+        id: 'note',
+        header: 'Catatan',
         cell: (info) => info.getValue(),
         enableSorting: false,
-      }
-    ),
-
-    columnHelper.accessor('transactionMethod', {
-      header: (
-        <div>
-          <div>Metode</div>
-          <div>Transaksi</div>
-        </div>
-      ) as any,
-      cell: (info) => (
-        <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
-          {info.getValue()}
-        </div>
-      ),
-      enableSorting: false,
-    }),
-    columnHelper.accessor(
-      (row) => (
-        <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
-          <div className="text-xs">{row.targetBankName || 'unknown'}</div>
-          <div className="text-xs">{`${row.targetBankAccNo || 'N/A'} - ${
-            row.targetBankAccName || 'unnamed'
-          }`}</div>
-        </div>
-      ),
-      {
-        id: 'targetBankInfo',
-        header: 'Info Lawan Transaksi',
-        cell: (info) => info.getValue(),
-        enableSorting: false,
-      }
-    ),
-    columnHelper.accessor(
-      (row) => (
-        <>
-          {row.creditDebit === 'debit' && (
-            <span
-              className="rounded p-2 py-1 text-[#B71D18] font-bold text-xs"
-              style={{ background: 'rgba(255, 86,48, 0.2)' }}
-            >
-              Db
-            </span>
-          )}
-          {row.creditDebit === 'credit' && (
-            <span
-              className="bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs"
-              style={{ background: 'rgba(34, 197,98, 0.2)' }}
-            >
-              Cr
-            </span>
-          )}
-        </>
-      ),
-      {
-        id: 'creditDebit',
-        header: 'Db / Cr',
-        cell: (info) => info.getValue(),
-        enableSorting: false,
-      }
-    ),
-    columnHelper.accessor('currency', {
-      header: 'Mata Uang',
-      cell: (info) => info.getValue(),
-      enableSorting: false,
-    }),
-    columnHelper.accessor('remark', {
-      header: 'Remark',
-      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
-      enableSorting: false,
-    }),
-    columnHelper.accessor('category.label', {
-      header: 'Kategori',
-      cell: (info) => <div className="text-xs">{info.getValue()}</div>,
-      enableSorting: false,
-    }),
-    columnHelper.accessor('mutation', {
-      header: 'Nominal Transkasi',
-      cell: (info) => (
-        <div className="text-xs">{info.getValue().toLocaleString()}</div>
-      ),
-      enableSorting: true,
-    }),
-    columnHelper.accessor('balance', {
-      header: 'Saldo',
-      cell: (info) => (
-        <div className="text-xs">{info.getValue().toLocaleString()}</div>
-      ),
-      enableSorting: false,
-    }),
-    columnHelper.accessor((row) => <NoteCell text={row.note || ''} />, {
-      id: 'note',
-      header: 'Catatan',
-      cell: (info) => info.getValue(),
-      enableSorting: false,
-    }),
-    columnHelper.accessor('actions', {
-      header: '',
-      cell: (info) => (
-        <div className="relative ml-4">
-          <div
-            className="cursor-pointer"
-            onClick={() => handleMenuToggle(info.row.id)}
-          >
-            <IconKebab size={20} />
-          </div>
-          {actionMenu === info.row.id && (
+      }),
+      columnHelper.accessor('actions', {
+        header: '',
+        cell: (info) => (
+          <div className="relative ml-4">
             <div
-              ref={refDropdown}
-              className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
-              style={{ zIndex: 1000 }}
+              className="cursor-pointer"
+              onClick={() => handleMenuToggle(info.row.id)}
             >
-              <button
-                onClick={() => {
-                  // handle mark transaction action here
-                  // NOTE: TERGANTUNG BALIKAN BE
-                  mutate(
-                    {
-                      is_starred: false,
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success('Berhasil memperbarui tanda')
-                        setSelected({} as TransactionData)
-                        setActionMenu(null)
-                        refetch()
-                      },
-                      onError: (error: any) => {
-                        toast.error(
-                          `Gagal memperbarui tanda: ${error?.response?.data?.message}`
-                        )
-                      },
-                    }
-                  )
-                  setSelected({} as TransactionData)
-                }}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-              >
-                {info.row.original.isHighlight
-                  ? 'Hapus Tanda'
-                  : 'Tandai Transaksi'}
-              </button>
-              <button
-                onClick={() => {
-                  setSelected(info.row.original)
-                  setIsOpen(true)
-                }}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-              >
-                Ubah Catatan
-              </button>
-              <button
-                onClick={() => {
-                  setSelected(info.row.original)
-                  setIsOpenCategoryModal(true)
-                }}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-              >
-                Ubah Kategori
-              </button>
-
-              <button
-                onClick={() => {
-                  setSelected(info.row.original)
-                  setIsOpenDestBankModal(true)
-                }}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-              >
-                Ubah Info Lawan Transaksi
-              </button>
-              <button
-                onClick={() => {
-                  setSelected(info.row.original)
-                  setIsOpenVerifModal(true)
-                }}
-                className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-              >
-                Verifikasi Info Bank Transaksi
-              </button>
+              <IconKebab size={20} />
             </div>
-          )}
-        </div>
-      ),
-      enableSorting: false,
-    }),
-  ]
+            {actionMenu === info.row.id && (
+              <div
+                ref={refDropdown}
+                className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
+                style={{ zIndex: 1000 }}
+              >
+                <button
+                  onClick={() => {
+                    // handle mark transaction action here
+                    // NOTE: TERGANTUNG BALIKAN BE
+                    mutate(
+                      {
+                        is_starred: false,
+                      },
+                      {
+                        onSuccess: () => {
+                          toast.success('Berhasil memperbarui tanda')
+                          setSelected({} as ITransactionItem)
+                          setActionMenu(null)
+                          refetch()
+                        },
+                        onError: (error: any) => {
+                          toast.error(
+                            `Gagal memperbarui tanda: ${error?.response?.data?.message}`
+                          )
+                        },
+                      }
+                    )
+                    setSelected({} as ITransactionItem)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  {info.row.original.is_starred
+                    ? 'Hapus Tanda'
+                    : 'Tandai Transaksi'}
+                </button>
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpen(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Catatan
+                </button>
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenCategoryModal(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Kategori
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenDestBankModal(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Info Lawan Transaksi
+                </button>
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenVerifModal(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Verifikasi Info Bank Transaksi
+                </button>
+              </div>
+            )}
+          </div>
+        ),
+        enableSorting: false,
+      }),
+    ],
+    [actionMenu, mutate, refetch]
+  )
 
   const table = useReactTable({
-    data: defaultData,
+    data: transactionList as Array<ITransactionItem & { actions: any }>,
     columns,
     state: {
       sorting,
@@ -542,10 +394,10 @@ const TransactionTable = ({
   })
 
   useEffect(() => {
-    if (selected.id) {
+    if (selected.transaction_id) {
       setActionMenu(null)
     }
-  }, [selected.id])
+  }, [selected.transaction_id])
 
   const { mutate: verifyBank, isPending: isPendingVerif } = useMutation({
     mutationFn: () =>
@@ -570,7 +422,7 @@ const TransactionTable = ({
         onClose={() => {
           refetch()
           setIsOpenDestBankModal(false)
-          setSelected({} as TransactionData)
+          setSelected({} as ITransactionItem)
         }}
       />
       <TransactionCategoryModal
@@ -579,7 +431,7 @@ const TransactionTable = ({
         setIsOpenCategoryModal={setIsOpenCategoryModal}
         onClose={() => {
           refetch()
-          setSelected({} as TransactionData)
+          setSelected({} as ITransactionItem)
           setIsOpenCategoryModal(false)
         }}
       />
@@ -587,7 +439,9 @@ const TransactionTable = ({
         isOpen={isOpenVerfiModal}
         onClose={() => setIsOpenVerifModal(false)}
       >
-        {selected.targetBankAccNo && selected.targetBankName ? (
+        {(selected.entity_account_number ||
+          selected.entity_account_number_adjusted) &&
+        (selected.entity_bank || selected.entity_bank_adjusted) ? (
           <>
             <h2 className="font-semibold text-lg">
               Konfirmasi Pengecekan Rekening
@@ -604,7 +458,7 @@ const TransactionTable = ({
               <button
                 onClick={() => {
                   setIsOpenVerifModal(false)
-                  setSelected({} as TransactionData)
+                  setSelected({} as ITransactionItem)
                 }}
                 className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
               >
@@ -618,12 +472,12 @@ const TransactionTable = ({
                     onSuccess: () => {
                       toast.success('Berhasil mengecek info rekening transaksi')
                       setIsOpenVerifModal(false)
-                      setSelected({} as TransactionData)
+                      setSelected({} as ITransactionItem)
                       refetch()
                     },
                     onError: (error: any) => {
                       setIsOpenVerifModal(false)
-                      setSelected({} as TransactionData)
+                      setSelected({} as ITransactionItem)
                       toast.error(
                         `Gagal mengecek info rekening transaksi: ${error?.response?.data?.message}`
                       )
@@ -648,7 +502,7 @@ const TransactionTable = ({
                 onClick={() => {
                   // hit BE API
                   setIsOpenVerifModal(false)
-                  setSelected({} as TransactionData)
+                  setSelected({} as ITransactionItem)
                 }}
                 className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
               >
@@ -667,7 +521,7 @@ const TransactionTable = ({
         onClose={() => {
           refetch()
           setIsOpen(false)
-          setSelected({} as TransactionData)
+          setSelected({} as ITransactionItem)
         }}
       />
 
@@ -728,7 +582,7 @@ const TransactionTable = ({
                   <tr
                     key={row.id}
                     className={`hover:bg-gray-100 transition-colors duration-300 ${
-                      row.original.isHighlight ? 'bg-orange-50' : ''
+                      row.original.is_starred ? 'bg-orange-50' : ''
                     }`}
                   >
                     {row.getVisibleCells().map((cell) => (

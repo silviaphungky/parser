@@ -10,6 +10,8 @@ import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '@/components/Button'
 import { baseUrl } from '../UploadBankStatement/UploadBankStatement'
 import useDebounce from '@/utils/useDebounce'
+import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
 
 const searchFields = [
   { label: 'Nama Akun Lawan Transaksi', id: 'search_entity_name' },
@@ -36,26 +38,57 @@ const currencyOptions = [
     label: 'Semua Mata Uang',
   },
   {
-    id: 'idr',
+    id: 'IDR',
     label: 'IDR',
   },
+
   {
-    id: 'usd',
-    label: 'USD',
-  },
-  {
-    id: 'poundsterling',
+    id: 'GBP',
     label: 'GBP',
   },
   {
-    id: 'sgd',
+    id: 'JPY',
+    label: 'JPY',
+  },
+  {
+    id: 'SGD',
     label: 'SGD',
   },
   {
-    id: 'jpy',
-    label: 'JPY',
+    id: 'USD',
+    label: 'USD',
   },
 ]
+
+export interface ITransactionItem {
+  amount: number
+  balance: number
+  category_name: string
+  category_name_adjusted: string
+  date: string
+  description: string
+  direction: 'IN' | 'OUT'
+  entity_account_number: string
+  entity_account_number_adjusted: string
+  entity_bank: string
+  entity_bank_adjusted: string
+  entity_bank_label: string
+  entity_bank_label_adjusted: string
+  entity_name: string
+  entity_name_adjusted: string
+  is_starred: boolean
+  method: string
+  note: string
+  statement_id: string
+  transaction_id: string
+  currency: string
+  remark?: string
+  // NOTE: temp
+  personalBankName: string
+  personalBankAccName: string
+  personalBankAccNo: string
+  time?: string
+}
 
 const TransactionList = ({ token }: { token: string }) => {
   const { id } = useParams()
@@ -75,7 +108,7 @@ const TransactionList = ({ token }: { token: string }) => {
   const debouncedValue = useDebounce(keyword, 500)
 
   const { data, isLoading, refetch, isFetching } = useQuery<{
-    transaction_list: Array<any>
+    transaction_list: Array<ITransactionItem>
     meta_data: {
       total: number
       limit: number
@@ -116,7 +149,7 @@ const TransactionList = ({ token }: { token: string }) => {
     refetchOnWindowFocus: false,
   })
 
-  const { mutate: downloadCsv } = useMutation({
+  const { mutate: downloadCsv, isPending: isDownloading } = useMutation({
     mutationFn: (payload: {
       account_reporter_id: string
       start_period?: string
@@ -149,11 +182,56 @@ const TransactionList = ({ token }: { token: string }) => {
       ),
   })
 
+  const { data: wlInfo, isLoading: isLoadingWlInfo } = useQuery<{
+    created_at: string
+    id: string
+    name: string
+    newest_statement_period: string
+    nik: string
+    oldest_statement_period: string
+    updated_at: string
+  }>({
+    queryKey: ['wlInfo', id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(`${API_URL.PN}/${id}/detail`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+
   const handleDownloadFile = () => {
-    downloadCsv({
-      account_reporter_id: id as string,
-      search: '',
-    })
+    downloadCsv(
+      {
+        account_reporter_id: id as string,
+        search: '',
+      },
+      {
+        onSuccess: ({ data }) => {
+          const blob = new Blob([data], { type: 'text/csv' })
+
+          // Generate a download URL
+          const url = window.URL.createObjectURL(blob)
+
+          // Create a temporary anchor element to trigger the download
+          const link = document.createElement('a')
+          link.href = url
+          link.download = `transaksi ${wlInfo?.nik} ${dayjs(new Date()).format(
+            'DD MMMM YYYY'
+          )}.csv` // Desired filename
+          document.body.appendChild(link)
+          link.click()
+        },
+        onError: (error: any) => {
+          toast.error(`Gagal ekspor ke csv: ${error?.response?.data?.message}`)
+        },
+      }
+    )
   }
 
   useEffect(() => {
@@ -199,9 +277,10 @@ const TransactionList = ({ token }: { token: string }) => {
               </div>
             </Button>
             <Button
+              loading={isDownloading}
               variant="dark"
               onClick={handleDownloadFile}
-              disabled={!data?.transaction_list?.length}
+              disabled={!data?.transaction_list?.length || isLoadingWlInfo}
             >
               <div className="flex gap-2 items-center">
                 Ekspor ke CSV
