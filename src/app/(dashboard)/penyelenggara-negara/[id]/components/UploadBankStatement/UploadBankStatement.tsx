@@ -58,7 +58,10 @@ const CURRENCY_OPTIONS = [
 export const baseUrl =
   'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
-const notify = () => toast.success('Laporan bank berhasil ditambahkan')
+const notify = () =>
+  toast.success(
+    'Laporan bank Anda telah berhasil diunggah dan sedang diproses untuk ekstraksi. Proses ini membutuhkan waktu beberapa menit. Anda dapat meninggalkan halaman ini'
+  )
 
 const UploadBankStatement = ({
   token,
@@ -100,14 +103,12 @@ const UploadBankStatement = ({
     },
   })
 
-  useEffect(() => {}, [])
-
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
 
     if (selectedFile) {
       if (selectedFile.size > 10 * 1024 * 1024) {
-        setError('File size exceeds 5MB.')
+        setError('File size exceeds 10MB.')
         setFile(null)
         return
       }
