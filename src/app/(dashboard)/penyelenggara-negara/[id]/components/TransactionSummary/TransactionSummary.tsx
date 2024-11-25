@@ -11,6 +11,7 @@ import {
   FreqValueHeatmapDate,
 } from './components'
 import dayjs from 'dayjs'
+import { MultiValue } from 'react-select'
 
 export const transactionData = {
   balance: {
@@ -450,13 +451,9 @@ const mockGroupByDate = {
 }
 
 const TransactionSummary = ({ token }: { token: string }) => {
-  const [selectedBank, setSelectedBank] = useState<{
-    id: string | number
-    label: string
-  }>({
-    id: '',
-    label: 'All banks',
-  })
+  const [selectedBank, setSelectedBank] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
   const [selectedCurrency, setSelectedCurrency] = useState<{
     id: string | number
     label: string
@@ -475,8 +472,10 @@ const TransactionSummary = ({ token }: { token: string }) => {
     to: undefined,
   })
 
-  const handleChangeBank = (option: { id: string | number; label: string }) => {
-    setSelectedBank(option)
+  const handleChangeBank = (
+    selected: MultiValue<{ value: string; label: string }>
+  ) => {
+    setSelectedBank(selected)
   }
 
   const handleChangeCurrency = (option: {

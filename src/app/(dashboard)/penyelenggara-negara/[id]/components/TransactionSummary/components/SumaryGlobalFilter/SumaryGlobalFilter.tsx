@@ -5,7 +5,7 @@ import axiosInstance from '@/utils/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
 import { useEffect } from 'react'
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue } from 'react-select'
 
 export const mockBank = [
   { value: 'BCA1', label: 'BCA - 12345678 Anton' },
@@ -33,15 +33,11 @@ const SumaryGlobalFilter = ({
 }: {
   token: string
   selectedCurrency: { id: string | number; label: string }
-  selectedBank: { id: string | number; label: string }
+  selectedBank: MultiValue<{ value: string; label: string }>
   initialRange?: { from: Date | undefined; to: Date | undefined }
-  handleChangeBank: ({
-    id,
-    label,
-  }: {
-    id: string | number
-    label: string
-  }) => void
+  handleChangeBank: (
+    props: MultiValue<{ value: string; label: string }>
+  ) => void
   handleChangeCurrency: ({
     id,
     label,
@@ -65,7 +61,12 @@ const SumaryGlobalFilter = ({
     isLoading,
     refetch,
   } = useQuery<{
-    account_reporter_and_family_statement_list: Array<any>
+    account_reporter_and_family_statement_list: Array<{
+      account_number: string
+      bank_name: string
+      is_family: boolean
+      name: string
+    }>
   }>({
     queryKey: ['accountBankList'],
     queryFn: async () => {
@@ -83,6 +84,11 @@ const SumaryGlobalFilter = ({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
+  const bankAccountOptions =
+    data.account_reporter_and_family_statement_list.map((item) => ({
+      value: item.account_number,
+      label: `${item.name} - ${item.bank_name} - ${item.account_number}`,
+    }))
 
   return (
     <div className="flex gap-4 justify-end">
@@ -97,7 +103,7 @@ const SumaryGlobalFilter = ({
         <ReactSelect
           isMulti
           name="colors"
-          options={mockBank}
+          options={bankAccountOptions}
           className="react-select-container"
           placeholder="Pilih akun bank"
           styles={{
@@ -138,6 +144,9 @@ const SumaryGlobalFilter = ({
                 overflow: 'auto',
               }
             },
+          }}
+          onChange={(props) => {
+            handleChangeBank(props)
           }}
         />
       </div>
