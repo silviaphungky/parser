@@ -29,4 +29,5 @@ export const API_URL = {
 
   // notification
   NOTIF_LIST: 'v1/notification/list',
+  NOTIF_READ: 'v1/notification/read',
 }

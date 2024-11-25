@@ -1,27 +1,47 @@
 // app/notifications/page.tsx
 'use client'
 
-import { Pagination } from '@/components'
+import { baseUrl } from '@/app/(dashboard)/penyelenggara-negara/[id]/components/UploadBankStatement/UploadBankStatement'
+import { Pagination, Shimmer } from '@/components'
+import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
 import React, { useState } from 'react'
+import toast from 'react-hot-toast'
 
-const mockNotifications = Array.from({ length: 20 }, (_, i) => ({
-  id: i + 1,
-  title: `Notification ${i + 1}`,
-  message: `This is the detail of notification ${i + 1}.`,
-  isRead: i % 3 === 0, // Mock: Mark every 3rd notification as read.
-}))
-
-const ITEMS_PER_PAGE = 5
+const filterOptions = [
+  {
+    id: '',
+    label: 'Semua Pemberitahuan',
+  },
+  {
+    id: 'false',
+    label: 'Pemberitahuan Belum dibaca',
+  },
+]
 
 const NotificationList = ({ token }: { token: string }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [notifications, setNotifications] = useState(mockNotifications)
+  const [itemsPerPage, setItemPerPage] = useState(5)
+  const [selectedFilter, setSelectedFilter] = useState(filterOptions[0])
 
-  const { data, isLoading, refetch } = useQuery<{
-    notification_list: Array<any>
+  const {
+    data = {
+      notification_list: [],
+      meta_data: { total_page: 1, total: 1, page: 1 },
+    },
+    isLoading,
+    refetch,
+  } = useQuery<{
+    notification_list: Array<{
+      app_user_id: string
+      created_at: string
+      id: string
+      is_read: boolean
+      message: string
+      read_at: string
+    }>
     meta_data: {
       total: number
       limit: number
@@ -29,7 +49,7 @@ const NotificationList = ({ token }: { token: string }) => {
       total_page: number
     }
   }>({
-    queryKey: ['notifList', currentPage],
+    queryKey: ['notifList', currentPage, itemsPerPage, selectedFilter.id],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.NOTIF_LIST}`, {
         headers: {
@@ -43,58 +63,91 @@ const NotificationList = ({ token }: { token: string }) => {
     refetchOnWindowFocus: false,
   })
 
-  console.log({ data })
+  const notifList = data?.notification_list || []
 
-  const handleMarkAsRead = (id: number) => {
-    setNotifications((prev) =>
-      prev.map((notif) =>
-        notif.id === id ? { ...notif, isRead: true } : notif
-      )
+  const { mutate: markAsRead } = useMutation({
+    mutationFn: (payload: { notification_id: string }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.NOTIF_READ}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+  })
+
+  const handleMarkAsRead = (id: string) => {
+    markAsRead(
+      {
+        notification_id: id,
+      },
+      {
+        onSuccess: () => {
+          refetch()
+          toast.success('Pemberitahuan telah dibaca')
+        },
+        onError: (error: any) => {
+          toast.error(
+            `Gagal memperbarui pemberitahuan: ${error?.response?.data?.message}`
+          )
+        },
+      }
     )
   }
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page)
-  }
-
-  const paginatedNotifications = notifications.slice(
-    (currentPage - 1) * ITEMS_PER_PAGE,
-    currentPage * ITEMS_PER_PAGE
-  )
-
-  const totalPages = Math.ceil(notifications.length / ITEMS_PER_PAGE)
-
   return (
     <div className="mt-4">
-      <div className="space-y-4">
-        {paginatedNotifications.map((notif) => (
-          <div
-            key={notif.id}
-            className={`p-4 border rounded-lg ${
-              notif.isRead ? 'bg-gray-100' : 'bg-white'
-            } shadow-sm`}
-          >
-            <h2 className="text-lg font-medium">{notif.title}</h2>
-            <p className="text-sm text-gray-600">{notif.message}</p>
-            {!notif.isRead && (
-              <button
-                onClick={() => handleMarkAsRead(notif.id)}
-                className="mt-2 text-blue-500 hover:underline"
-              >
-                Mark as Read
-              </button>
-            )}
-          </div>
-        ))}
+      <div className="ml-auto mb-4 w-60">
+        <InputDropdown
+          options={filterOptions}
+          value={selectedFilter}
+          onChange={(option) => {
+            setSelectedFilter(option as { id: string; label: string })
+          }}
+        />
       </div>
-      <Pagination
-        currentPage={currentPage}
-        totalPages={10}
-        onPageChange={setCurrentPage}
-        totalItems={100}
-        itemsPerPage={5}
-        onItemsPerPageChange={() => {}}
-      />
+      {isLoading && <Shimmer />}
+      {!isLoading && (
+        <div className="space-y-4">
+          {notifList.map((notif) => (
+            <div
+              key={notif.id}
+              className={`p-4 border rounded-lg ${'bg-white'} shadow-sm`}
+            >
+              <h2 className="text-sm">{notif.message}</h2>
+              {!notif.read_at && (
+                <button
+                  onClick={() => handleMarkAsRead(notif.id)}
+                  className="mt-2 text-xs text-blue-500 hover:underline"
+                >
+                  Tandai telah dibaca
+                </button>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+      {!isLoading && notifList.length === 0 && (
+        <div className="text-center py-10 text-gray-500">
+          <p className="text-lg font-medium">
+            Tidak ada pemberitahuan yang tersedia
+          </p>
+        </div>
+      )}
+      {notifList.length > 0 && (
+        <Pagination
+          currentPage={currentPage}
+          totalPages={data.meta_data.total_page}
+          onPageChange={setCurrentPage}
+          totalItems={data.meta_data.total}
+          itemsPerPage={itemsPerPage}
+          onItemsPerPageChange={setItemPerPage}
+        />
+      )}
     </div>
   )
 }
