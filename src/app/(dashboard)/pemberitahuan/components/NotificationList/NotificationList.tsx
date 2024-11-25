@@ -2,7 +2,7 @@
 'use client'
 
 import { baseUrl } from '@/app/(dashboard)/penyelenggara-negara/[id]/components/UploadBankStatement/UploadBankStatement'
-import { Pagination, Shimmer } from '@/components'
+import { Card, Pagination, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
@@ -101,30 +101,32 @@ const NotificationList = ({ token }: { token: string }) => {
 
   return (
     <div className="mt-4">
-      <div className="ml-auto mb-4 w-60">
+      <Card className="flex justify-between items-center mb-4">
         <div>
           <button
             onClick={() => handleMarkAsRead([''])}
-            className="mt-2 text-xs text-blue-500 hover:underline"
+            className="mt-2 text-sm text-blue-500 hover:underline"
           >
-            Tandai semua telah dibaca
+            Tandai semua sebagai dibaca
           </button>
         </div>
-        <InputDropdown
-          options={filterOptions}
-          value={selectedFilter}
-          onChange={(option) => {
-            setSelectedFilter(option as { id: string; label: string })
-          }}
-        />
-      </div>
+        <div>
+          <InputDropdown
+            options={filterOptions}
+            value={selectedFilter}
+            onChange={(option) => {
+              setSelectedFilter(option as { id: string; label: string })
+            }}
+          />
+        </div>
+      </Card>
       {isLoading && <Shimmer />}
       {!isLoading && (
         <div className="space-y-4">
           {notifList.map((notif) => (
-            <div
+            <Card
               key={notif.id}
-              className={`p-4 border rounded-lg ${'bg-white'} shadow-sm`}
+              className={`p-4 border rounded-lg ${'bg-white'}`}
             >
               <h2 className="text-sm">{notif.message}</h2>
               {!notif.read_at && (
@@ -132,10 +134,10 @@ const NotificationList = ({ token }: { token: string }) => {
                   onClick={() => handleMarkAsRead([notif.id])}
                   className="mt-2 text-xs text-blue-500 hover:underline"
                 >
-                  Tandai telah dibaca
+                  Tandai sebagai dibaca
                 </button>
               )}
-            </div>
+            </Card>
           ))}
         </div>
       )}
