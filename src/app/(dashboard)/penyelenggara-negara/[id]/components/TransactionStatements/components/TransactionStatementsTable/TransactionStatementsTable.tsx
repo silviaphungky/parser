@@ -228,7 +228,7 @@ const TransactionStatementsTable = ({
       columnHelper.accessor('file_url', {
         header: 'URL',
         cell: (info) =>
-          !info.getValue() ? (
+          info.getValue() ? (
             <div
               onClick={() => {
                 if (!isDownloading) {
