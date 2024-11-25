@@ -7,8 +7,10 @@ import { IconPlus } from '@/icons'
 import Tab from '@/components/Tab'
 import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
-import { getPNList } from '@/app/service/getPNList'
+
 import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import dayjs from 'dayjs'
 
 const WLInfo = ({
   token,
@@ -22,15 +24,28 @@ const WLInfo = ({
   const { id } = useParams()
 
   const [isOpenUploadForm, setIsOpenUploadForm] = useState(false)
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<{
+    created_at: string
+    id: string
+    name: string
+    newest_statement_period: string
+    nik: string
+    oldest_statement_period: string
+    updated_at: string
+  }>({
     queryKey: ['wlInfo', id],
-    queryFn: async () =>
-      await getPNList(`${API_URL.PN_LIST}?search=${id}&limit=1`, token),
+    queryFn: async () => {
+      const response = await axiosInstance.get(`${API_URL.PN}/${id}/detail`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      const data = response.data
+      return data.data
+    },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
-
-  const pn = data?.account_reporter_list?.[0] || {}
 
   return (
     <div>
@@ -38,7 +53,7 @@ const WLInfo = ({
         token={token}
         isOpen={isOpenUploadForm}
         setIsOpen={setIsOpenUploadForm}
-        nik={pn.nik}
+        nik={data?.nik || ''}
       />
       <div>
         <Breadcrumbs
@@ -48,7 +63,7 @@ const WLInfo = ({
               link: '/penyelenggara-negara',
             },
             {
-              label: id as string,
+              label: data?.name || ('' as string),
             },
           ]}
         />
@@ -59,8 +74,8 @@ const WLInfo = ({
           {!isLoading && (
             <div className="flex justify-between">
               <div>
-                <div className="font-bold text-2xl">{pn.name}</div>
-                <div className="text-dark text-sm">{`NIK: ${pn.nik}`}</div>
+                <div className="font-bold text-2xl">{data?.name}</div>
+                <div className="text-dark text-sm">{`NIK: ${data?.nik}`}</div>
               </div>
               <div className="flex gap-8">
                 <div>
@@ -74,11 +89,24 @@ const WLInfo = ({
                   <div className="mt-2">
                     <div className="text-xs text-dark">
                       Pembaruan laporan bank terbaru:{' '}
-                      <strong>November 2024</strong>
+                      <strong>
+                        {data?.newest_statement_period
+                          ? dayjs(
+                              new Date(data.newest_statement_period)
+                            ).format('MMMM YYYY')
+                          : '-'}
+                      </strong>
                     </div>
                     <div className="text-xs text-dark">
                       Pembaruan laporan bank terlama:{' '}
-                      <strong>Januari 2024</strong>
+                      <strong>
+                        {' '}
+                        {data?.oldest_statement_period
+                          ? dayjs(
+                              new Date(data.oldest_statement_period)
+                            ).format('MMMM YYYY')
+                          : '-'}
+                      </strong>
                     </div>
                   </div>
                 </div>

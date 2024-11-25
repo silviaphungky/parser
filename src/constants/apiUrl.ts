@@ -3,6 +3,7 @@ export const API_URL = {
   LOGIN: 'v1/auth/login',
 
   // pn
+  PN: 'v1/account-reporter',
   PN_LIST: 'v1/account-reporter/list',
   CREATE_PN: 'v1/account-reporter/create',
   DELETE_PN: 'v1/account-reporter/remove',
