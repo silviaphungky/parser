@@ -277,7 +277,7 @@ const TransactionList = ({ token }: { token: string }) => {
               </div>
             </Button>
             <Button
-              loading={isDownloading}
+              loading={isDownloading || isLoading}
               variant="dark"
               onClick={handleDownloadFile}
               disabled={!data?.transaction_list?.length || isLoadingWlInfo}
