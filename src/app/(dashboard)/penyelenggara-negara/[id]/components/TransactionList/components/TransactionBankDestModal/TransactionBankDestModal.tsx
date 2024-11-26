@@ -1055,19 +1055,20 @@ const validationSchema = yup.object().shape({
 })
 
 const TransactionBankDestModal = ({
+  transactionId,
   token,
   isOpen,
   onClose,
   selected,
   setIsOpenDestBankModal,
 }: {
+  transactionId: string
   token: string
   isOpen: boolean
   onClose: () => void
   selected: ITransactionItem
   setIsOpenDestBankModal: Dispatch<SetStateAction<boolean>>
 }) => {
-  const { id } = useParams()
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
 
   const { control, handleSubmit } = useForm({
@@ -1085,7 +1086,7 @@ const TransactionBankDestModal = ({
       entity_account_number?: string
     }) =>
       axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity`,
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/entity`,
         {
           ...payload,
         },
@@ -1099,8 +1100,8 @@ const TransactionBankDestModal = ({
 
   const { mutate: resetDestBank } = useMutation({
     mutationFn: () =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity/reset`,
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/entity/reset`,
         {},
         {
           headers: {

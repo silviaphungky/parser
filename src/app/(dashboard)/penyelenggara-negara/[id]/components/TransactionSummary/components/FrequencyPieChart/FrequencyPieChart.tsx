@@ -180,7 +180,7 @@ const FrequencyPieChart = ({
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
             direction: 'IN',
-            group_by: selectedGroup,
+            group_by: selectedGroup.id,
           },
           headers: {
             Authorization: `Bearer ${token}`,

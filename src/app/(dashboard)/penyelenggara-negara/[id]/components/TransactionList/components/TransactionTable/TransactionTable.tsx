@@ -414,6 +414,7 @@ const TransactionTable = ({
   return (
     <>
       <TransactionBankDestModal
+        transactionId={selected.transaction_id}
         token={token}
         isOpen={isOpenDestBankModal}
         setIsOpenDestBankModal={setIsOpenDestBankModal}

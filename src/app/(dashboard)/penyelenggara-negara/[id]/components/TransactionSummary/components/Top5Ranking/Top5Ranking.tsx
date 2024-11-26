@@ -1,6 +1,5 @@
 import { Card, LineSeparator, ProgressBar, Shimmer } from '@/components'
 import { IconIn, IconOut } from '@/icons'
-import { transactionData } from '../../TransactionSummary'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { ReactNode } from 'react'
 import { useParams } from 'next/navigation'
@@ -22,12 +21,21 @@ const TransactionCard = ({
   icon: ReactNode
   iconBg: string
   color: string
-  data: Array<{
-    name: string
-    bank: string
-    bankAccNo: string
-    nominal: number
-  }>
+  data: {
+    summary: {
+      count_transaction: number
+      total_transaction: number
+      currency: Array<string>
+    }
+    summary_entity: Array<{
+      currency: Array<string>
+      entity_account_number: string
+      entity_bank: string
+      entity_name: string
+      percentage: number
+      total_amount: number
+    }>
+  }
 }) => {
   return (
     <Card className="flex-1">
@@ -38,11 +46,13 @@ const TransactionCard = ({
             <div className={`p-1 ${iconBg} rounded-lg h-[2.25rem]`}>{icon}</div>
             <div>
               <div className="text-sm">{title}</div>
-              <div className="text-xl font-bold">{`Rp ${thousandSeparator(
-                transactionData.in.total
+              <div className="text-xl font-bold">{`${
+                data.summary?.currency[0]
+              } ${thousandSeparator(
+                data.summary?.total_transaction || 0
               )}`}</div>
               <div className="text-xs">{`#${thousandSeparator(
-                transactionData.in.count
+                data.summary?.count_transaction || 0
               )} transaksi`}</div>
             </div>
           </div>
@@ -50,27 +60,24 @@ const TransactionCard = ({
           <div className="mt-4 font-semibold font-barlow text-lg mb-2">
             Transaksi Terbesar
           </div>
-          {data.map((item, index) => {
+          {data.summary_entity?.map((item, index) => {
             return (
-              <div key={`topValueIn-${index}`} className="mb-1">
-                <div className="flex justify-between items-center text-sm">
-                  <div>{`${item.name} (${item.bank} - ${item.bankAccNo})`}</div>
+              <div key={`topValueIn-${index}`} className="mb-2">
+                <div className="flex justify-between items-center text-xs">
+                  <div>{`${item.entity_name} (${item.entity_bank} - ${item.entity_account_number})`}</div>
                 </div>
                 <div className="flex gap-2 items-center">
                   <ProgressBar
-                    progress={(item.nominal / transactionData.in.total) * 100}
+                    progress={item.percentage * 100}
                     className={`${color}`}
                   />
                   <div className="text-xs text-gray-600">
-                    {`${(
-                      (item.nominal / transactionData.in.total) *
-                      100
-                    ).toFixed(0)}%`}
+                    {`${(item.percentage * 100).toFixed(0)}%`}
                   </div>
                 </div>
-                <div className="font-semibold">{`Rp ${thousandSeparator(
-                  item.nominal
-                )}`}</div>
+                <div className="font-semibold -mt-1 text-sm">{`${
+                  item.currency[0]
+                } ${thousandSeparator(item.total_amount || 0)}`}</div>
               </div>
             )
           })}
@@ -84,7 +91,6 @@ const Top5Ranking = ({
   selectedCurrency,
   selectedDate,
   token,
-  data,
 }: {
   selectedCurrency: {
     id: string | number
@@ -95,35 +101,31 @@ const Top5Ranking = ({
     to: Date | undefined
   }
   token: string
-  data: {
-    in: Array<{
-      name: string
-      nominal: number
-      bank: string
-      bankAccNo: string
-    }>
-    out: Array<{
-      name: string
-      nominal: number
-      bank: string
-      bankAccNo: string
-    }>
-  }
 }) => {
   const { id } = useParams()
   const {
-    data: top5Data,
+    data: top5Data = {
+      in: {},
+      out: {},
+    },
     isLoading,
     isFetching,
   } = useQuery<{
-    data: {
+    top5Data: {
       in: {
         summary: {
           count_transaction: number
           total_transaction: number
           currency: Array<string>
         }
-        summary_entity: Array<string>
+        summary_entity: Array<{
+          currency: Array<string>
+          entity_account_number: string
+          entity_bank: string
+          entity_name: string
+          percentage: number
+          total_amount: number
+        }>
       }
       out: {
         summary: {
@@ -131,7 +133,14 @@ const Top5Ranking = ({
           total_transaction: number
           currency: Array<string>
         }
-        summary_entity: Array<string>
+        summary_entity: Array<{
+          currency: Array<string>
+          entity_account_number: string
+          entity_bank: string
+          entity_name: string
+          percentage: number
+          total_amount: number
+        }>
       }
     }
   }>({
@@ -158,11 +167,13 @@ const Top5Ranking = ({
     refetchOnWindowFocus: false,
   })
 
+  const data = top5Data as any
+
   return (
     <>
       <TransactionCard
         isLoading={isLoading || isFetching}
-        data={data.in}
+        data={data?.in || {}}
         title="Transfer Masuk"
         icon={<IconIn color="white" size={26} />}
         iconBg="bg-[#77ED8B]"
@@ -171,7 +182,7 @@ const Top5Ranking = ({
 
       <TransactionCard
         isLoading={isLoading || isFetching}
-        data={data.out}
+        data={data?.out || {}}
         title="Transfer Keluar"
         icon={<IconOut color="white" size={26} />}
         iconBg="bg-[#fe8c8c]"
