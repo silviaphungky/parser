@@ -37,11 +37,17 @@ export const mockCategoryOptions = [
 ]
 
 const TransactionCategoryModal = ({
+  refetch,
+  transactionId,
+  category,
   token,
   isOpen,
   onClose,
   setIsOpenCategoryModal,
 }: {
+  refetch: () => void
+  transactionId: string
+  category: string
   token: string
   isOpen: boolean
   onClose: () => void
@@ -52,7 +58,7 @@ const TransactionCategoryModal = ({
     id: string | number
     label: string
   }>(
-    mockCategoryOptions[0] as {
+    {} as {
       id: string | number
       label: string
     }
@@ -60,10 +66,10 @@ const TransactionCategoryModal = ({
 
   const { mutate } = useMutation({
     mutationFn: (payload: { category_name: string }) =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/category`,
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/category`,
         {
-          ...payload,
+          category_name: payload.category_name,
         },
         {
           headers: {
@@ -75,8 +81,8 @@ const TransactionCategoryModal = ({
 
   const { mutate: resetCategory } = useMutation({
     mutationFn: () =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/category/reset`,
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/category/reset`,
         {},
         {
           headers: {
@@ -87,7 +93,14 @@ const TransactionCategoryModal = ({
   })
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpenCategoryModal(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        setIsOpenCategoryModal(false)
+
+        setSelectedCategory({} as { id: string | number; label: string })
+      }}
+    >
       <h2 className="font-semibold text-lg">Sesuaikan Kategori</h2>
       <div className="mt-2 text-sm">
         Kategori untuk transaksi ini telah ditentukan secara otomatis oleh
@@ -101,9 +114,10 @@ const TransactionCategoryModal = ({
         options={mockCategoryOptions}
         value={selectedCategory}
         onChange={setSelectedCategory}
+        placeholder="Pilih kategori..."
       />
 
-      <div className="text-xs mt-2 text-gray-600">*Kategori awal: Travel</div>
+      <div className="text-xs mt-2 text-gray-600">{`*Kategori awal: ${category}`}</div>
 
       <div className="flex justify-end space-x-4 mt-8">
         <button
@@ -120,7 +134,11 @@ const TransactionCategoryModal = ({
             resetCategory(undefined, {
               onSuccess: () => {
                 toast.success(`Berhasil mengatur ulang ke kategori awal`)
+                refetch()
                 onClose()
+                setSelectedCategory(
+                  {} as { id: string | number; label: string }
+                )
               },
               onError: (error: any) => {
                 toast.error(
@@ -142,7 +160,11 @@ const TransactionCategoryModal = ({
               {
                 onSuccess: () => {
                   toast.success('Berhasil memperbarui kategori')
+                  refetch()
                   onClose()
+                  setSelectedCategory(
+                    {} as { id: string | number; label: string }
+                  )
                   setSelectedCategory({ id: '', label: '' })
                 },
                 onError: (error: any) => {

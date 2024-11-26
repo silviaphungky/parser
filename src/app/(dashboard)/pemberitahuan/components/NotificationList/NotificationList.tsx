@@ -16,7 +16,7 @@ const filterOptions = [
     label: 'Semua Pemberitahuan',
   },
   {
-    id: 'false',
+    id: 'UNREAD',
     label: 'Pemberitahuan Belum dibaca',
   },
 ]
@@ -52,6 +52,9 @@ const NotificationList = ({ token }: { token: string }) => {
     queryKey: ['notifList', currentPage, itemsPerPage, selectedFilter.id],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.NOTIF_LIST}`, {
+        params: {
+          status: selectedFilter.id,
+        },
         headers: {
           Authorization: `Bearer ${token}`,
         },

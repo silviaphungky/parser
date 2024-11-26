@@ -4,13 +4,15 @@ import {
   TransactionStatementsTable,
   TransactionStatementsFilter,
 } from './components'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { IconFilter, IconRefresh } from '@/icons'
 import { useParams } from 'next/navigation'
 import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
 import Button from '@/components/Button'
+import { MultiValue } from 'react-select'
+import dayjs from 'dayjs'
 
 const bankOptions = [
   { value: '', label: 'Semua Akun Bank' },
@@ -26,24 +28,25 @@ const currencyOptions = [
     label: 'Semua Mata Uang',
   },
   {
-    id: 'idr',
+    id: 'IDR',
     label: 'IDR',
   },
+
   {
-    id: 'usd',
-    label: 'USD',
-  },
-  {
-    id: 'poundsterling',
+    id: 'GBP',
     label: 'GBP',
   },
   {
-    id: 'sgd',
+    id: 'JPY',
+    label: 'JPY',
+  },
+  {
+    id: 'SGD',
     label: 'SGD',
   },
   {
-    id: 'jpy',
-    label: 'JPY',
+    id: 'USD',
+    label: 'USD',
   },
 ]
 
@@ -66,10 +69,35 @@ export interface IStatement {
 }
 
 const TransactionStatementList = ({ token }: { token: string }) => {
+  const [currency, setCurrency] = useState('')
+  const [selectedDate, setSelectedDate] = useState<{
+    from: Date | undefined
+    to: Date | undefined
+  }>({
+    from: undefined,
+    to: undefined,
+  })
+  const [selectedBank, setSelectedBank] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
+
+  const [status, setSelectedStatus] = useState('')
+  const [countSelectedFilter, setCountSelectedFilter] = useState(0)
+  const [sortBy, setSortBy] = useState<string | undefined>(undefined)
+  const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
   const { id } = useParams()
+  let accountBanks = {}
+
+  selectedBank.forEach((item) => {
+    accountBanks = {
+      ...accountBanks,
+      account_number: item.value ? item.value : undefined,
+    }
+  })
+
   const { data, isLoading, refetch, isFetching } = useQuery<{
     statement_list: Array<IStatement>
     meta_data: {
@@ -79,11 +107,35 @@ const TransactionStatementList = ({ token }: { token: string }) => {
       total_page: number
     }
   }>({
-    queryKey: ['statementList', currentPage, itemsPerPage],
+    queryKey: [
+      'statementList',
+      currentPage,
+      itemsPerPage,
+      selectedBank,
+      selectedDate.from,
+      selectedDate.to,
+      currency,
+      status,
+      sortBy,
+      sortDir,
+    ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.STATEMENT_LIST}/${id}/list`,
         {
+          params: {
+            currency: currency ? currency : undefined,
+            status: status ? status : undefined,
+            start_period: selectedDate.from
+              ? dayjs(new Date(selectedDate.from)).format('YYYY-MM-DD')
+              : undefined,
+            end_period: selectedDate.to
+              ? dayjs(new Date(selectedDate.to)).format('YYYY-MM-DD')
+              : undefined,
+            ...accountBanks,
+            sort_by: sortBy === 'period' ? 'start_period' : sortBy,
+            sort: sortDir,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -95,17 +147,35 @@ const TransactionStatementList = ({ token }: { token: string }) => {
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
+
+  useEffect(() => {
+    let count = 0
+    if (currency) count++
+    if (selectedBank.length) count++
+    if (selectedDate.from) count++
+    if (status) count++
+    setCountSelectedFilter(count)
+  }, [currency, selectedBank, selectedDate, status])
+
   return (
     <div>
       <Card className="mb-8">
         <div className="flex items-center">
           <TransactionStatementsFilter
+            token={token}
             isOpen={isOpen}
-            bankOptions={bankOptions}
             currencyOptions={currencyOptions}
             onClose={() => setIsOpen(false)}
             onApplyFilter={(value) => {
-              console.log({ value })
+              const { currency, selectedBank, startDate, endDate, status } =
+                value
+              setCurrency(currency)
+              setSelectedBank(selectedBank)
+              setSelectedDate({
+                from: startDate,
+                to: endDate,
+              })
+              setSelectedStatus(status)
             }}
           />
         </div>
@@ -117,9 +187,11 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             >
               <div className="flex gap-2 items-center justify-center">
                 <div>Filter</div>
-                <div className="bg-black rounded px-2 text-white text-xs">
-                  2
-                </div>
+                {countSelectedFilter > 0 && (
+                  <div className="bg-black rounded px-2 text-white text-xs">
+                    {countSelectedFilter}
+                  </div>
+                )}
                 <IconFilter />
               </div>
             </button>
@@ -140,13 +212,15 @@ const TransactionStatementList = ({ token }: { token: string }) => {
           refetch={refetch}
           statementList={data?.statement_list || []}
           isLoading={isLoading || isFetching}
+          setSortBy={setSortBy}
+          setSortDir={setSortDir}
         />
         <Pagination
           currentPage={currentPage}
-          totalPages={10}
+          totalPages={data?.meta_data.total_page || 1}
           onPageChange={setCurrentPage}
-          totalItems={100}
-          itemsPerPage={5}
+          totalItems={data?.meta_data.total || 1}
+          itemsPerPage={itemsPerPage}
           onItemsPerPageChange={setItemPerPage}
         />
       </Card>

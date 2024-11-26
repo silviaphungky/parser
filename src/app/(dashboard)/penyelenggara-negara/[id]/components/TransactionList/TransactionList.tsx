@@ -127,21 +127,17 @@ const TransactionList = ({ token }: { token: string }) => {
       searchBy,
     ],
     queryFn: async () => {
-      const response = await axiosInstance.get(
-        `${API_URL.TRANSACTION_LIST}`,
-
-        {
-          params: {
-            page: currentPage,
-            limit: itemsPerPage,
-            account_reporter_id: id,
-            [searchBy]: debouncedValue,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
+      const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
+        params: {
+          page: currentPage,
+          limit: itemsPerPage,
+          account_reporter_id: id,
+          [searchBy]: debouncedValue,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
       const data = response.data
       return data.data
     },
@@ -299,10 +295,10 @@ const TransactionList = ({ token }: { token: string }) => {
         />
         <Pagination
           currentPage={currentPage}
-          totalPages={10}
+          totalPages={data?.meta_data.total_page || 1}
           onPageChange={setCurrentPage}
-          totalItems={100}
-          itemsPerPage={5}
+          totalItems={data?.meta_data.total || 1}
+          itemsPerPage={itemsPerPage}
           onItemsPerPageChange={setItemPerPage}
         />
       </Card>

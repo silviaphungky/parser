@@ -111,7 +111,10 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       <div className="flex gap-4">
         <div className="flex-1">
           <FormItem label="Periode">
-            <DatePickerRange onRangeChange={handleChangeDate} />
+            <DatePickerRange
+              selected={selectedDate}
+              onRangeChange={handleChangeDate}
+            />
           </FormItem>
         </div>
         <div className="flex-1">

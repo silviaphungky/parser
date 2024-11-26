@@ -8,12 +8,14 @@ import { useParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const TransactionNoteModal = ({
+  transactionId,
   token,
   initialNote,
   isOpen,
   onClose,
   setIsOpen,
 }: {
+  transactionId: string
   token: string
   initialNote?: string
   isOpen: boolean
@@ -24,8 +26,8 @@ const TransactionNoteModal = ({
   const [note, setNote] = useState(initialNote)
   const { mutate } = useMutation({
     mutationFn: (payload: { note?: string }) =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/note`,
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/note`,
         {
           ...payload,
         },

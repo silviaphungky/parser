@@ -1,4 +1,5 @@
 import { FormItem, Modal } from '@/components'
+import Button from '@/components/Button'
 import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
 import { IconBCA, IconBNI, IconBRI, IconMandiri, IconUpload } from '@/icons'
@@ -86,22 +87,23 @@ const UploadBankStatement = ({
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState<string | null>(null)
 
-  const { mutate: checkDuplicateFile } = useMutation({
-    mutationFn: async (payload: FormData) => {
-      const response = await axiosInstance.post(
-        `${baseUrl}/${API_URL.VALIDATE_STATEMENT_DUPLICATE}`,
-        payload,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'multipart/form-data',
-          },
-        }
-      )
-      const data = response.data
-      return data.data
-    },
-  })
+  const { mutate: checkDuplicateFile, isPending: isCheckingDuplicate } =
+    useMutation({
+      mutationFn: async (payload: FormData) => {
+        const response = await axiosInstance.post(
+          `${baseUrl}/${API_URL.VALIDATE_STATEMENT_DUPLICATE}`,
+          payload,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        )
+        const data = response.data
+        return data.data
+      },
+    })
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const selectedFile = e.target.files?.[0]
@@ -118,7 +120,7 @@ const UploadBankStatement = ({
     }
   }
 
-  const { mutate } = useMutation({
+  const { mutate, isPending } = useMutation({
     mutationFn: (payload: FormData) =>
       axiosInstance.post(`${baseUrl}/${API_URL.UPLOAD_STATEMENT}`, payload, {
         headers: {
@@ -238,12 +240,14 @@ const UploadBankStatement = ({
           {error && <p className="mt-2 text-sm text-red-600">{error}</p>}
         </div>
 
-        <button
+        <Button
           type="submit"
-          className="mt-2 text-sm bg-black w-full text-white px-4 py-2 rounded-md hover:opacity-95"
+          variant="dark"
+          loading={isPending || isCheckingDuplicate}
+          full
         >
           Unggah
-        </button>
+        </Button>
       </form>
     </Modal>
   )

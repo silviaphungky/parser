@@ -32,33 +32,6 @@ const bankOptions = [
   { value: 'BRI1', label: 'BRI - 11223344' },
 ]
 
-const currencyOptions = [
-  {
-    id: '',
-    label: 'Semua Mata Uang',
-  },
-  {
-    id: 'idr',
-    label: 'IDR',
-  },
-  {
-    id: 'usd',
-    label: 'USD',
-  },
-  {
-    id: 'poundsterling',
-    label: 'GBP',
-  },
-  {
-    id: 'sgd',
-    label: 'SGD',
-  },
-  {
-    id: 'jpy',
-    label: 'JPY',
-  },
-]
-
 const FamilyList = ({ token }: { token: string }) => {
   const [selectedSort, setSelectedSort] = useState<{
     id: string | number

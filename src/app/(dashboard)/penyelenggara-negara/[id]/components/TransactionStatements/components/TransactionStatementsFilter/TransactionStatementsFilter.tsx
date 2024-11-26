@@ -1,32 +1,46 @@
 'use client'
 import { useState } from 'react'
-import { FormItem, Input, Modal } from '@/components'
+import { FormItem, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue } from 'react-select'
+import { useQuery } from '@tanstack/react-query'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import { useParams } from 'next/navigation'
+import Button from '@/components/Button'
 
 interface FilterValues {
-  startDate: string
-  endDate: string
-  selectedBank: string
-  currency: string // Added currency field
+  startDate?: Date
+  endDate?: Date
+  selectedBank: MultiValue<{ value: string; label: string }>
+  currency: string
+  status: string
 }
 
 interface FilterModalProps {
+  token: string
   isOpen: boolean
   onClose: () => void
   onApplyFilter: (filterValues: FilterValues) => void
-  bankOptions: { value: string | number; label: string }[]
   currencyOptions: { id: string | number; label: string }[]
 }
 
+const statusOptions = [
+  { id: '', label: 'Semua Status' },
+  { id: 'SUCCESS', label: 'Berhasil' },
+  { id: 'PENDING', label: 'Diproses' },
+  { id: 'FAILED', label: 'Gagal' },
+]
+
 const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
+  token,
   isOpen,
   onClose,
   onApplyFilter,
-  bankOptions,
   currencyOptions,
 }) => {
+  const { id } = useParams()
   const [selectedDate, setSelectedDate] = useState<{
     from: Date | undefined
     to: Date | undefined
@@ -34,21 +48,25 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
     from: undefined,
     to: undefined,
   })
-  const [selectedBank, setSelectedBank] = useState<{
-    value: string | number
-    label: string
-  }>(bankOptions[0])
+  const [selectedBank, setSelectedBank] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
   const [currency, setCurrency] = useState<{
     id: string | number
     label: string
   }>(currencyOptions[0])
+  const [status, setStatus] = useState<{
+    id: string | number
+    label: string
+  }>(statusOptions[0])
 
   const handleApplyFilter = () => {
     const filterValues: FilterValues = {
-      startDate: `${selectedDate.from}`,
-      endDate: `${selectedDate.to}`,
-      selectedBank: selectedBank.value as string,
+      startDate: selectedDate.from,
+      endDate: selectedDate.to,
+      selectedBank,
       currency: currency.id as string,
+      status: status.id as string,
     }
     onApplyFilter(filterValues)
     onClose()
@@ -61,40 +79,139 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
     setSelectedDate(range)
   }
 
+  const {
+    data = { account_reporter_and_family_statement_list: [] },
+    isLoading,
+    refetch,
+  } = useQuery<{
+    account_reporter_and_family_statement_list: Array<{
+      account_number: string
+      bank_name: string
+      is_family: boolean
+      name: string
+    }>
+  }>({
+    queryKey: ['accountBankList', currency.id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.STATEMENT_LIST}/${id}/family/list`,
+        {
+          params: {
+            currency: currency.id ? undefined : currency.id,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+  const bankAccountOptions = currency.id
+    ? data.account_reporter_and_family_statement_list.map((item) => ({
+        value: item.account_number,
+        label: `${item.name} - ${item.bank_name} - ${item.account_number}`,
+      }))
+    : [{ value: '', label: 'Semua Akun Bank' }]
+
   if (!isOpen) return null
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-lg font-bold mb-4">Filter Laporan Bank</h2>
 
-      {/* Date Range Filter */}
-
       <div>
         <FormItem label="Periode">
           <DatePickerRange
+            selected={selectedDate}
+            initialRange={{
+              from: selectedDate.from,
+              to: selectedDate.to,
+            }}
             onRangeChange={handleChangeDate}
             className="w-full"
           />
         </FormItem>
       </div>
-      <div>
-        <FormItem label="Akun Bank">
-          <ReactSelect
-            isMulti
-            name="banks"
-            options={bankOptions}
-            className="react-select-container"
-            placeholder="Pilih akun bank..."
-          />
-        </FormItem>
-      </div>
-      <div className="mb-4 flex gap-4">
+      <div className="flex gap-4">
         <div className="flex-1">
           <FormItem label="Mata Uang">
             <InputDropdown
               options={currencyOptions}
               value={currency}
-              onChange={setCurrency}
+              onChange={(props) => {
+                setCurrency(props)
+                setSelectedBank([])
+              }}
+            />
+          </FormItem>
+        </div>
+      </div>
+      <div>
+        <FormItem label="Akun Bank">
+          <ReactSelect
+            isMulti
+            name="colors"
+            options={bankAccountOptions}
+            className="react-select-container"
+            placeholder="Pilih akun bank..."
+            value={selectedBank}
+            styles={{
+              option: (styles, state) => ({
+                ...styles,
+                backgroundColor: state.isSelected ? '#E6EFF5' : '',
+                '&:hover': {
+                  // overriding hover
+                  ...styles, // apply initial styles
+                  backgroundColor: '#E6EFF5',
+                },
+              }),
+              indicatorsContainer: (base, props) => {
+                return {
+                  ...base,
+                  alignItems: 'start',
+                }
+              },
+              clearIndicator: (base) => {
+                return {
+                  ...base,
+                  cursor: 'pointer',
+                }
+              },
+              dropdownIndicator: (base) => {
+                return {
+                  ...base,
+                  cursor: 'pointer',
+                }
+              },
+              control: (baseStyles, state) => {
+                return {
+                  ...baseStyles,
+                  borderColor: 'rgb(209, 213, 219)',
+                  boxShadow: 'none',
+                  borderRadius: '0.375rem',
+                  height: '34px',
+                  overflow: 'auto',
+                }
+              },
+            }}
+            onChange={(props) => {
+              setSelectedBank(props)
+            }}
+          />
+        </FormItem>
+      </div>
+
+      <div className="mb-4 flex gap-4">
+        <div className="flex-1">
+          <FormItem label="Status">
+            <InputDropdown
+              options={statusOptions}
+              value={status}
+              onChange={setStatus}
             />
           </FormItem>
         </div>
@@ -107,6 +224,36 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
         >
           Batal
         </button>
+        <Button
+          variant="white-outline"
+          onClick={() => {
+            setSelectedDate({
+              from: undefined,
+              to: undefined,
+            })
+            setCurrency({
+              id: '',
+              label: '',
+            })
+            setStatus({
+              id: '',
+              label: '',
+            })
+            setSelectedBank([])
+
+            const filterValues: FilterValues = {
+              startDate: undefined,
+              endDate: undefined,
+              selectedBank: [],
+              currency: '',
+              status: '',
+            }
+            onApplyFilter(filterValues)
+            onClose()
+          }}
+        >
+          Reset Filter
+        </Button>
         <button
           className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:opacity-80"
           onClick={handleApplyFilter}

@@ -1133,11 +1133,7 @@ const TransactionBankDestModal = ({
   }
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={() => setIsOpenDestBankModal(false)}
-      width={'w-[600px]'}
-    >
+    <Modal isOpen={isOpen} onClose={() => setIsOpenDestBankModal(false)}>
       <h2 className="font-semibold text-lg">Sesuaikan Info Lawan Transaksi</h2>
       <div className="mt-2 text-sm mb-4">
         Gunakan form ini untuk mengedit informasi lawan transaksi. Pastikan

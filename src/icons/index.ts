@@ -29,6 +29,7 @@ import IconStar from './IconStar'
 import IconLoading from './IconLoading'
 import IconRefresh from './IconRefresh'
 import IconDownload from './IconDownload'
+import IconUserStar from './IconUserStar'
 
 export {
   IconFileCheck,
@@ -62,4 +63,5 @@ export {
   IconLoading,
   IconRefresh,
   IconDownload,
+  IconUserStar,
 }

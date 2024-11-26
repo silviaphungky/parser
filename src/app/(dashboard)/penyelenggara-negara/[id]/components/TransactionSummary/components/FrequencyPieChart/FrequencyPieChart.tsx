@@ -130,17 +130,18 @@ const FrequencyPieChart = ({
       selectedDate.from,
       selectedDate.to,
       selectedCurrency.id,
+      selectedGroup.id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
-
         {
           params: {
             start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
             direction: 'IN',
+            group_by: selectedGroup.id,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -168,17 +169,18 @@ const FrequencyPieChart = ({
       selectedDate.from,
       selectedDate.to,
       selectedCurrency.id,
+      selectedGroup.id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
-
         {
           params: {
             start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
             direction: 'IN',
+            group_by: selectedGroup,
           },
           headers: {
             Authorization: `Bearer ${token}`,

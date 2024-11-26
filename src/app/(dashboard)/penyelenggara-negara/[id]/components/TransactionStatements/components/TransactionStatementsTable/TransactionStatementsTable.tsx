@@ -17,8 +17,9 @@ import {
   createColumnHelper,
   getCoreRowModel,
   flexRender,
+  ColumnSort,
 } from '@tanstack/react-table'
-import { useEffect, useMemo, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { IStatement } from '../../TransactionStatementList'
 import dayjs from 'dayjs'
 import {
@@ -63,13 +64,17 @@ const TransactionStatementsTable = ({
   statementList,
   isLoading,
   refetch,
+  setSortBy,
+  setSortDir,
 }: {
   token: string
   statementList: Array<IStatement>
   isLoading: boolean
   refetch: () => void
+  setSortBy: Dispatch<SetStateAction<string | undefined>>
+  setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
 }) => {
-  const [sorting, setSorting] = useState([])
+  const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedStatementId, setSelectedStatementId] = useState('')
 
   const {
@@ -101,6 +106,11 @@ const TransactionStatementsTable = ({
 
     enabled: !!selectedStatementId,
   })
+
+  useEffect(() => {
+    setSortBy(sorting[0]?.id)
+    setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
+  }, [sorting])
 
   useEffect(() => {
     if (isSuccess) {
@@ -204,7 +214,7 @@ const TransactionStatementsTable = ({
             {info.getValue() === 'FAILED'
               ? 'Gagal'
               : info.getValue() === 'PENDING'
-              ? 'Memproses'
+              ? 'Diproses'
               : 'Berhasil'}
           </div>
         ),
@@ -232,7 +242,7 @@ const TransactionStatementsTable = ({
             <div
               onClick={() => {
                 if (!isDownloading) {
-                  setSelectedStatementId(info.row.original.statement_id)
+                  setSelectedStatementId(info.row.original.file_url)
                 }
               }}
               className="text-blue-500 hover:underline cursor-pointer"

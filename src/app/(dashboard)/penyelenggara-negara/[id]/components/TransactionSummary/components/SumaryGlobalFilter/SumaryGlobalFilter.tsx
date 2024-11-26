@@ -19,7 +19,23 @@ const currencyOptions = [
     id: 'IDR',
     label: 'IDR',
   },
-  { id: 'USD', label: 'USD' },
+
+  {
+    id: 'GBP',
+    label: 'GBP',
+  },
+  {
+    id: 'JPY',
+    label: 'JPY',
+  },
+  {
+    id: 'SGD',
+    label: 'SGD',
+  },
+  {
+    id: 'USD',
+    label: 'USD',
+  },
 ]
 
 const SumaryGlobalFilter = ({
@@ -68,11 +84,14 @@ const SumaryGlobalFilter = ({
       name: string
     }>
   }>({
-    queryKey: ['accountBankList'],
+    queryKey: ['accountBankList', selectedCurrency.id],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.STATEMENT_LIST}/${id}/family/list`,
         {
+          params: {
+            currency: selectedCurrency.id,
+          },
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -105,7 +124,7 @@ const SumaryGlobalFilter = ({
           name="colors"
           options={bankAccountOptions}
           className="react-select-container"
-          placeholder="Pilih akun bank"
+          placeholder="Pilih akun bank..."
           styles={{
             option: (styles, state) => ({
               ...styles,
@@ -152,6 +171,10 @@ const SumaryGlobalFilter = ({
       </div>
 
       <DatePickerRange
+        selected={{
+          from: undefined,
+          to: undefined,
+        }}
         initialRange={initialRange}
         onRangeChange={handleChangeDate}
       />

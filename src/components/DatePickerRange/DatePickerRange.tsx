@@ -1,11 +1,12 @@
 import { IconCalendar } from '@/icons'
 import useOutsideClick from '@/utils/useClickOutside'
 import dayjs from 'dayjs'
-import React, { useState, forwardRef, Ref, useRef } from 'react'
+import React, { useState, forwardRef, Ref, useRef, useEffect } from 'react'
 import { DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 
 interface DatePickerRangeProps {
+  selected: { from: Date | undefined; to: Date | undefined }
   initialRange?: { from: Date | undefined; to: Date | undefined }
   onRangeChange?: (range: {
     from: Date | undefined
@@ -17,6 +18,7 @@ interface DatePickerRangeProps {
 const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
   (
     {
+      selected,
       initialRange = { from: undefined, to: undefined },
       onRangeChange,
       className,
@@ -42,12 +44,16 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
       }
     }
 
+    useEffect(() => {
+      setRange(selected)
+    }, [selected])
+
     const handleInputClick = () => {
       setIsCalendarOpen((prev) => !prev) // Toggle calendar visibility
     }
 
     const formatDateRange = () => {
-      if (range.from && range.to) {
+      if (range?.from && range?.to) {
         return `${dayjs(range.from.toLocaleDateString()).format(
           'DD/MM/YYYY'
         )} - ${dayjs(range.to.toLocaleDateString()).format('DD/MM/YYYY')}`
@@ -78,6 +84,7 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
             ref={divRef}
           >
             <DayPicker
+              captionLayout="dropdown"
               mode="range"
               selected={range}
               onDayClick={handleDayClick}

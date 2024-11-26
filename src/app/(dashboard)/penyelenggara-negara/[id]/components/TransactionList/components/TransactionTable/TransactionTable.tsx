@@ -112,11 +112,11 @@ const TransactionTable = ({
   }
 
   const { mutate } = useMutation({
-    mutationFn: (payload: { is_starred: boolean }) =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/is-starred`,
+    mutationFn: (payload: { is_starred: boolean; transactionId: string }) =>
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${payload.transactionId}/is-starred`,
         {
-          ...payload,
+          is_starred: payload.is_starred,
         },
         {
           headers: {
@@ -308,11 +308,10 @@ const TransactionTable = ({
               >
                 <button
                   onClick={() => {
-                    // handle mark transaction action here
-                    // NOTE: TERGANTUNG BALIKAN BE
                     mutate(
                       {
-                        is_starred: false,
+                        is_starred: !info.row.original.is_starred,
+                        transactionId: info.row.original.transaction_id,
                       },
                       {
                         onSuccess: () => {
@@ -426,6 +425,9 @@ const TransactionTable = ({
         }}
       />
       <TransactionCategoryModal
+        category={selected.category_name}
+        refetch={refetch}
+        transactionId={selected.transaction_id}
         token={token}
         isOpen={isOpenCategoryModal}
         setIsOpenCategoryModal={setIsOpenCategoryModal}
@@ -514,6 +516,7 @@ const TransactionTable = ({
       </Modal>
 
       <TransactionNoteModal
+        transactionId={selected.transaction_id}
         token={token}
         setIsOpen={setIsOpen}
         initialNote={selected.note}
@@ -602,8 +605,8 @@ const TransactionTable = ({
             )}
           </table>
           {isLoading && <Shimmer />}
-          {/*NOTE: temporary comment */}
-          {/* {!isLoading && (
+
+          {!isLoading && (
             <>
               {transactionList.length === 0 && (
                 <div className="text-center py-10 text-gray-500">
@@ -614,7 +617,7 @@ const TransactionTable = ({
                 </div>
               )}
             </>
-          )} */}
+          )}
         </div>
       </div>
     </>

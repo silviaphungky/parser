@@ -1,63 +1,20 @@
 import { Title } from '@/components'
-import SummaryCard from './components/SummaryCard'
-import { IconReceipt, IconUsers } from '@/icons'
-import { thousandSeparator } from '@/utils/thousanSeparator'
-import { ReactNode } from 'react'
 
-const SUMMARY = [
-  {
-    key: 'pn',
-    value: 2000,
-  },
-
-  {
-    key: 'pnWithHighlight',
-    value: 90,
-  },
-  {
-    key: 'mutation',
-    value: 8888,
-  },
-]
-
-const IconMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: ReactNode } = {
-  pn: (
-    <div className="bg-[#FFE0EB] rounded-full p-4">
-      <IconUsers color="#FF82AC" />
-    </div>
-  ),
-  pnWithHighlight: (
-    <div className="bg-[#FFE0EB] rounded-full p-4">
-      <IconUsers color="#FF82AC" />
-    </div>
-  ),
-  mutation: (
-    <div className="bg-[#FFF5D9] rounded-full p-4">
-      <IconReceipt color="#FFBB38" />
-    </div>
-  ),
-}
-
-const TitleMap: { [key in 'pn' | 'mutation' | 'pnWithHighlight']: string } = {
-  pn: 'Penyelenggara Negara',
-  pnWithHighlight: 'Penyelenggara Negara yang ditandai',
-  mutation: 'Laporan Bank',
-}
+import { cookies } from 'next/headers'
+import { Summary } from './components'
+import { redirect } from 'next/navigation'
 
 const OverviewPage = () => {
+  const token = cookies().get('ACCESS_TOKEN')?.value || ''
+
+  if (!token) {
+    redirect('/login')
+  }
+
   return (
     <div>
       <Title title="Ringkasan" />
-      <div className="flex gap-4 flex-1 mt-6">
-        {SUMMARY.map((item) => (
-          <SummaryCard
-            key={item.key}
-            icon={IconMap[item.key as 'pn' | 'mutation']}
-            title={TitleMap[item.key as 'pn' | 'mutation']}
-            description={thousandSeparator(item.value)}
-          />
-        ))}
-      </div>
+      <Summary token={token} />
     </div>
   )
 }
