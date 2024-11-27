@@ -136,7 +136,7 @@ const TransactionTable = ({
           </div>
         ),
         {
-          id: 'transactionDate',
+          id: 'date',
           header: 'Waktu',
           cell: (info) => info.getValue(),
           enableSorting: true,
@@ -159,7 +159,7 @@ const TransactionTable = ({
           </div>
         ),
         {
-          id: 'personalBankInfo',
+          id: 'owner_account_id',
           header: 'Info Bank PN',
           cell: (info) => info.getValue(),
           enableSorting: false,
@@ -199,7 +199,7 @@ const TransactionTable = ({
           </div>
         ),
         {
-          id: 'targetBankInfo',
+          id: 'entity_account_number',
           header: 'Info Lawan Transaksi',
           cell: (info) => info.getValue(),
           enableSorting: false,
@@ -227,7 +227,7 @@ const TransactionTable = ({
           </>
         ),
         {
-          id: 'creditDebit',
+          id: 'direction',
           header: 'Db / Cr',
           cell: (info) => info.getValue(),
           enableSorting: false,
@@ -262,14 +262,14 @@ const TransactionTable = ({
           enableSorting: false,
         }
       ),
-      columnHelper.accessor('balance', {
-        header: 'Nominal Transkasi',
+      columnHelper.accessor('amount', {
+        header: 'Nominal Transaksi',
         cell: (info) => (
           <div className="text-xs">
             {thousandSeparator(info.getValue() || 0)}
           </div>
         ),
-        enableSorting: true,
+        enableSorting: false,
       }),
       columnHelper.accessor('balance', {
         header: 'Saldo',

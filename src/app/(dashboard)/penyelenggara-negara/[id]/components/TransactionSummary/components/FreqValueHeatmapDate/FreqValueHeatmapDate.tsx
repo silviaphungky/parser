@@ -295,7 +295,7 @@ const FreqValueHeatmapDate = ({
       </div>
       <div>
         <div className="overflow-auto pr-6 flex gap-2">
-          {[...yearList.reverse()].map((item, index) => (
+          {[...yearList].map((item, index) => (
             <div
               key={index}
               className={`text-sm py-1 cursor-pointer ${

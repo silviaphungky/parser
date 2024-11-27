@@ -179,6 +179,8 @@ const TransactionList = ({ token }: { token: string }) => {
           category: category ? category : undefined,
           direction: transactionType,
           method: transactionMethod,
+          sort_by: sortBy,
+          sort: sortDir,
         },
         headers: {
           Authorization: `Bearer ${token}`,
