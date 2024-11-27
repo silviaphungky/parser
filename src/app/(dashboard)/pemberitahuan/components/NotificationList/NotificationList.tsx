@@ -109,7 +109,7 @@ const NotificationList = ({ token }: { token: string }) => {
       <Card className="flex justify-between items-center mb-4">
         <div>
           <button
-            onClick={() => handleMarkAsRead([''])}
+            onClick={() => handleMarkAsRead([])}
             className="mt-2 text-sm text-blue-500 hover:underline"
           >
             Tandai semua sebagai dibaca
