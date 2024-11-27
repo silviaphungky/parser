@@ -95,7 +95,6 @@ const TransactionCategoryModal = ({
       isOpen={isOpen}
       onClose={() => {
         setIsOpenCategoryModal(false)
-
         setSelectedCategory({} as { id: string | number; label: string })
       }}
     >
@@ -121,6 +120,7 @@ const TransactionCategoryModal = ({
         <button
           onClick={() => {
             setIsOpenCategoryModal(false)
+            setSelectedCategory({ id: '', label: '' })
           }}
           className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
         >
@@ -134,9 +134,7 @@ const TransactionCategoryModal = ({
                 toast.success(`Berhasil mengatur ulang ke kategori awal`)
                 refetch()
                 onClose()
-                setSelectedCategory(
-                  {} as { id: string | number; label: string }
-                )
+                setSelectedCategory({ id: '', label: '' })
               },
               onError: (error: any) => {
                 toast.error(

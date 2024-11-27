@@ -40,8 +40,17 @@ const TransactionNoteModal = ({
   })
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpen(false)}>
-      <h2 className="text-lg font-semibold mb-4">Catatan</h2>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        setIsOpen(false)
+        setNote('')
+      }}
+    >
+      <h2 className="text-lg font-semibold ">Catatan</h2>
+      <div className="mb-4 text-sm">
+        Tambahkan catatan terkait transaksi yang dilakukan.
+      </div>
       <textarea
         value={note}
         onChange={(e) => {
@@ -57,6 +66,7 @@ const TransactionNoteModal = ({
         <button
           onClick={() => {
             setIsOpen(false)
+            setNote('')
           }}
           className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
         >
@@ -84,7 +94,7 @@ const TransactionNoteModal = ({
           }}
           className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
         >
-          Simpan
+          Simpan Perubahan
         </button>
       </div>
     </Modal>

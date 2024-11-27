@@ -234,7 +234,7 @@ const PNTable = ({
         header: () => <span>Nama</span>,
         cell: (info) => {
           return (
-            <div className="font-semibold capitalize">
+            <div className="text-sm max-w-[18rem] break-words whitespace-pre-wrap font-semibold capitalize">
               {info.getValue().toLowerCase()}
             </div>
           )

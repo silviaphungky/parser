@@ -3,6 +3,7 @@ import { ReactNode } from 'react'
 import WLInfo from './components/WLInfo/WLInfo'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { clearCookies } from '../../layout'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700', '800', '900'],
@@ -47,6 +48,7 @@ const AnalyticLayout = ({ children }: { children: ReactNode }) => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
 
   if (!token) {
+    clearCookies()
     redirect('/login')
   }
 

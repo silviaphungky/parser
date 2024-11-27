@@ -14,13 +14,11 @@ import IconBatik from '@/icons/IconBatik'
 import Button from '@/components/Button'
 import toast from 'react-hot-toast'
 
-// Define the schema for validation using Yup
 const schema = yup.object().shape({
   email: yup.string().email().required('Email is required'),
   password: yup.string().required('Password is required'),
 })
 
-// Define the types for our form inputs
 interface IFormInput {
   email: string
   password: string
@@ -32,7 +30,7 @@ const baseUrl =
 const Login = ({
   handleSetSession,
 }: {
-  handleSetSession: (token: string) => void
+  handleSetSession: (token: string, email: string) => void
 }) => {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -43,6 +41,11 @@ const Login = ({
       password: '',
     },
     resolver: yupResolver(schema),
+  })
+
+  const email = useWatch({
+    name: 'email',
+    control,
   })
 
   const { mutate, isPending } = useMutation({
@@ -57,7 +60,8 @@ const Login = ({
     onSuccess: async ({ data }) => {
       const response = data.data || {}
       const token = response.token
-      await handleSetSession(token)
+      await handleSetSession(token, email)
+
       router.push('/penyelenggara-negara')
     },
   })
@@ -108,11 +112,6 @@ const Login = ({
       })
     }
   }
-
-  const email = useWatch({
-    name: 'email',
-    control,
-  })
 
   return (
     <div className="relative bg-light">

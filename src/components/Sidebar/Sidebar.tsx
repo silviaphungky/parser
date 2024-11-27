@@ -7,9 +7,11 @@ import { ReactNode, useState } from 'react'
 import { colorToken } from '@/constants/color-token'
 
 const Sidebar = ({
+  email,
   children,
   clearCookies,
 }: {
+  email: string
   children: ReactNode
   clearCookies: () => void
 }) => {
@@ -110,7 +112,7 @@ const Sidebar = ({
         } w-full bg-soft min-h-[100vh] px-6 pt-6`}
       >
         <div className="font-semibold text-lg text-right mb-4">
-          Hi, John Doe 👋🏼
+          Hi, {email} 👋🏼
         </div>
         {children}
       </div>

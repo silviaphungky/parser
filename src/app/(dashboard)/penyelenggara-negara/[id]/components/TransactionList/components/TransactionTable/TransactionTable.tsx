@@ -132,11 +132,7 @@ const TransactionTable = ({
         (row) => (
           <div>
             <div className="text-xs">{row.date}</div>
-            {row.time && (
-              <div className="text-[11px]">
-                {dayjs(row.time).format('HH:mm:ss')}
-              </div>
-            )}
+            {row.time && <div className="text-[11px]">{row.time}</div>}
           </div>
         ),
         {
@@ -358,6 +354,7 @@ const TransactionTable = ({
                   onClick={() => {
                     setSelected(info.row.original)
                     setIsOpenDestBankModal(true)
+                    setActionMenu(null)
                   }}
                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >
@@ -367,6 +364,7 @@ const TransactionTable = ({
                   onClick={() => {
                     setSelected(info.row.original)
                     setIsOpenVerifModal(true)
+                    setActionMenu(null)
                   }}
                   className="block w-full px-4 py-2 text-left hover:bg-gray-100"
                 >

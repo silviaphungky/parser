@@ -15,17 +15,21 @@ const barlow = Barlow({
   subsets: ['latin'],
 })
 
-const clearCookies = async () => {
+export const clearCookies = async () => {
   'use server'
   const cookieStore = cookies()
   cookieStore.delete('ACCESS_TOKEN')
+  cookieStore.delete('USER')
 }
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
+  const email = cookies().get('USER')?.value || ''
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
       <div className="flex">
-        <Sidebar clearCookies={clearCookies}>{children}</Sidebar>
+        <Sidebar clearCookies={clearCookies} email={email}>
+          {children}
+        </Sidebar>
       </div>
     </div>
   )

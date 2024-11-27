@@ -2,11 +2,13 @@ import { Title } from '@/components'
 import { NotificationList } from './components'
 import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
+import { clearCookies } from '../layout'
 
 const NotificationPage = () => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
 
   if (!token) {
+    clearCookies()
     redirect('/login')
   }
 
