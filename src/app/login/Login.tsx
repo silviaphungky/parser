@@ -64,6 +64,9 @@ const Login = ({
 
       router.push('/penyelenggara-negara')
     },
+    onError: async (error: any) => {
+      toast.error(error?.response?.data?.message)
+    },
   })
 
   const { mutateAsync: regisNewAccount, isPending: isRegisting } = useMutation({
