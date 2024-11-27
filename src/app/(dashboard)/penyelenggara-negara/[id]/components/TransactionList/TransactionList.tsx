@@ -89,10 +89,11 @@ const TransactionList = ({
   verifyBankAccount,
 }: {
   token: string
-  verifyBankAccount: ({ transaction_id }: { transaction_id: string }) => {
-    isSuccess: boolean
-    error?: string
-  }
+  verifyBankAccount: ({
+    transaction_id,
+  }: {
+    transaction_id: string
+  }) => Promise<{ isSuccess: boolean; error?: string }>
 }) => {
   const { id } = useParams()
   const [countSelectedFilter, setCountSelectedFilter] = useState(0)

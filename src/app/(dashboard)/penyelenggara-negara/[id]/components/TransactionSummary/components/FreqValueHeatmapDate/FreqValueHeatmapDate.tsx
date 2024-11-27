@@ -1,5 +1,5 @@
 'use client'
-import { Card, Shimmer } from '@/components'
+import { Card, InputSearch, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import dayjs from 'dayjs'
 import { useState } from 'react'
@@ -10,6 +10,7 @@ import { useQuery } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useParams } from 'next/navigation'
+import useDebounce from '@/utils/useDebounce'
 
 const mockTransactionType = [
   {
@@ -81,6 +82,7 @@ const FreqValueHeatmapDate = ({
   token: string
 }) => {
   const { id } = useParams()
+  const [keyword, setKeyword] = useState('')
   const [selectedYear, setSelectedYear] = useState(yearList[0])
   const [selectedType, setSelectedType] = useState<{
     id: string | number
@@ -97,6 +99,8 @@ const FreqValueHeatmapDate = ({
   const handleChangeType = (option: { id: string | number; label: string }) => {
     setSelectedType(option)
   }
+
+  const debouncedValue = useDebounce(keyword, 500)
 
   const handleChangeBased = (option: {
     id: string | number
@@ -131,6 +135,7 @@ const FreqValueHeatmapDate = ({
       selectedCurrency.id,
       selectedType.id,
       transactionMethodPayload,
+      debouncedValue,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -141,6 +146,8 @@ const FreqValueHeatmapDate = ({
             currency: selectedCurrency.id,
             direction: selectedType.id,
             transaction_method: transactionMethodPayload,
+            search:
+              debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -181,14 +188,17 @@ const FreqValueHeatmapDate = ({
     }
   })
 
+  const handleSearch = (query: string) => {
+    setKeyword(query)
+  }
+
   return (
     <Card className="mb-8">
+      <div className="text-sm mb-4">
+        Pengelompokan berdasarkan{' '}
+        <strong className="font-semibold"> Waktu</strong>
+      </div>
       <div className="flex justify-between items-center mb-6">
-        <div className="text-sm">
-          Pengelompokan berdasarkan{' '}
-          <strong className="font-semibold"> Waktu</strong>
-        </div>
-
         <div className="flex gap-2">
           <div className="w-[14rem]">
             <InputDropdown
@@ -252,6 +262,12 @@ const FreqValueHeatmapDate = ({
               options={mockBasedOn}
               value={selectedBased}
               onChange={handleChangeBased}
+            />
+          </div>
+          <div className="flex justify-between">
+            <InputSearch
+              onSearch={handleSearch}
+              placeholder="Masukkan Info Lawan Transaksi"
             />
           </div>
         </div>

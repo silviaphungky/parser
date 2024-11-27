@@ -29,7 +29,11 @@ const DashboardLayout = ({ children }: { children: ReactNode }) => {
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
       <div className="flex">
-        <Sidebar clearCookies={clearCookies} email={email} role={role}>
+        <Sidebar
+          clearCookies={clearCookies}
+          email={email}
+          role={role as 'ADMIN' | 'SUPER_ADMIN'}
+        >
           {children}
         </Sidebar>
       </div>

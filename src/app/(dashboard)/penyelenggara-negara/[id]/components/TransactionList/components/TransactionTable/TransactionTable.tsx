@@ -87,10 +87,11 @@ const TransactionTable = ({
   refetch: () => void
   transactionList: Array<ITransactionItem>
   isLoading: boolean
-  verifyBankAccount: ({ transaction_id }: { transaction_id: string }) => {
-    isSuccess: boolean
-    error?: string
-  }
+  verifyBankAccount: ({
+    transaction_id,
+  }: {
+    transaction_id: string
+  }) => Promise<{ isSuccess: boolean; error?: string }>
 }) => {
   const refDropdown = useRef(null)
   const [selected, setSelected] = useState({} as ITransactionItem)
