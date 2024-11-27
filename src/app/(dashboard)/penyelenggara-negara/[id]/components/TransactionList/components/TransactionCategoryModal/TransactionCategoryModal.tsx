@@ -7,33 +7,32 @@ import { Dispatch, useState } from 'react'
 import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
-import { useParams } from 'next/navigation'
 
 export const mockCategoryOptions = [
-  { id: 'Gaji/Pendapatan', label: 'Gaji/Pendapatan' },
-  { id: 'Pendapatan Sewa', label: 'Pendapatan Sewa' },
-  { id: 'Tagihan Utilitas', label: 'Tagihan Utilitas' },
-  { id: 'Pembayaran Sewa/KPR', label: 'Pembayaran Sewa/KPR' },
-  { id: 'Belanja Harian', label: 'Belanja Harian' },
-  { id: 'Transportasi', label: 'Transportasi' },
-  { id: 'Makan di Luar', label: 'Makan di Luar' },
-  { id: 'Hiburan', label: 'Hiburan' },
-  { id: 'Pembayaran Asuransi', label: 'Pembayaran Asuransi' },
-  { id: 'Pelunasan Pinjaman', label: 'Pelunasan Pinjaman' },
-  { id: 'Pembayaran Kartu Kredit', label: 'Pembayaran Kartu Kredit' },
-  { id: 'Investasi', label: 'Investasi' },
-  { id: 'Setoran Tabungan', label: 'Setoran Tabungan' },
-  { id: 'Penarikan Tunai', label: 'Penarikan Tunai' },
-  { id: 'Biaya Medis', label: 'Biaya Medis' },
-  { id: 'Biaya Pendidikan', label: 'Biaya Pendidikan' },
-  { id: 'Belanja', label: 'Belanja' },
-  { id: 'Hadiah dan Donasi', label: 'Hadiah dan Donasi' },
-  { id: 'Biaya', label: 'Biaya' },
-  { id: 'Pajak', label: 'Pajak' },
-  { id: 'Transfer', label: 'Transfer' },
-  { id: 'Pengembalian Dana (Refunds)', label: 'Pengembalian Dana (Refunds)' },
-  { id: 'Pendapatan Lain-lain', label: 'Pendapatan Lain-lain' },
-  { id: 'Pengeluaran Lain-lain', label: 'Pengeluaran Lain-lain' },
+  { id: 'SALARY/INCOME', label: 'Gaji/Pendapatan' },
+  { id: 'RENTAL INCOME', label: 'Pendapatan Sewa' },
+  { id: 'UTILITY BILLS', label: 'Tagihan Utilitas' },
+  { id: 'RENT/MORTGAGE PAYMENTS', label: 'Pembayaran Sewa/KPR' },
+  { id: 'GROCERIES', label: 'Belanja Harian' },
+  { id: 'TRANSPORTATION', label: 'Transportasi' },
+  { id: 'DINING OUT', label: 'Makan di Luar' },
+  { id: 'ENTERTAINMENT', label: 'Hiburan' },
+  { id: 'INSURANCE PAYMENTS', label: 'Pembayaran Asuransi' },
+  { id: 'LOAN REPAYMENTS', label: 'Pelunasan Pinjaman' },
+  { id: 'CREDIT CARD PAYMENTS', label: 'Pembayaran Kartu Kredit' },
+  { id: 'INVESTMENTS', label: 'Investasi' },
+  { id: 'SAVINGS DEPOSITS', label: 'Setoran Tabungan' },
+  { id: 'CASH WITHDRAWALS', label: 'Penarikan Tunai' },
+  { id: 'MEDICAL EXPENSES', label: 'Biaya Medis' },
+  { id: 'EDUCATION EXPENSES', label: 'Biaya Pendidikan' },
+  { id: 'SHOPPING', label: 'Belanja' },
+  { id: 'GIFTS AND DONATIONS', label: 'Hadiah dan Donasi' },
+  { id: 'FEES', label: 'Biaya' },
+  { id: 'TAXES', label: 'Pajak' },
+  { id: 'TRANSFERS', label: 'Transfer' },
+  { id: 'REFUNDS', label: 'Pengembalian Dana (Refunds)' },
+  { id: 'MISCELLANEOUS INCOMES', label: 'Pendapatan Lain-lain' },
+  { id: 'MISCELLANEOUS EXPENSES', label: 'Pengeluaran Lain-lain' },
 ]
 
 const TransactionCategoryModal = ({
@@ -53,7 +52,6 @@ const TransactionCategoryModal = ({
   onClose: () => void
   setIsOpenCategoryModal: Dispatch<boolean>
 }) => {
-  const { id } = useParams()
   const [selectedCategory, setSelectedCategory] = useState<{
     id: string | number
     label: string

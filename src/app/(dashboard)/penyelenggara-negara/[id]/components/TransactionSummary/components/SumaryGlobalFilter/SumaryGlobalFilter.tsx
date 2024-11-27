@@ -4,8 +4,9 @@ import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import ReactSelect, { MultiValue } from 'react-select'
+import { currencyOptions } from '../../TransactionSummary'
 
 export const mockBank = [
   { value: 'BCA1', label: 'BCA - 12345678 Anton' },
@@ -14,40 +15,21 @@ export const mockBank = [
   { value: 'BRI1', label: 'BRI - 11223344 Siti Aisyah' },
 ]
 
-const currencyOptions = [
-  {
-    id: 'IDR',
-    label: 'IDR',
-  },
-
-  {
-    id: 'GBP',
-    label: 'GBP',
-  },
-  {
-    id: 'JPY',
-    label: 'JPY',
-  },
-  {
-    id: 'SGD',
-    label: 'SGD',
-  },
-  {
-    id: 'USD',
-    label: 'USD',
-  },
-]
-
 const SumaryGlobalFilter = ({
   token,
   selectedCurrency,
   selectedBank,
+  selectedDate,
   initialRange,
   handleChangeBank,
-  handleChangeDate,
   handleChangeCurrency,
+  handleChangeDate,
 }: {
   token: string
+  selectedDate: {
+    from: Date | undefined
+    to: Date | undefined
+  }
   selectedCurrency: { id: string | number; label: string }
   selectedBank: MultiValue<{ value: string; label: string }>
   initialRange?: { from: Date | undefined; to: Date | undefined }
@@ -67,10 +49,6 @@ const SumaryGlobalFilter = ({
   }) => void
 }) => {
   const { id } = useParams()
-
-  useEffect(() => {
-    handleChangeCurrency(currencyOptions[0])
-  }, [])
 
   const {
     data = { account_reporter_and_family_statement_list: [] },
@@ -171,10 +149,7 @@ const SumaryGlobalFilter = ({
       </div>
 
       <DatePickerRange
-        selected={{
-          from: undefined,
-          to: undefined,
-        }}
+        selected={selectedDate}
         initialRange={initialRange}
         onRangeChange={handleChangeDate}
       />

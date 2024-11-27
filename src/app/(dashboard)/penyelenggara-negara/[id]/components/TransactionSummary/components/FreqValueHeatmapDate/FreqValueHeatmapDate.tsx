@@ -5,7 +5,7 @@ import dayjs from 'dayjs'
 import { useState } from 'react'
 import { ContributionCalendar } from 'react-contribution-calendar'
 import { mockTransactionMethod } from '../TreemapSubjectFreqValue/TreemapSubjectFreqValue'
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue } from 'react-select'
 import { useQuery } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
@@ -13,7 +13,7 @@ import { useParams } from 'next/navigation'
 
 const mockTransactionType = [
   {
-    id: 'all',
+    id: '',
     label: 'Transaksi Masuk/Keluar',
   },
   {
@@ -61,16 +61,15 @@ const color = {
     'rgba(255, 51, 51, 0.8)',
     'rgba(153, 31, 31, 0.8)',
   ],
-  all: [
-    'rgba(173, 216, 230, 0.8)', // Biru Muda
-    'rgb(113, 154, 231, 0.8)', // Biru Cornflower
-    'rgba(30, 144, 255, 0.8)', // Biru Dodger
-    'rgba(0, 0, 205, 0.8)', // Biru Tua
+  '': [
+    'rgba(173, 216, 230, 0.8)',
+    'rgb(113, 154, 231, 0.8)',
+    'rgba(30, 144, 255, 0.8)',
+    'rgba(0, 0, 205, 0.8)',
   ],
 }
 
 const FreqValueHeatmapDate = ({
-  data,
   selectedCurrency,
   token,
 }: {
@@ -80,32 +79,6 @@ const FreqValueHeatmapDate = ({
   }
 
   token: string
-  data: {
-    all: Array<{
-      [key in string]: {
-        frequency: number
-        value: number
-        levelFreq: number
-        levelVal: number
-      }
-    }>
-    IN: Array<{
-      [key in string]: {
-        frequency: number
-        value: number
-        levelFreq: number
-        levelVal: number
-      }
-    }>
-    OUT: Array<{
-      [key in string]: {
-        levelFreq: number
-        levelVal: number
-        frequency: number
-        value: number
-      }
-    }>
-  }
 }) => {
   const { id } = useParams()
   const [selectedYear, setSelectedYear] = useState(yearList[0])
@@ -117,6 +90,9 @@ const FreqValueHeatmapDate = ({
     id: string | number
     label: string
   }>(mockBasedOn[0])
+  const [selectedTransactionMethod, setSelectedTransactionMethod] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
 
   const handleChangeType = (option: { id: string | number; label: string }) => {
     setSelectedType(option)
@@ -133,39 +109,38 @@ const FreqValueHeatmapDate = ({
     setSelectedYear(year)
   }
 
-  const dataBasedOnType = data[selectedType.id as 'IN' | 'OUT' | 'all']
-  const formattedData = dataBasedOnType.map((item) => {
-    const key = Object.keys(item)[0]
-    return {
-      [key]: {
-        data: item[key],
-        level:
-          selectedBased.id === 'freq'
-            ? item[key].levelFreq
-            : item[key].levelVal,
-      },
-    }
+  let transactionMethodPayload = selectedTransactionMethod.map((item) => {
+    return item.value
   })
 
   const {
-    data: heatmapData,
+    data: heatmapData = { summary_calendar: [] },
     isLoading,
     isFetching,
   } = useQuery<{
-    data: {
-      summary_calendar: Array<any>
-    }
+    summary_calendar: Array<{
+      [key: string]: {
+        frequency: number
+        value: number
+      }
+    }>
   }>({
-    queryKey: ['heatmapData', selectedYear, selectedCurrency.id],
+    queryKey: [
+      'heatmapData',
+      selectedYear,
+      selectedCurrency.id,
+      selectedType.id,
+      transactionMethodPayload,
+    ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/calendar`,
-
         {
           params: {
             year: selectedYear,
             currency: selectedCurrency.id,
-            direction: '',
+            direction: selectedType.id,
+            transaction_method: transactionMethodPayload,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -177,6 +152,33 @@ const FreqValueHeatmapDate = ({
     },
     refetchOnMount: false,
     refetchOnWindowFocus: false,
+  })
+
+  const formattedData = heatmapData.summary_calendar.map((item) => {
+    const key = Object.keys(item)[0]
+    let levelFreq = 0
+    let levelVal = 0
+
+    if (item[key].frequency > 10) levelFreq = 4
+    else if (item[key].frequency > 7 && item[key].frequency <= 10) levelFreq = 3
+    else if (item[key].frequency > 4 && item[key].frequency <= 7) levelFreq = 2
+    else if (item[key].frequency > 0 && item[key].frequency <= 4) levelFreq = 1
+    else levelFreq = 0
+
+    if (item[key].value > 20000000) levelVal = 4
+    else if (item[key].value > 10000000 && item[key].value <= 20000000)
+      levelVal = 3
+    else if (item[key].value > 2000000 && item[key].value <= 10000000)
+      levelVal = 2
+    else if (item[key].value > 0 && item[key].value <= 2000000) levelVal = 1
+    else levelVal = 0
+
+    return {
+      [key]: {
+        data: item[key],
+        level: selectedBased.id === 'freq' ? levelFreq : levelVal,
+      },
+    }
   })
 
   return (
@@ -198,6 +200,8 @@ const FreqValueHeatmapDate = ({
           <div className="w-[20rem]">
             <ReactSelect
               isMulti
+              value={selectedTransactionMethod}
+              onChange={(props) => setSelectedTransactionMethod(props)}
               name="colors"
               options={mockTransactionMethod}
               className="react-select-container"

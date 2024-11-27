@@ -9,6 +9,7 @@ import { API_URL } from '@/constants/apiUrl'
 import dayjs from 'dayjs'
 
 const TransactionCard = ({
+  selectedCurrency,
   isLoading,
   title,
   icon,
@@ -16,6 +17,7 @@ const TransactionCard = ({
   color,
   data,
 }: {
+  selectedCurrency: string
   isLoading: boolean
   title: string
   icon: ReactNode
@@ -46,9 +48,7 @@ const TransactionCard = ({
             <div className={`p-1 ${iconBg} rounded-lg h-[2.25rem]`}>{icon}</div>
             <div>
               <div className="text-sm">{title}</div>
-              <div className="text-xl font-bold">{`${
-                data.summary?.currency[0]
-              } ${thousandSeparator(
+              <div className="text-xl font-bold">{`${selectedCurrency} ${thousandSeparator(
                 data.summary?.total_transaction || 0
               )}`}</div>
               <div className="text-xs">{`#${thousandSeparator(
@@ -178,6 +178,7 @@ const Top5Ranking = ({
         icon={<IconIn color="white" size={26} />}
         iconBg="bg-[#77ED8B]"
         color="bg-[#22C55E]"
+        selectedCurrency={selectedCurrency.id as string}
       />
 
       <TransactionCard
@@ -187,6 +188,7 @@ const Top5Ranking = ({
         icon={<IconOut color="white" size={26} />}
         iconBg="bg-[#fe8c8c]"
         color="bg-[#E11711]"
+        selectedCurrency={selectedCurrency.id as string}
       />
     </>
   )

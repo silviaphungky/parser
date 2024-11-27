@@ -7,7 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue } from 'react-select'
 
 const mockTransactionType = [
   {
@@ -46,19 +46,24 @@ const colorScale = {
 }
 
 export const mockTransactionMethod = [
-  { id: 'transfer-bank', label: 'Transfer Bank' },
-  { id: 'pembayaran-kartu', label: 'Pembayaran Kartu (Debit/Kredit)' },
-  { id: 'dompet-digital', label: 'Dompet Digital' },
-  { id: 'pembayaran-kode-qr', label: 'Pembayaran dengan Kode QR' },
-  { id: 'transaksi-tunai', label: 'Transaksi Tunai (termasuk ATM)' },
-  { id: 'tidak-diketahui', label: 'Tidak Diketahui (Unknown)' },
+  { value: 'BANK TRANSFERS', label: 'Transfer Bank' },
+  {
+    value: 'CARD PAYMENTS (DEBIT/CREDIT)',
+    label: 'Pembayaran Kartu (Debit/Kredit)',
+  },
+  { value: 'DIGITAL WALLETS', label: 'Dompet Digital' },
+  { value: 'QR CODE PAYMENTS', label: 'Pembayaran dengan Kode QR' },
+  {
+    value: 'CASH TRANSACTIONS (INCLUDING ATM)',
+    label: 'Transaksi Tunai (termasuk ATM)',
+  },
+  { value: 'UNKNOWN', label: 'Tidak Diketahui (Unknown)' },
 ]
 
 const TreemapSubjectFreqValue = ({
   selectedCurrency,
   selectedDate,
   token,
-  data,
 }: {
   selectedCurrency: {
     id: string | number
@@ -79,19 +84,30 @@ const TreemapSubjectFreqValue = ({
     id: string | number
     label: string
   }>(mockTransactionType[0])
+  const [selectedTransactionMethod, setSelectedTransactionMethod] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
 
   const handleChangeType = (option: { id: string | number; label: string }) => {
     setSelectedType(option)
   }
+
+  let transactionMethodPayload = selectedTransactionMethod.map((item) => {
+    return item.value
+  })
 
   const {
     data: treemapData,
     isLoading,
     isFetching,
   } = useQuery<{
-    data: {
-      summary_frequency: Array<any>
-    }
+    summary_frequency: Array<{
+      entity_account_number: string
+      entity_bank: string
+      entity_name: string
+      total_amount: number
+      total_transaction: number
+    }>
   }>({
     queryKey: [
       'treemapData',
@@ -99,17 +115,18 @@ const TreemapSubjectFreqValue = ({
       selectedDate.to,
       selectedCurrency.id,
       selectedType.id,
+      transactionMethodPayload,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/frequency`,
-
         {
           params: {
             start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
             direction: selectedType.id,
+            transaction_method: transactionMethodPayload,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -142,6 +159,7 @@ const TreemapSubjectFreqValue = ({
             <div className="w-[20rem]">
               <ReactSelect
                 isMulti
+                value={selectedTransactionMethod}
                 name="colors"
                 options={mockTransactionMethod}
                 className="react-select-container"
@@ -185,6 +203,7 @@ const TreemapSubjectFreqValue = ({
                     }
                   },
                 }}
+                onChange={(props) => setSelectedTransactionMethod(props)}
               />
             </div>
           </div>
@@ -194,7 +213,13 @@ const TreemapSubjectFreqValue = ({
           {!isLoading && !isFetching && (
             <>
               <Treemap
-                data={data[selectedType.id as 'IN' | 'OUT']}
+                data={
+                  treemapData?.summary_frequency.map((item) => ({
+                    ...item,
+                    value: item.total_amount,
+                    frequency: item.total_transaction,
+                  })) || []
+                }
                 colorScale={
                   colorScale[selectedType.id as 'IN' | 'OUT'] as Array<string>
                 }

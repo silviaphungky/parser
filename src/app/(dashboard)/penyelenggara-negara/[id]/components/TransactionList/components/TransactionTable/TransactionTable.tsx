@@ -44,7 +44,7 @@ const iconBankMap = {
   BCA: <IconBCA size={24} />,
   BRI: <IconBRI size={24} />,
   BNI: <IconBNI size={24} />,
-  Mandiri: <IconMandiri size={24} />,
+  MANDIRI: <IconMandiri size={24} />,
 }
 
 const NoteCell = ({ text }: { text: string }) => {
@@ -150,18 +150,14 @@ const TransactionTable = ({
         (row) => (
           <div>
             <div className="flex gap-2 mt-2 items-center">
-              {
-                iconBankMap[
-                  row.personalBankName as 'BNI' | 'BCA' | 'BRI' | 'Mandiri'
-                ]
-              }
+              {iconBankMap[row.owner_bank as 'BNI' | 'BCA' | 'BRI' | 'MANDIRI']}
               <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
                 <div className="text-xs">{`${
-                  row.personalBankName || 'unnamed'
+                  row.owner_bank || 'unnamed'
                 }`}</div>
-                <div className="text-xs">{`${
-                  row.personalBankAccName || 'unknown'
-                } - ${row.personalBankAccNo || 'N/A'}`}</div>
+                <div className="text-xs">{`${row.owner_name || 'unknown'} - ${
+                  row.owner_account_number || 'N/A'
+                }`}</div>
               </div>
             </div>
           </div>
@@ -246,9 +242,13 @@ const TransactionTable = ({
         cell: (info) => info.getValue() || 'IDR',
         enableSorting: false,
       }),
-      columnHelper.accessor('remark', {
+      columnHelper.accessor('description', {
         header: 'Remark',
-        cell: (info) => <div className="text-xs">{info.getValue() || '-'}</div>,
+        cell: (info) => (
+          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap capitalize">
+            {info.getValue().toLowerCase() || '-'}
+          </div>
+        ),
         enableSorting: false,
       }),
       columnHelper.accessor(
@@ -589,9 +589,9 @@ const TransactionTable = ({
                       row.original.is_starred ? 'bg-orange-50' : ''
                     }`}
                   >
-                    {row.getVisibleCells().map((cell) => (
+                    {row.getVisibleCells().map((cell, i) => (
                       <td
-                        key={cell.id}
+                        key={`${row.id}-${i}`}
                         className={`px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
                       >
                         {flexRender(

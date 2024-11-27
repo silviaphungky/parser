@@ -63,7 +63,7 @@ const WLInfo = ({
               link: '/penyelenggara-negara',
             },
             {
-              label: data?.name || ('' as string),
+              label: data?.name || (id as string),
             },
           ]}
         />

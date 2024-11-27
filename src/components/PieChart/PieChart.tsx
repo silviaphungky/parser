@@ -21,29 +21,6 @@ interface Props {
   label?: (props: any) => string | ReactElement
 }
 
-// const CustomTooltip = ({ active, payload }: { active: any; payload: any }) => {
-//   if (active) {
-//     const percentage = ((payload[0].value / total) * 100).toFixed(2)
-//     return (
-//       <div
-//         className="custom-tooltip"
-//         style={{
-//           backgroundColor: '#ffff',
-//           padding: '5px',
-//           border: '1px solid #cccc',
-//           width: '10rem',
-//         }}
-//       >
-//         <label>
-//           {`${payload[0].name} : ${thousandSeparator(
-//             payload[0].value
-//           )} (${percentage}%)`}
-//         </label>
-//       </div>
-//     )
-//   }
-// }
-
 const PieChart = ({ chartData, value, size, colorMap, cx, label }: Props) => {
   return (
     <ResponsiveContainer height={size || 150}>
@@ -58,10 +35,10 @@ const PieChart = ({ chartData, value, size, colorMap, cx, label }: Props) => {
           innerRadius={'60%'}
           outerRadius={'75%'}
           fill={'#8884d8"'}
-          paddingAngle={4}
+          paddingAngle={2}
           stroke={'10'}
           strokeWidth={15}
-          cornerRadius={4}
+          cornerRadius={2}
           dataKey="value"
           labelLine={false}
           label={label}

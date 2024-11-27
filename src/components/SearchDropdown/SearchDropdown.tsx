@@ -6,9 +6,9 @@ import { IconSearch } from '@/icons'
 import { colorToken } from '@/constants/color-token'
 
 interface SearchDropdownProps {
-  searchFields: { label: string; id: string | number }[] // Array of dropdown options
-  onSearch: (query: string, field: string) => void // Function to handle search input and selected field
-  placeholder?: string // Optional placeholder for input
+  searchFields: { label: string; id: string | number }[]
+  onSearch: (query: string, field: string) => void
+  placeholder?: string
 }
 
 const SearchDropdown: React.FC<SearchDropdownProps> = ({
@@ -27,7 +27,8 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
     label: string
   }) => {
     setSelectedField(option)
-    onSearch(query, option.id as string) // Call onSearch when the field changes
+    setQuery('')
+    onSearch('', option.id as string)
   }
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {

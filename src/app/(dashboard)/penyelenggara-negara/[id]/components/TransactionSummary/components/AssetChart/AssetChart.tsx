@@ -74,7 +74,14 @@ const AssetChart = ({
     isLoading,
     isFetching,
   } = useQuery<{
-    transaction_list: Array<any>
+    summary_pie_chart: Array<{
+      account_number: string
+      bank_name: string
+      date: string
+      name: string
+      statement_id: string
+      value: number
+    }>
   }>({
     queryKey: [
       'chartData',
@@ -104,6 +111,8 @@ const AssetChart = ({
     refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
+
+  console.log({ chartData })
 
   return (
     <Card className="flex-1">

@@ -89,13 +89,8 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
   const { id } = useParams()
-  let accountBanks = {}
-
-  selectedBank.forEach((item) => {
-    accountBanks = {
-      ...accountBanks,
-      account_number: item.value ? item.value : undefined,
-    }
+  let accountBanks = selectedBank.map((item) => {
+    return item.value ? item.value : undefined
   })
 
   const { data, isLoading, refetch, isFetching } = useQuery<{
@@ -132,7 +127,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             end_period: selectedDate.to
               ? dayjs(new Date(selectedDate.to)).format('YYYY-MM-DD')
               : undefined,
-            ...accountBanks,
+            account_number: accountBanks,
             sort_by: sortBy === 'period' ? 'start_period' : sortBy,
             sort: sortDir,
           },

@@ -12,6 +12,7 @@ import { baseUrl } from '../UploadBankStatement/UploadBankStatement'
 import useDebounce from '@/utils/useDebounce'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
+import { MultiValue } from 'react-select'
 
 const searchFields = [
   { label: 'Nama Akun Lawan Transaksi', id: 'search_entity_name' },
@@ -20,8 +21,8 @@ const searchFields = [
 
 const transactionTypeOptions = [
   { id: '', label: 'Semua Transaksi' },
-  { id: 'cr', label: 'Credit' },
-  { id: 'db', label: 'Debit' },
+  { id: 'IN', label: 'Credit' },
+  { id: 'OUT', label: 'Debit' },
 ]
 
 const bankOptions = [
@@ -82,8 +83,10 @@ export interface ITransactionItem {
   statement_id: string
   transaction_id: string
   currency: string
-  remark?: string
   // NOTE: temp
+  owner_name: string
+  owner_account_number: string
+  owner_bank: string
   personalBankName: string
   personalBankAccName: string
   personalBankAccNo: string
@@ -92,6 +95,7 @@ export interface ITransactionItem {
 
 const TransactionList = ({ token }: { token: string }) => {
   const { id } = useParams()
+  const [countSelectedFilter, setCountSelectedFilter] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
@@ -99,6 +103,34 @@ const TransactionList = ({ token }: { token: string }) => {
   const [isOpen, setIsOpen] = useState(false)
   const [searchBy, setSearchBy] = useState('')
   const [keyword, setKeyword] = useState('')
+  const [transactionType, setTransactionType] = useState('')
+  const [transactionMethod, setTransactionMethod] = useState('')
+  const [currency, setCurrency] = useState('')
+  const [isHighlight, setIsHighlight] = useState<boolean | string>('')
+  const [category, setCategory] = useState<string>('')
+  const [selectedDate, setSelectedDate] = useState<{
+    from: Date | undefined
+    to: Date | undefined
+  }>({
+    from: undefined,
+    to: undefined,
+  })
+  const [selectedBank, setSelectedBank] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
+
+  useEffect(() => {
+    let count = 0
+    if (currency) count++
+    if (selectedBank.length) count++
+    if (selectedDate.from) count++
+    if (isHighlight !== '') count++
+    if (transactionType) count++
+    if (category) count++
+    if (transactionMethod) count++
+
+    setCountSelectedFilter(count)
+  }, [currency, selectedBank, selectedDate, status])
 
   const handleSearch = (query: string, field: string) => {
     setKeyword(query)
@@ -124,7 +156,11 @@ const TransactionList = ({ token }: { token: string }) => {
       sortBy,
       sortDir,
       debouncedValue,
-      searchBy,
+      isHighlight,
+      currency,
+      transactionType,
+      category,
+      transactionMethod,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
@@ -133,6 +169,11 @@ const TransactionList = ({ token }: { token: string }) => {
           limit: itemsPerPage,
           account_reporter_id: id,
           [searchBy]: debouncedValue,
+          is_starred: isHighlight === '' ? undefined : isHighlight,
+          currency,
+          category: category ? category : undefined,
+          direction: transactionType,
+          method: transactionMethod,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -219,7 +260,7 @@ const TransactionList = ({ token }: { token: string }) => {
           link.href = url
           link.download = `transaksi ${wlInfo?.nik} ${dayjs(new Date()).format(
             'DD MMMM YYYY'
-          )}.csv` // Desired filename
+          )}.csv`
           document.body.appendChild(link)
           link.click()
         },
@@ -231,22 +272,52 @@ const TransactionList = ({ token }: { token: string }) => {
   }
 
   useEffect(() => {
+    if (!!debouncedValue) {
+      setCurrentPage(1)
+    }
+  }, [debouncedValue, searchBy])
+
+  useEffect(() => {
     setCurrentPage(1)
-  }, [debouncedValue, searchBy, itemsPerPage])
+  }, [itemsPerPage])
+
+  useEffect(() => {
+    setKeyword('')
+  }, [searchBy])
 
   return (
     <div>
       <Card className="mb-6">
-        {/* filter */}
         <TransactionFilter
+          token={token}
           isOpen={isOpen}
           onClose={() => {
             setIsOpen(false)
           }}
           onApplyFilter={(value) => {
-            console.log({ value })
+            const {
+              startDate,
+              endDate,
+              transactionType,
+              minMutation,
+              maxMutation,
+              isHighlight,
+              selectedBank,
+              currency,
+              category,
+              transactionMethod,
+            } = value
+            setSelectedDate({
+              from: startDate,
+              to: endDate,
+            })
+            setCurrency(currency)
+            setSelectedBank(selectedBank)
+            setIsHighlight(isHighlight)
+            setTransactionType(transactionType)
+            setCategory(category)
+            setTransactionMethod(transactionMethod)
           }}
-          bankOptions={bankOptions}
           currencyOptions={currencyOptions}
           transactionTypeOptions={transactionTypeOptions}
         />
@@ -266,9 +337,11 @@ const TransactionList = ({ token }: { token: string }) => {
             >
               <div className="flex gap-2 items-center justify-center">
                 <div>Filter</div>
-                <div className="bg-black rounded px-2 text-white text-xs">
-                  2
-                </div>
+                {countSelectedFilter > 0 && (
+                  <div className="bg-black rounded px-2 text-white text-xs">
+                    {countSelectedFilter}
+                  </div>
+                )}
                 <IconFilter />
               </div>
             </Button>

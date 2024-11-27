@@ -205,61 +205,6 @@ const dataTreemap = {
   ],
 }
 
-const dataFreqPiechart = {
-  CATEGORY: {
-    in: {
-      value: [
-        { name: 'Gaji/Pendapatan', value: 100000 },
-        { name: 'Pengembalian Dana (Refunds)', value: 2000000 },
-        { name: 'Pendapatan Sewa', value: 3800000 },
-      ],
-      freq: [
-        { name: 'Gaji/Pendapatan', value: 10 },
-        { name: 'Pengembalian Dana (Refunds)', value: 2 },
-        { name: 'Pendapatan Sewa', value: 8 },
-      ],
-    },
-    out: {
-      value: [
-        { name: 'Tagihan Utilitas', value: 711100 },
-        { name: 'Hiburan', value: 3000000 },
-        { name: 'Investasi', value: 2880000 },
-      ],
-      freq: [
-        { name: 'Tagihan Utilitas', value: 6 },
-        { name: 'Hiburan', value: 7 },
-        { name: 'Investasi', value: 1 },
-      ],
-    },
-  },
-  TRANSACTION_METHOD: {
-    in: {
-      value: [
-        { name: 'Transfer Bank', value: 199920 },
-        { name: 'Dompet Digital', value: 1111300 },
-        { name: 'Pembayaran dengan Kode QR', value: 88300 },
-      ],
-      freq: [
-        { name: 'Transfer Bank', value: 19 },
-        { name: 'Dompet Digital', value: 30 },
-        { name: 'Pembayaran dengan Kode QR', value: 88 },
-      ],
-    },
-    out: {
-      value: [
-        { name: 'Transfer Bank', value: 7792100 },
-        { name: 'Dompet Digital', value: 1231300 },
-        { name: 'Pembayaran dengan Kode QR', value: 66600 },
-      ],
-      freq: [
-        { name: 'Transfer Bank', value: 77 },
-        { name: 'Dompet Digital', value: 882 },
-        { name: 'Tidak Diketahui (Unknown)', value: 888 },
-      ],
-    },
-  },
-}
-
 const mockData: {
   all: Array<{
     [key: string]: {
@@ -450,6 +395,30 @@ const mockGroupByDate = {
   }),
 }
 
+export const currencyOptions = [
+  {
+    id: 'IDR',
+    label: 'IDR',
+  },
+
+  {
+    id: 'GBP',
+    label: 'GBP',
+  },
+  {
+    id: 'JPY',
+    label: 'JPY',
+  },
+  {
+    id: 'SGD',
+    label: 'SGD',
+  },
+  {
+    id: 'USD',
+    label: 'USD',
+  },
+]
+
 const TransactionSummary = ({ token }: { token: string }) => {
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
@@ -458,7 +427,7 @@ const TransactionSummary = ({ token }: { token: string }) => {
     id: string | number
     label: string
   }>(
-    {} as {
+    currencyOptions[0] as {
       id: string | number
       label: string
     }
@@ -497,6 +466,7 @@ const TransactionSummary = ({ token }: { token: string }) => {
       <div className="mb-12">
         <SumaryGlobalFilter
           token={token}
+          selectedDate={selectedDate}
           selectedBank={selectedBank}
           initialRange={{
             from: dayjs(new Date()).subtract(1, 'months').toDate(),
@@ -518,7 +488,6 @@ const TransactionSummary = ({ token }: { token: string }) => {
           selectedCurrency={selectedCurrency}
           selectedDate={selectedDate}
           token={token}
-          data={topTransactionValueData}
         />
       </div>
 
@@ -531,13 +500,11 @@ const TransactionSummary = ({ token }: { token: string }) => {
           data={dataTreemap}
         />
         <FrequencyPieChart
-          data={dataFreqPiechart}
           selectedCurrency={selectedCurrency}
           selectedDate={selectedDate}
           token={token}
         />
         <FreqValueHeatmapDate
-          data={mockGroupByDate}
           selectedCurrency={selectedCurrency}
           token={token}
         />

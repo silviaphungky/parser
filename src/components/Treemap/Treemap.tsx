@@ -2,7 +2,6 @@
 import { numberAbbv } from '@/utils/numberAbbv'
 import { ResponsiveContainer, Treemap as RTreemap, Tooltip } from 'recharts'
 
-// Custom color scale based on frequency
 const getColor = (frequency: number, colorScale: Array<string>) => {
   if (frequency > 0.1 && frequency <= 1) {
     return colorScale[0]
@@ -32,23 +31,23 @@ const CustomizedContent = (props: any) => {
     y,
     width,
     height,
-    name,
-    frequency,
     colorScale,
-    value,
-    bank,
-    bankAccNo,
+    entity_name,
+    total_amount,
+    total_transaction,
+    entity_bank,
+    entity_account_number,
   } = props
 
   return (
-    name && (
+    entity_name && (
       <g>
         <rect
           x={x}
           y={y}
           width={width}
           height={height}
-          fill={getColor(frequency, colorScale) || 'white'}
+          fill={getColor(total_transaction, colorScale) || 'white'}
           stroke="white"
         />
         <text
@@ -58,16 +57,16 @@ const CustomizedContent = (props: any) => {
           fontWeight="bold"
           stroke="none"
         >
-          {`${name} - ${bank} ${bankAccNo}`}
+          {`${entity_name} - ${entity_bank} ${entity_account_number}`}
         </text>
-        {frequency && (
+        {total_transaction && (
           <text x={x + 10} y={y + 35} fontSize="12px" stroke="none">
-            {`Frekuensi: ${frequency}`}
+            {`Frekuensi: ${total_transaction}`}
           </text>
         )}
-        {value && (
+        {total_amount && (
           <text x={x + 10} y={y + 50} fontSize="12" stroke="none">
-            {`Nominal transaksi: ${numberAbbv(value)}`}
+            {`Nominal transaksi: ${numberAbbv(total_amount)}`}
           </text>
         )}
       </g>
@@ -78,7 +77,13 @@ const CustomizedContent = (props: any) => {
 // Custom Tooltip content to show additional info
 const CustomTooltip = ({ active, payload }: any) => {
   if (active && payload && payload.length) {
-    const { name, value, frequency, bank, bankAccNo } = payload[0].payload
+    const {
+      entity_name,
+      total_amount,
+      total_transaction,
+      entity_bank,
+      entity_account_number,
+    } = payload[0].payload
     return (
       <div
         style={{
@@ -90,10 +95,12 @@ const CustomTooltip = ({ active, payload }: any) => {
         }}
       >
         <p>
-          <strong> {`${name} - ${bank} ${bankAccNo}`}</strong>
+          <strong>
+            {`${entity_name} - ${entity_bank} ${entity_account_number}`}
+          </strong>
         </p>
-        <p className="text-xs">Nominal Transaksi: {numberAbbv(value)}</p>
-        <p className="text-xs">Frekuensi: {frequency}</p>
+        <p className="text-xs">Nominal Transaksi: {numberAbbv(total_amount)}</p>
+        <p className="text-xs">Frekuensi: {total_transaction}</p>
       </div>
     )
   }

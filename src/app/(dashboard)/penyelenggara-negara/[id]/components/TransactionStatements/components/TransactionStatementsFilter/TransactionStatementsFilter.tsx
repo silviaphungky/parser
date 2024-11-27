@@ -97,7 +97,7 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
         `${API_URL.STATEMENT_LIST}/${id}/family/list`,
         {
           params: {
-            currency: currency.id ? undefined : currency.id,
+            currency: currency.id ? currency.id : undefined,
           },
           headers: {
             Authorization: `Bearer ${token}`,

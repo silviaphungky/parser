@@ -3,18 +3,26 @@ import { useState } from 'react'
 import { FormItem, Input, Modal } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import DatePickerRange from '@/components/DatePickerRange'
-import ReactSelect from 'react-select'
+import ReactSelect, { MultiValue } from 'react-select'
 import { mockCategoryOptions } from '../TransactionCategoryModal/TransactionCategoryModal'
 import Button from '@/components/Button'
+import { mockTransactionMethod } from '../../../TransactionSummary/components/TreemapSubjectFreqValue/TreemapSubjectFreqValue'
+import { useQuery } from '@tanstack/react-query'
+import { API_URL } from '@/constants/apiUrl'
+import axiosInstance from '@/utils/axiosInstance'
+import { useParams } from 'next/navigation'
 
 interface FilterValues {
-  startDate: string
-  endDate: string
+  startDate?: Date
+  endDate?: Date
   transactionType: string
-  minMutation: number
-  maxMutation: number
-  selectedBank: string
-  currency: string // Added currency field
+  minMutation?: number
+  maxMutation?: number
+  selectedBank: MultiValue<{ value: string; label: string }>
+  currency: string
+  isHighlight: boolean | string
+  transactionMethod: string
+  category: string
 }
 
 const highlightOptions = [
@@ -23,32 +31,29 @@ const highlightOptions = [
     label: 'Semua Transaksi',
   },
   {
-    id: '0',
-    label: 'Tanpa Tanda',
-  },
-  {
-    id: '1',
+    id: true as any,
     label: 'Dengan Tanda',
   },
 ]
 
 interface FilterModalProps {
+  token: string
   isOpen: boolean
   onClose: () => void
   onApplyFilter: (filterValues: FilterValues) => void
-  bankOptions: { value: string | number; label: string }[]
   currencyOptions: { id: string | number; label: string }[]
   transactionTypeOptions: { id: string | number; label: string }[]
 }
 
 const TransactionFilter: React.FC<FilterModalProps> = ({
+  token,
   isOpen,
   onClose,
   onApplyFilter,
-  bankOptions,
   currencyOptions,
   transactionTypeOptions,
 }) => {
+  const { id } = useParams()
   const [selectedDate, setSelectedDate] = useState<{
     from: Date | undefined
     to: Date | undefined
@@ -57,10 +62,14 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
     to: undefined,
   })
   const [highlight, setHighlight] = useState<{
-    id: string | number
+    id: any
     label: string
   }>(highlightOptions[0])
   const [category, setCategory] = useState<{
+    id: string | number
+    label: string
+  }>({ id: '', label: 'Semua Transaksi' })
+  const [transactionMethod, setTransactionMethod] = useState<{
     id: string | number
     label: string
   }>({ id: '', label: 'Semua Transaksi' })
@@ -70,10 +79,9 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
   }>(transactionTypeOptions[0])
   const [minMutation, setMinMutation] = useState(0)
   const [maxMutation, setMaxMutation] = useState(0)
-  const [selectedBank, setSelectedBank] = useState<{
-    value: string | number
-    label: string
-  }>(bankOptions[0])
+  const [selectedBank, setSelectedBank] = useState<
+    MultiValue<{ value: string; label: string }>
+  >([])
   const [currency, setCurrency] = useState<{
     id: string | number
     label: string
@@ -81,13 +89,16 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
 
   const handleApplyFilter = () => {
     const filterValues: FilterValues = {
-      startDate: `${selectedDate.from}`,
-      endDate: `${selectedDate.to}`,
+      startDate: selectedDate.from,
+      endDate: selectedDate.to,
       transactionType: transactionType.id as string,
       minMutation,
       maxMutation,
-      selectedBank: selectedBank.value as string,
+      isHighlight: highlight.id as boolean,
+      selectedBank,
       currency: currency.id as string,
+      transactionMethod: transactionMethod.id as string,
+      category: category.id as string,
     }
     onApplyFilter(filterValues)
     onClose()
@@ -99,6 +110,44 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
   }) => {
     setSelectedDate(range)
   }
+
+  const {
+    data = { account_reporter_and_family_statement_list: [] },
+    isLoading,
+    refetch,
+  } = useQuery<{
+    account_reporter_and_family_statement_list: Array<{
+      account_number: string
+      bank_name: string
+      is_family: boolean
+      name: string
+    }>
+  }>({
+    queryKey: ['accountBankList', currency.id],
+    queryFn: async () => {
+      const response = await axiosInstance.get(
+        `${API_URL.STATEMENT_LIST}/${id}/family/list`,
+        {
+          params: {
+            currency: currency.id ? currency.id : undefined,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
+      const data = response.data
+      return data.data
+    },
+    refetchOnMount: false,
+    refetchOnWindowFocus: false,
+  })
+  const bankAccountOptions = currency.id
+    ? data.account_reporter_and_family_statement_list.map((item) => ({
+        value: item.account_number,
+        label: `${item.name} - ${item.bank_name} - ${item.account_number}`,
+      }))
+    : [{ value: '', label: 'Semua Akun Bank' }]
 
   if (!isOpen) return null
 
@@ -118,18 +167,48 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
           </FormItem>
         </div>
         <div className="flex-1">
-          <FormItem label="Bank Personal">
-            <ReactSelect
-              isMulti
-              name="banks"
-              options={bankOptions}
-              className="react-select-container"
+          <FormItem label="Mata Uang">
+            <InputDropdown
+              options={currencyOptions}
+              value={currency}
+              onChange={(props) => {
+                setCurrency(props)
+                setSelectedBank([])
+              }}
             />
           </FormItem>
         </div>
       </div>
 
-      {/* Mutation Range Filter */}
+      <div className="flex gap-4">
+        <div className="flex-1">
+          <FormItem label="Bank Personal">
+            <ReactSelect
+              isMulti
+              value={selectedBank}
+              name="banks"
+              placeholder="Pilih akun bank..."
+              options={bankAccountOptions}
+              onChange={(props) => setSelectedBank(props)}
+              className="react-select-container"
+            />
+          </FormItem>
+        </div>
+        <div className="flex-1">
+          <FormItem label="Kategori Transaksi">
+            <InputDropdown
+              placeholder="Pilih kategori transaksi..."
+              options={[
+                { id: '', label: 'Semua Transaksi' },
+                ...mockCategoryOptions,
+              ]}
+              value={category}
+              onChange={(option) => setCategory(option)}
+            />
+          </FormItem>
+        </div>
+      </div>
+
       <div className="flex space-x-4">
         <div className="w-1/2">
           <FormItem label="Min. Nominal Transaksi">
@@ -167,18 +246,6 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
           </FormItem>
         </div>
         <div className="flex-1">
-          <FormItem label="Mata Uang">
-            <InputDropdown
-              options={currencyOptions}
-              value={currency}
-              onChange={setCurrency}
-            />
-          </FormItem>
-        </div>
-      </div>
-
-      <div className="flex gap-4">
-        <div className="flex-1">
           <FormItem label="Tanda Transaksi">
             <InputDropdown
               placeholder="Pilih tanda..."
@@ -188,16 +255,22 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
             />
           </FormItem>
         </div>
+      </div>
+
+      <div className="flex gap-4">
         <div className="flex-1">
-          <FormItem label="Kategori Transaksi">
+          <FormItem label="Metode Transaksi">
             <InputDropdown
-              placeholder="Pilih kategori transaksi..."
+              placeholder="Pilih metode transaksi..."
               options={[
                 { id: '', label: 'Semua Transaksi' },
-                ...mockCategoryOptions,
+                ...mockTransactionMethod.map((item) => ({
+                  ...item,
+                  id: item.value,
+                })),
               ]}
-              value={category}
-              onChange={(option) => setCategory(option)}
+              value={transactionMethod}
+              onChange={(option) => setTransactionMethod(option)}
             />
           </FormItem>
         </div>
@@ -210,7 +283,53 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         >
           Batal
         </button>
-        <Button variant="white-outline">Reset Filter</Button>
+        <Button
+          variant="white-outline"
+          onClick={() => {
+            setSelectedDate({
+              from: undefined,
+              to: undefined,
+            })
+            setCurrency({
+              id: '',
+              label: 'Semua Mata Uang',
+            })
+            setTransactionMethod({
+              id: '',
+              label: 'Semua Transaksi',
+            })
+            setCategory({
+              id: '',
+              label: 'Semua Transaksi',
+            })
+            setTransactionType({
+              id: '',
+              label: 'Semua Transaksi',
+            })
+            setHighlight({
+              id: '',
+              label: 'Semua Transaksi',
+            })
+            setSelectedBank([])
+
+            const filterValues: FilterValues = {
+              startDate: undefined,
+              endDate: undefined,
+              transactionType: '',
+              minMutation: 0,
+              maxMutation: 0,
+              isHighlight: '',
+              selectedBank: [],
+              currency: '',
+              transactionMethod: '',
+              category: '',
+            }
+            onApplyFilter(filterValues)
+            onClose()
+          }}
+        >
+          Reset Filter
+        </Button>
         <button
           className="px-4 py-2 text-sm font-medium text-white bg-black rounded-md hover:opacity-80"
           onClick={handleApplyFilter}
