@@ -40,8 +40,6 @@ const Summary = ({ token }: { token: string }) => {
     refetchOnWindowFocus: false,
   })
 
-  console.log({ data })
-
   return isLoading ? (
     <Shimmer />
   ) : (

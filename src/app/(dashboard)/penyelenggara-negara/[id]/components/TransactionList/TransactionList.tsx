@@ -139,7 +139,12 @@ const TransactionList = ({ token }: { token: string }) => {
 
   const debouncedValue = useDebounce(keyword, 500)
 
-  const { data, isLoading, refetch, isFetching } = useQuery<{
+  const {
+    data = { transaction_list: [], meta_data: { total: 1, total_page: 1 } },
+    isLoading,
+    refetch,
+    isFetching,
+  } = useQuery<{
     transaction_list: Array<ITransactionItem>
     meta_data: {
       total: number
@@ -366,14 +371,16 @@ const TransactionList = ({ token }: { token: string }) => {
           setSortBy={setSortBy}
           setSortDir={setSortDir}
         />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={data?.meta_data.total_page || 1}
-          onPageChange={setCurrentPage}
-          totalItems={data?.meta_data.total || 1}
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={setItemPerPage}
-        />
+        {data?.transaction_list?.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.meta_data.total_page || 1}
+            onPageChange={setCurrentPage}
+            totalItems={data?.meta_data.total || 1}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemPerPage}
+          />
+        )}
       </Card>
     </div>
   )

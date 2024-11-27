@@ -70,11 +70,12 @@ const AssetChart = ({
 }) => {
   const { id } = useParams()
   const {
-    data: chartData,
+    data: chartData = { total_balance: 0, summary_line_chart: [] },
     isLoading,
     isFetching,
   } = useQuery<{
-    summary_pie_chart: Array<{
+    total_balance: number
+    summary_line_chart: Array<{
       account_number: string
       bank_name: string
       date: string
@@ -122,9 +123,9 @@ const AssetChart = ({
         </div>
         <div>
           <div className="text-sm">Saldo</div>
-          <div className="text-xl font-bold">{`Rp ${thousandSeparator(
-            transactionData.balance.total || 0
-          )}`}</div>
+          <div className="text-xl font-bold">{`${
+            selectedCurrency.id
+          } ${thousandSeparator(chartData.total_balance || 0)}`}</div>
         </div>
       </div>
       <div className="mt-4">

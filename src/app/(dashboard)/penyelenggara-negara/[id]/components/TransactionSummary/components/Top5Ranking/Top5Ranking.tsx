@@ -64,15 +64,18 @@ const TransactionCard = ({
             return (
               <div key={`topValueIn-${index}`} className="mb-2">
                 <div className="flex justify-between items-center text-xs">
-                  <div>{`${item.entity_name} (${item.entity_bank} - ${item.entity_account_number})`}</div>
+                  <div>
+                    <strong>{item.entity_name}</strong>{' '}
+                    {` (${item.entity_bank} - ${item.entity_account_number})`}
+                  </div>
                 </div>
                 <div className="flex gap-2 items-center">
                   <ProgressBar
-                    progress={item.percentage * 100}
+                    progress={item.percentage}
                     className={`${color}`}
                   />
                   <div className="text-xs text-gray-600">
-                    {`${(item.percentage * 100).toFixed(0)}%`}
+                    {`${item.percentage.toFixed(0)}%`}
                   </div>
                 </div>
                 <div className="font-semibold -mt-1 text-sm">{`${

@@ -400,8 +400,8 @@ const TransactionTable = ({
 
   const { mutate: verifyBank, isPending: isPendingVerif } = useMutation({
     mutationFn: () =>
-      axiosInstance.post(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${id}/entity/verify`,
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${selected.transaction_id}/entity/verify`,
         {},
         {
           headers: {

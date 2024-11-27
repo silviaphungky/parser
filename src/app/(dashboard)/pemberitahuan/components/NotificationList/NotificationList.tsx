@@ -54,6 +54,8 @@ const NotificationList = ({ token }: { token: string }) => {
       const response = await axiosInstance.get(`${API_URL.NOTIF_LIST}`, {
         params: {
           status: selectedFilter.id,
+          page: currentPage,
+          limit: itemsPerPage,
         },
         headers: {
           Authorization: `Bearer ${token}`,

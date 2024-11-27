@@ -93,7 +93,12 @@ const TransactionStatementList = ({ token }: { token: string }) => {
     return item.value ? item.value : undefined
   })
 
-  const { data, isLoading, refetch, isFetching } = useQuery<{
+  const {
+    data = { statement_list: [], meta_data: { total_page: 1, total: 2 } },
+    isLoading,
+    refetch,
+    isFetching,
+  } = useQuery<{
     statement_list: Array<IStatement>
     meta_data: {
       total: number
@@ -210,14 +215,16 @@ const TransactionStatementList = ({ token }: { token: string }) => {
           setSortBy={setSortBy}
           setSortDir={setSortDir}
         />
-        <Pagination
-          currentPage={currentPage}
-          totalPages={data?.meta_data.total_page || 1}
-          onPageChange={setCurrentPage}
-          totalItems={data?.meta_data.total || 1}
-          itemsPerPage={itemsPerPage}
-          onItemsPerPageChange={setItemPerPage}
-        />
+        {data?.statement_list?.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalPages={data?.meta_data.total_page || 1}
+            onPageChange={setCurrentPage}
+            totalItems={data?.meta_data.total || 1}
+            itemsPerPage={itemsPerPage}
+            onItemsPerPageChange={setItemPerPage}
+          />
+        )}
       </Card>
     </div>
   )

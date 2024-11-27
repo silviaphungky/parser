@@ -1,6 +1,8 @@
 export const API_URL = {
   // auth
   LOGIN: 'v1/auth/login',
+  CHECK_ACCOUNT: 'v1/auth/is-need-add-password',
+  REGIS_PASSWORD: 'v1/auth/register-password',
 
   // pn
   PN: 'v1/account-reporter',
@@ -33,4 +35,8 @@ export const API_URL = {
   NOTIF_READ: 'v1/notification/read',
 
   OVERVIEW: 'v1/statement/summary/overview',
+
+  USER_LIST: 'v1/app-user/list',
+  CREATE_USER: 'v1/app-user/create',
+  REMOVE_USER: 'v1/app-user/remove',
 }

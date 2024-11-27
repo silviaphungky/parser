@@ -10,7 +10,6 @@ import toast from 'react-hot-toast'
 import { Controller, useForm } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
-import { useParams } from 'next/navigation'
 import { ITransactionItem } from '../../TransactionList'
 
 const bankOptions = [
@@ -1071,7 +1070,7 @@ const TransactionBankDestModal = ({
 }) => {
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
 
-  const { control, handleSubmit } = useForm({
+  const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       name: '',
       accountNo: '',
@@ -1085,7 +1084,7 @@ const TransactionBankDestModal = ({
       entity_bank?: string
       entity_account_number?: string
     }) =>
-      axiosInstance.post(
+      axiosInstance.patch(
         `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transactionId}/entity`,
         {
           ...payload,
@@ -1116,12 +1115,13 @@ const TransactionBankDestModal = ({
       {
         entity_name: value.name,
         entity_account_number: value.accountNo,
-        entity_bank: selectedBank.id,
+        entity_bank: selectedBank.id.toUpperCase(),
       },
       {
         onSuccess: () => {
           toast.success('Berhasil memperbarui info lawan transaksi')
           onClose()
+          reset()
           setSelectedBank({ id: '', label: '' })
         },
         onError: (error: any) => {
@@ -1134,7 +1134,13 @@ const TransactionBankDestModal = ({
   }
 
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpenDestBankModal(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        setIsOpenDestBankModal(false)
+        reset()
+      }}
+    >
       <h2 className="font-semibold text-lg">Sesuaikan Info Lawan Transaksi</h2>
       <div className="mt-2 text-sm mb-4">
         Gunakan form ini untuk mengedit informasi lawan transaksi. Pastikan
@@ -1218,6 +1224,7 @@ const TransactionBankDestModal = ({
                   )
                   onClose()
                   setSelectedBank({ id: '', label: '' })
+                  reset()
                 },
                 onError: (error: any) => {
                   toast.error(

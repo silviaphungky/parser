@@ -1,6 +1,6 @@
 'use client'
-import React from 'react'
-import { useForm, SubmitHandler, Controller } from 'react-hook-form'
+import React, { useState } from 'react'
+import { useForm, SubmitHandler, Controller, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { FormItem, Input } from '@/components'
@@ -12,6 +12,7 @@ import axios from 'axios'
 import { IconLoading } from '@/icons'
 import IconBatik from '@/icons/IconBatik'
 import Button from '@/components/Button'
+import toast from 'react-hot-toast'
 
 // Define the schema for validation using Yup
 const schema = yup.object().shape({
@@ -34,7 +35,8 @@ const Login = ({
   handleSetSession: (token: string) => void
 }) => {
   const router = useRouter()
-  // Initialize the form with useForm hook
+  const [step, setStep] = useState(1)
+  const [isNewAcc, setIsNewAcc] = useState(false)
   const { control, handleSubmit } = useForm<IFormInput>({
     defaultValues: {
       email: '',
@@ -60,13 +62,57 @@ const Login = ({
     },
   })
 
+  const { mutateAsync: regisNewAccount, isPending: isRegisting } = useMutation({
+    mutationFn: async (payload: { email: string; password: string }) => {
+      const response = await axios.patch(
+        `${baseUrl}/${API_URL.REGIS_PASSWORD}`,
+        {
+          ...payload,
+        }
+      )
+
+      return response.data.data
+    },
+  })
+
+  const { mutate: checkAccount, isPending: isChecking } = useMutation({
+    mutationFn: async (payload: { email: string }) => {
+      const response = await axios.post(`${baseUrl}/${API_URL.CHECK_ACCOUNT}`, {
+        ...payload,
+      })
+      const data = response.data
+      return data.data
+    },
+  })
+
   const onSubmit: SubmitHandler<IFormInput> = async (data) => {
-    mutate({
-      email: 'silviaphungky7@gmail.com',
-      password: 'itr1234!',
-      is_remember_me: true,
-    })
+    if (isNewAcc) {
+      try {
+        await regisNewAccount({
+          email: data.email,
+          password: data.password,
+        })
+        mutate({
+          email: data.email,
+          password: data.password,
+          is_remember_me: true,
+        })
+      } catch (error: any) {
+        toast.error(`Gagal masuk ke sistem: ${error?.response?.data?.message}`)
+      }
+    } else {
+      mutate({
+        email: data.email,
+        password: data.password,
+        is_remember_me: true,
+      })
+    }
   }
+
+  const email = useWatch({
+    name: 'email',
+    control,
+  })
 
   return (
     <div className="relative bg-light">
@@ -86,43 +132,74 @@ const Login = ({
         >
           <h2 className="text-center text-2xl mb-4 font-semibold">Sign In</h2>
 
-          <div className="mb-4">
-            <Controller
-              name="email"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <FormItem label="Email" errorMessage={error?.message}>
-                  <Input
-                    type="email"
-                    {...field}
-                    errorMessage={error?.message}
-                    className="w-full"
-                  />
-                </FormItem>
-              )}
-            />
-          </div>
+          {step === 1 && (
+            <>
+              <div className="mb-4">
+                <Controller
+                  name="email"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <FormItem label="Email" errorMessage={error?.message}>
+                      <Input
+                        type="email"
+                        {...field}
+                        errorMessage={error?.message}
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button
+                loading={isChecking}
+                variant="primary"
+                full
+                onClick={() => {
+                  checkAccount(
+                    {
+                      email,
+                    },
+                    {
+                      onSuccess: (data) => {
+                        setIsNewAcc(data.is_need_add_password)
+                        setStep(2)
+                      },
+                    }
+                  )
+                }}
+              >
+                Selanjutnya
+              </Button>
+            </>
+          )}
 
-          <div className="mb-6">
-            <Controller
-              name="password"
-              control={control}
-              render={({ field, fieldState: { error } }) => (
-                <FormItem label="Password" errorMessage={error?.message}>
-                  <Input
-                    type="password"
-                    {...field}
-                    errorMessage={error?.message}
-                    className="w-full"
-                  />
-                </FormItem>
-              )}
-            />
-          </div>
+          {step === 2 && (
+            <>
+              <div className="mb-6">
+                <Controller
+                  name="password"
+                  control={control}
+                  render={({ field, fieldState: { error } }) => (
+                    <FormItem
+                      label={isNewAcc ? 'Atur Password Baru' : 'Password'}
+                      errorMessage={error?.message}
+                    >
+                      <Input
+                        type="password"
+                        {...field}
+                        errorMessage={error?.message}
+                        className="w-full"
+                      />
+                    </FormItem>
+                  )}
+                />
+              </div>
 
-          <Button type="submit" loading={isPending} variant="primary" full>
-            Sign In
-          </Button>
+              <Button type="submit" loading={isPending} variant="primary" full>
+                {isNewAcc ? 'Atur Password dan Masuk' : 'Masuk'}
+              </Button>
+            </>
+          )}
         </form>
       </div>
     </div>
