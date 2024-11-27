@@ -33,22 +33,6 @@ const bankOptions = [
 ]
 
 const FamilyList = ({ token }: { token: string }) => {
-  const [selectedSort, setSelectedSort] = useState<{
-    id: string | number
-    label: string
-  }>({ id: '', label: '' })
-  const [isOpen, setIsOpen] = useState(false)
-
-  const handleSearch = (query: string, field: string) => {
-    // Implement your filtering logic based on the query and field here
-    console.log(`Searching for "${query}" in field "${field}"`)
-    // Example: Apply search logic to filter your table data and update state
-  }
-
-  const handleSort = (option: { id: string | number; label: string }) => {
-    setSelectedSort(option)
-  }
-
   return (
     <div>
       <Card className="mb-8">

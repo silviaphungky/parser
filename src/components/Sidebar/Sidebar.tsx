@@ -7,10 +7,12 @@ import { ReactNode, useState } from 'react'
 import { colorToken } from '@/constants/color-token'
 
 const Sidebar = ({
+  role,
   email,
   children,
   clearCookies,
 }: {
+  role: 'SUPER_ADMIN' | 'ADMIN'
   email: string
   children: ReactNode
   clearCookies: () => void
@@ -51,6 +53,7 @@ const Sidebar = ({
         {/* Menu Items */}
         {SIDEBAR_MENU.map((item, index) => {
           const isSelected = pathname.includes(item.link)
+          if (role === 'ADMIN' && item.key === 'user') return null
           return (
             <div key={item.key}>
               <Link

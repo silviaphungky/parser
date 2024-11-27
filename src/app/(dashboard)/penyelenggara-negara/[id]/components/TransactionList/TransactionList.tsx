@@ -84,7 +84,16 @@ export interface ITransactionItem {
   time?: string
 }
 
-const TransactionList = ({ token }: { token: string }) => {
+const TransactionList = ({
+  token,
+  verifyBankAccount,
+}: {
+  token: string
+  verifyBankAccount: ({ transaction_id }: { transaction_id: string }) => {
+    isSuccess: boolean
+    error?: string
+  }
+}) => {
   const { id } = useParams()
   const [countSelectedFilter, setCountSelectedFilter] = useState(0)
   const [currentPage, setCurrentPage] = useState(1)
@@ -386,6 +395,7 @@ const TransactionList = ({ token }: { token: string }) => {
           isLoading={isLoading || isFetching}
           setSortBy={setSortBy}
           setSortDir={setSortDir}
+          verifyBankAccount={verifyBankAccount}
         />
         {data?.transaction_list?.length > 0 && (
           <Pagination

@@ -1,3 +1,4 @@
+'use client'
 import { FormItem, Modal } from '@/components'
 import Button from '@/components/Button'
 import InputDropdown from '@/components/InputDropdown'
@@ -7,7 +8,7 @@ import IconFile from '@/icons/IconFile'
 import axiosInstance from '@/utils/axiosInstance'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import React, { Dispatch, useEffect, useState } from 'react'
+import React, { Dispatch, useState } from 'react'
 import toast from 'react-hot-toast'
 
 const BANK_OPTIONS = [

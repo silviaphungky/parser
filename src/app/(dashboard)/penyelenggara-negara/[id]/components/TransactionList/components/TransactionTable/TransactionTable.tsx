@@ -79,6 +79,7 @@ const TransactionTable = ({
   isLoading,
   setSortBy,
   setSortDir,
+  verifyBankAccount,
 }: {
   setSortBy: Dispatch<SetStateAction<string | undefined>>
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
@@ -86,8 +87,11 @@ const TransactionTable = ({
   refetch: () => void
   transactionList: Array<ITransactionItem>
   isLoading: boolean
+  verifyBankAccount: ({ transaction_id }: { transaction_id: string }) => {
+    isSuccess: boolean
+    error?: string
+  }
 }) => {
-  const { id } = useParams()
   const refDropdown = useRef(null)
   const [selected, setSelected] = useState({} as ITransactionItem)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
@@ -396,19 +400,6 @@ const TransactionTable = ({
     }
   }, [selected.transaction_id])
 
-  const { mutate: verifyBank, isPending: isPendingVerif } = useMutation({
-    mutationFn: () =>
-      axiosInstance.patch(
-        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${selected.transaction_id}/entity/verify`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      ),
-  })
-
   return (
     <>
       <TransactionBankDestModal
@@ -466,24 +457,24 @@ const TransactionTable = ({
                 Batal
               </button>
               <Button
-                loading={isPendingVerif}
                 variant="dark"
-                onClick={() => {
-                  verifyBank(undefined, {
-                    onSuccess: () => {
-                      toast.success('Berhasil mengecek info rekening transaksi')
-                      setIsOpenVerifModal(false)
-                      setSelected({} as ITransactionItem)
-                      refetch()
-                    },
-                    onError: (error: any) => {
-                      setIsOpenVerifModal(false)
-                      setSelected({} as ITransactionItem)
-                      toast.error(
-                        `Gagal mengecek info rekening transaksi: ${error?.response?.data?.message}`
-                      )
-                    },
+                onClick={async () => {
+                  const { isSuccess, error } = await verifyBankAccount({
+                    transaction_id: selected.transaction_id,
                   })
+
+                  if (isSuccess) {
+                    toast.success('Berhasil mengecek info rekening transaksi')
+                    setIsOpenVerifModal(false)
+                    setSelected({} as ITransactionItem)
+                    refetch()
+                  } else {
+                    setIsOpenVerifModal(false)
+                    setSelected({} as ITransactionItem)
+                    toast.error(
+                      `Gagal mengecek info rekening transaksi: ${error}`
+                    )
+                  }
                 }}
               >
                 Cek

@@ -20,14 +20,16 @@ export const clearCookies = async () => {
   const cookieStore = cookies()
   cookieStore.delete('ACCESS_TOKEN')
   cookieStore.delete('USER')
+  cookieStore.delete('ROLE')
 }
 
 const DashboardLayout = ({ children }: { children: ReactNode }) => {
   const email = cookies().get('USER')?.value || ''
+  const role = cookies().get('ROLE')?.value || 'ADMIN'
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
       <div className="flex">
-        <Sidebar clearCookies={clearCookies} email={email}>
+        <Sidebar clearCookies={clearCookies} email={email} role={role}>
           {children}
         </Sidebar>
       </div>

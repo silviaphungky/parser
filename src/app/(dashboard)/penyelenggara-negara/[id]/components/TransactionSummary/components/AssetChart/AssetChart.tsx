@@ -1,5 +1,4 @@
 import IconWallet from '@/icons/IconWallet'
-import { transactionData } from '../../TransactionSummary'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { AreaChart, Card, Shimmer } from '@/components'
 import { useParams } from 'next/navigation'
@@ -8,49 +7,35 @@ import { API_URL } from '@/constants/apiUrl'
 import dayjs from 'dayjs'
 import axiosInstance from '@/utils/axiosInstance'
 
-const data = [
-  {
-    name: 'Jan 2024',
-    bca: 4000,
-    bni: 2400,
-    mandiri: 2400,
-  },
-  {
-    name: 'Feb 2024',
-    bca: 3000,
-    bni: 1398,
-    mandiri: 2210,
-  },
-  {
-    name: 'March 2024',
-    bca: 2000,
-    bni: 9800,
-    mandiri: 2290,
-  },
-  {
-    name: 'April 2024',
-    bca: 2780,
-    bni: 3908,
-    mandiri: 2000,
-  },
-  {
-    name: 'May 2024',
-    bca: 1890,
-    bni: 4800,
-    mandiri: 2181,
-  },
-  {
-    name: 'June 2024',
-    bca: 2390,
-    bni: 3800,
-    mandiri: 2500,
-  },
-  {
-    name: 'July 2024',
-    bca: 3490,
-    bni: 4300,
-    mandiri: 2100,
-  },
+const colorMap = [
+  'rgb(112, 219, 255, 0.6)',
+  'rgb(51, 87, 255, 0.6)',
+  'rgb(255, 51, 161, 0.6)',
+  'rgb(255, 195, 0, 0.6)',
+  'rgb(255, 87, 51, 0.6)',
+  'rgb(218, 247, 166, 0.6)',
+  'rgb(88, 24, 69, 0.6)',
+  'rgb(199, 0, 57, 0.6)',
+  'rgb(255, 141, 26, 0.6)',
+  'rgb(223, 255, 0, 0.6)',
+  'rgb(255, 87, 51, 0.6)',
+  'rgb(64, 224, 208, 0.6)',
+  'rgb(51, 255, 87, 0.6)',
+  'rgb(144, 12, 63, 0.6)',
+  'rgb(100, 149, 237, 0.6)',
+  'rgba(23, 190, 207, 0.8)',
+  'rgb(210, 105, 30, 0.6)',
+  'rgb(138, 43, 226, 0.6)',
+  'rgb(222, 49, 99, 0.6)',
+  'rgb(106, 90, 205, 0.6)',
+  'rgb(255, 99, 71, 0.6)',
+  'rgba(44, 160, 44, 0.8)',
+  'rgba(214, 39, 40, 0.8)',
+  'rgba(148, 103, 189, 0.8)',
+  'rgba(140, 86, 75, 0.8)',
+  'rgba(127, 127, 127, 0.8)',
+  'rgba(188, 189, 34, 0.8)',
+  'rgba(255, 187, 120, 0.8)',
 ]
 
 const AssetChart = ({
@@ -93,13 +78,12 @@ const AssetChart = ({
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/line-chart`,
-
         {
           params: {
             start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
-            group_by: 'weekly',
+            group_by: 'daily',
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -113,7 +97,15 @@ const AssetChart = ({
     refetchOnWindowFocus: false,
   })
 
-  console.log({ chartData })
+  const dataKey =
+    chartData.summary_line_chart.length > 0
+      ? Object.keys(chartData.summary_line_chart[0])
+          .filter((el) => el !== 'date')
+          .map((item, i) => ({
+            key: item,
+            color: colorMap[i],
+          }))
+      : []
 
   return (
     <Card className="flex-1">
@@ -132,11 +124,12 @@ const AssetChart = ({
         {(isLoading || isFetching) && <Shimmer />}
         {!isLoading && !isFetching && (
           <AreaChart
-            data={data}
+            dataKeys={dataKey}
+            data={chartData.summary_line_chart || []}
             height={300}
             width={500}
             yLegend="saldo"
-            xAxis="name"
+            xAxis="date"
           />
         )}
       </div>

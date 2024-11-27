@@ -29,7 +29,7 @@ const baseUrl =
 const Login = ({
   handleSetSession,
 }: {
-  handleSetSession: (token: string, email: string) => void
+  handleSetSession: (token: string, email: string, role: string) => void
 }) => {
   const router = useRouter()
   const [step, setStep] = useState(1)
@@ -60,7 +60,9 @@ const Login = ({
     onSuccess: async ({ data }) => {
       const response = data.data || {}
       const token = response.token
-      await handleSetSession(token, email)
+      const user = response.user || {}
+      const role = user.role_name
+      await handleSetSession(token, email, role)
 
       router.push('/penyelenggara-negara')
     },
