@@ -25,14 +25,6 @@ const transactionTypeOptions = [
   { id: 'OUT', label: 'Debit' },
 ]
 
-const bankOptions = [
-  { value: '', label: 'Semua Akun Bank' },
-  { value: 'BCA1', label: 'BCA - 12345678' },
-  { value: 'BCA1', label: 'BCA - 12345678' },
-  { value: 'BNI1', label: 'BNI - 87654321' },
-  { value: 'BRI1', label: 'BRI - 11223344' },
-]
-
 const currencyOptions = [
   {
     id: '',
@@ -124,13 +116,21 @@ const TransactionList = ({ token }: { token: string }) => {
     if (currency) count++
     if (selectedBank.length) count++
     if (selectedDate.from) count++
-    if (isHighlight !== '') count++
+    if (isHighlight) count++
     if (transactionType) count++
     if (category) count++
     if (transactionMethod) count++
 
     setCountSelectedFilter(count)
-  }, [currency, selectedBank, selectedDate, status])
+  }, [
+    currency,
+    selectedBank,
+    selectedDate,
+    transactionType,
+    isHighlight,
+    transactionMethod,
+    category,
+  ])
 
   const handleSearch = (query: string, field: string) => {
     setKeyword(query)

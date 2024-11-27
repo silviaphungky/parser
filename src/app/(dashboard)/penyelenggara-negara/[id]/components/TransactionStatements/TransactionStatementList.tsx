@@ -89,7 +89,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const [itemsPerPage, setItemPerPage] = useState(5)
   const [isOpen, setIsOpen] = useState(false)
   const { id } = useParams()
-  let accountBanks = selectedBank.map((item) => {
+  const accountBanks = selectedBank.map((item) => {
     return item.value ? item.value : undefined
   })
 
