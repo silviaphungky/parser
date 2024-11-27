@@ -92,7 +92,7 @@ const TreemapSubjectFreqValue = ({
     setSelectedType(option)
   }
 
-  let transactionMethodPayload = selectedTransactionMethod.map((item) => {
+  const transactionMethodPayload = selectedTransactionMethod.map((item) => {
     return item.value
   })
 

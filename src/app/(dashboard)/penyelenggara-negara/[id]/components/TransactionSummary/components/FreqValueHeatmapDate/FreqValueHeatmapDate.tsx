@@ -109,7 +109,7 @@ const FreqValueHeatmapDate = ({
     setSelectedYear(year)
   }
 
-  let transactionMethodPayload = selectedTransactionMethod.map((item) => {
+  const transactionMethodPayload = selectedTransactionMethod.map((item) => {
     return item.value
   })
 
