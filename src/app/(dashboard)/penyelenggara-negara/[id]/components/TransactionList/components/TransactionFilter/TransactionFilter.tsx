@@ -11,6 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useParams } from 'next/navigation'
+import { thousandSeparator } from '@/utils/thousanSeparator'
 
 interface FilterValues {
   startDate?: Date
@@ -155,8 +156,6 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-lg font-bold mb-4">Filter Transaksi</h2>
 
-      {/* Date Range Filter */}
-
       <div className="flex gap-4">
         <div className="flex-1">
           <FormItem label="Periode">
@@ -213,10 +212,19 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         <div className="w-1/2">
           <FormItem label="Min. Nominal Transaksi">
             <Input
-              type="number"
+              type="text"
               className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              value={minMutation}
-              onChange={(e) => setMinMutation(Number(e.target.value))}
+              value={minMutation == 0 ? '' : thousandSeparator(minMutation)}
+              onChange={(e) => {
+                const rawValue = e.target.value.replace(/[^0-9]/g, '')
+                const value = Number(rawValue)
+                if (value >= 0) {
+                  setMinMutation(value)
+                  if (value > maxMutation) {
+                    setMaxMutation(value)
+                  }
+                }
+              }}
               placeholder="Masukkan nominal transaksi..."
             />
           </FormItem>
@@ -224,10 +232,16 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
         <div className="w-1/2">
           <FormItem label="Maks. Nominal Transaksi">
             <Input
-              type="number"
+              type="text"
               className="w-full px-3 py-2 text-sm mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              value={maxMutation}
-              onChange={(e) => setMaxMutation(Number(e.target.value))}
+              value={maxMutation == 0 ? '' : thousandSeparator(maxMutation)}
+              onChange={(e) => {
+                const rawValue = e.target.value.replace(/[^0-9]/g, '')
+                const value = Number(rawValue)
+                if (value >= 0) {
+                  setMaxMutation(value)
+                }
+              }}
               placeholder="Masukkan nominal transaksi..."
             />
           </FormItem>

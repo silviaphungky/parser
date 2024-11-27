@@ -75,7 +75,6 @@ export interface ITransactionItem {
   statement_id: string
   transaction_id: string
   currency: string
-  // NOTE: temp
   owner_name: string
   owner_account_number: string
   owner_bank: string
@@ -110,6 +109,8 @@ const TransactionList = ({ token }: { token: string }) => {
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
   >([])
+  const [minAmount, setMinAmount] = useState(0)
+  const [maxAmount, setMaxAmount] = useState(0)
 
   useEffect(() => {
     let count = 0
@@ -120,6 +121,8 @@ const TransactionList = ({ token }: { token: string }) => {
     if (transactionType) count++
     if (category) count++
     if (transactionMethod) count++
+    if (minAmount > 0) count++
+    if (maxAmount > 0) count++
 
     setCountSelectedFilter(count)
   }, [
@@ -130,6 +133,8 @@ const TransactionList = ({ token }: { token: string }) => {
     isHighlight,
     transactionMethod,
     category,
+    minAmount,
+    maxAmount,
   ])
 
   const handleSearch = (query: string, field: string) => {
@@ -166,6 +171,8 @@ const TransactionList = ({ token }: { token: string }) => {
       transactionType,
       category,
       transactionMethod,
+      minAmount,
+      maxAmount,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
@@ -173,7 +180,8 @@ const TransactionList = ({ token }: { token: string }) => {
           page: currentPage,
           limit: itemsPerPage,
           account_reporter_id: id,
-          [searchBy]: debouncedValue,
+          [searchBy]:
+            debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
           is_starred: isHighlight === '' ? undefined : isHighlight,
           currency,
           category: category ? category : undefined,
@@ -181,6 +189,8 @@ const TransactionList = ({ token }: { token: string }) => {
           method: transactionMethod,
           sort_by: sortBy,
           sort: sortDir,
+          minimum_amount: minAmount > 0 ? minAmount : undefined,
+          maximum_amount: maxAmount > 0 ? maxAmount : undefined,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -295,39 +305,43 @@ const TransactionList = ({ token }: { token: string }) => {
   return (
     <div>
       <Card className="mb-6">
-        <TransactionFilter
-          token={token}
-          isOpen={isOpen}
-          onClose={() => {
-            setIsOpen(false)
-          }}
-          onApplyFilter={(value) => {
-            const {
-              startDate,
-              endDate,
-              transactionType,
-              minMutation,
-              maxMutation,
-              isHighlight,
-              selectedBank,
-              currency,
-              category,
-              transactionMethod,
-            } = value
-            setSelectedDate({
-              from: startDate,
-              to: endDate,
-            })
-            setCurrency(currency)
-            setSelectedBank(selectedBank)
-            setIsHighlight(isHighlight)
-            setTransactionType(transactionType)
-            setCategory(category)
-            setTransactionMethod(transactionMethod)
-          }}
-          currencyOptions={currencyOptions}
-          transactionTypeOptions={transactionTypeOptions}
-        />
+        {isOpen && (
+          <TransactionFilter
+            token={token}
+            isOpen={isOpen}
+            onClose={() => {
+              setIsOpen(false)
+            }}
+            onApplyFilter={(value) => {
+              const {
+                startDate,
+                endDate,
+                transactionType,
+                minMutation,
+                maxMutation,
+                isHighlight,
+                selectedBank,
+                currency,
+                category,
+                transactionMethod,
+              } = value
+              setSelectedDate({
+                from: startDate,
+                to: endDate,
+              })
+              setCurrency(currency)
+              setSelectedBank(selectedBank)
+              setIsHighlight(isHighlight)
+              setTransactionType(transactionType)
+              setCategory(category)
+              setTransactionMethod(transactionMethod)
+              setMinAmount(Number(minMutation))
+              setMaxAmount(Number(maxMutation))
+            }}
+            currencyOptions={currencyOptions}
+            transactionTypeOptions={transactionTypeOptions}
+          />
+        )}
         <div className="mb-4 flex justify-between">
           <div>
             <SearchDropdown
