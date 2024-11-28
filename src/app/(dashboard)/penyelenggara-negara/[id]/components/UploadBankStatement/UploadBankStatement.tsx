@@ -163,9 +163,14 @@ const UploadBankStatement = ({
           })
         } else {
           toast.error(
-            'Duplikat terdeteksi: Laporan bank ini telah diupload sebelumnya.'
+            `Duplikat terdeteksi: Laporan bank ini telah diupload sebelumnya dengan nama: ${file.name}.`
           )
         }
+      },
+      onError: (error: any) => {
+        toast.error(
+          `Gagal mengupload laporan bank: ${error?.response?.data?.message}`
+        )
       },
     })
   }

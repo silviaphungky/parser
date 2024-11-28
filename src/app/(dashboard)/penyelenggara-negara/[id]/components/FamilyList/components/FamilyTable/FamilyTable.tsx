@@ -13,6 +13,7 @@ import { useParams } from 'next/navigation'
 import { Shimmer } from '@/components'
 import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import toast from 'react-hot-toast'
+import Button from '@/components/Button'
 
 const columnHelper = createColumnHelper<
   {
@@ -21,6 +22,7 @@ const columnHelper = createColumnHelper<
     name: string
     nik: string
     parent_role: string
+    is_monitored: boolean
   } & { actions: any }
 >()
 
@@ -45,6 +47,30 @@ const FamilyTable = ({ token }: { token: string }) => {
       ),
   })
 
+  const { mutate: createPn, isPending } = useMutation({
+    mutationFn: (payload: { nik: string; name: string }) =>
+      axiosInstance.post(
+        `${baseUrl}/${API_URL.CREATE_PN}`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    onSuccess: () => {
+      refetch()
+      toast.success('PN berhasil ditambahkan sebagai daftar monitor')
+    },
+    onError: (error: any) => {
+      toast.error(
+        `Gagal menambahkan PN sebagai daftar monitor: ${error?.response?.data?.message}`
+      )
+    },
+  })
+
   const {
     data = { account_reporter_family_list: [] },
     isLoading,
@@ -56,6 +82,7 @@ const FamilyTable = ({ token }: { token: string }) => {
       name: string
       nik: string
       parent_role: string
+      is_monitored: boolean
     }>
   }>({
     queryKey: ['familyList'],
@@ -96,13 +123,29 @@ const FamilyTable = ({ token }: { token: string }) => {
       header: '',
       cell: (info) => (
         <div className="flex gap-4">
-          <Link href={`/penyelenggara-negara/${info.row.id}/summary`}>
-            <button className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400">
-              <div className="text-xs text-black">Detail</div>
-            </button>
-          </Link>
-          <button
-            className="flex gap-2 items-center border p-2 rounded-lg hover:border-gray-400"
+          {info.row.original.is_monitored && (
+            <Link
+              href={`/penyelenggara-negara/${info.row.original.account_reporter_id}/summary`}
+            >
+              <Button variant="white-outline">Lihat Detail</Button>
+            </Link>
+          )}
+          {!info.row.original.is_monitored && (
+            <Button
+              loading={isPending}
+              variant="dark"
+              onClick={() => {
+                createPn({
+                  name: info.row.original.name,
+                  nik: info.row.original.nik,
+                })
+              }}
+            >
+              Tambahkan Daftar Monitor
+            </Button>
+          )}
+          <Button
+            variant="white-outline"
             onClick={() => {
               unlinkFamily(
                 {
@@ -119,9 +162,11 @@ const FamilyTable = ({ token }: { token: string }) => {
               )
             }}
           >
-            <div className="text-xs">Hapus relasi</div>
-            <IconUnlink size={14} color="#EA454C" />
-          </button>
+            <div className="flex gap-2 items-center">
+              Hapus relasi
+              <IconUnlink size={16} color="#EA454C" />
+            </div>
+          </Button>
         </div>
       ),
     }),
@@ -135,6 +180,7 @@ const FamilyTable = ({ token }: { token: string }) => {
         name: string
         nik: string
         parent_role: string
+        is_monitored: boolean
       } & { actions: any }
     >,
     columns,

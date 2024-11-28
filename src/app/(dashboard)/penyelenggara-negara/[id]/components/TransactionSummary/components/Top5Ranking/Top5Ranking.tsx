@@ -65,8 +65,12 @@ const TransactionCard = ({
               <div key={`topValueIn-${index}`} className="mb-2">
                 <div className="flex justify-between items-center text-xs">
                   <div>
-                    <strong>{item.entity_name}</strong>{' '}
-                    {` (${item.entity_bank} - ${item.entity_account_number})`}
+                    <strong>{item.entity_name || 'unnamed'}</strong>{' '}
+                    {` (${item.entity_bank || 'unknown'} - ${
+                      item.entity_account_number === '0000000000'
+                        ? 'N/A'
+                        : item.entity_account_number
+                    })`}
                   </div>
                 </div>
                 <div className="flex gap-2 items-center">

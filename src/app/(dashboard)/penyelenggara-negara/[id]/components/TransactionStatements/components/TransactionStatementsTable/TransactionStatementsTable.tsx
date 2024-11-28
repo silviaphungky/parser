@@ -6,10 +6,10 @@ import {
   IconBCA,
   IconBNI,
   IconBRI,
-  IconLoading,
   IconMandiri,
-  IconTrash,
   IconTriangleDown,
+  IconUnvisible,
+  IconVisible,
 } from '@/icons'
 
 import {
@@ -22,17 +22,13 @@ import {
 import { Dispatch, SetStateAction, useEffect, useMemo, useState } from 'react'
 import { IStatement } from '../../TransactionStatementList'
 import dayjs from 'dayjs'
-import {
-  useMutation,
-  useQueries,
-  useQuery,
-  useQueryClient,
-} from '@tanstack/react-query'
+import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 import Button from '@/components/Button'
+import Link from 'next/link'
 
 export type TransactionBankStatementData = {
   id: string
@@ -77,55 +73,26 @@ const TransactionStatementsTable = ({
   const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedStatementId, setSelectedStatementId] = useState('')
 
-  const {
-    data,
-    isLoading: isDownloading,
-    isSuccess,
-    isError,
-    error = {
-      response: {},
-    } as any,
-  } = useQuery({
-    queryKey: ['download', selectedStatementId],
-    queryFn: async () => {
-      const response = await axiosInstance.get(
-        `${API_URL.DOWNLOAD_STATEMENT}`,
-
-        {
-          params: {
-            file_id: selectedStatementId,
-          },
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      )
-      const data = response.data
-      return data.data
-    },
-
-    enabled: !!selectedStatementId,
-  })
-
   useEffect(() => {
     setSortBy(sorting[0]?.id)
     setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
   }, [sorting])
 
-  useEffect(() => {
-    if (isSuccess) {
-      setSelectedStatementId('')
-    }
-
-    if (isError) {
-      setSelectedStatementId('')
-      toast.error(`Gagal melihat dokumen: ${error?.response?.data?.message}`)
-    }
-  }, [error, isError, isSuccess])
-
   const { mutate: removeStatement, isPending } = useMutation({
     mutationFn: (payload: { id: string }) =>
       axiosInstance.delete(`${baseUrl}/${API_URL.DELETE_STATEMENT}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        data: {
+          id: payload.id,
+        },
+      }),
+  })
+
+  const { mutate: restoreStatement, isPending: isRestoring } = useMutation({
+    mutationFn: (payload: { id: string }) =>
+      axiosInstance.patch(`${baseUrl}/${API_URL.RESTORE_STATEMENT}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -239,18 +206,12 @@ const TransactionStatementsTable = ({
         header: 'URL',
         cell: (info) =>
           info.getValue() ? (
-            <div
-              onClick={() => {
-                if (!isDownloading) {
-                  setSelectedStatementId(info.row.original.file_url)
-                }
-              }}
+            <Link
+              href={info.getValue()}
               className="text-blue-500 hover:underline cursor-pointer"
             >
-              {selectedStatementId === info.row.original.statement_id
-                ? 'Sedang Mengunduh'
-                : ' Lihat Dokumen'}
-            </div>
+              Unduh Laporan
+            </Link>
           ) : (
             '-'
           ),
@@ -262,28 +223,59 @@ const TransactionStatementsTable = ({
           return (
             <div className="flex gap-3">
               <Button
-                loading={isPending}
+                loading={
+                  info.row.original.is_archieved ? isRestoring : isPending
+                }
                 variant="white-outline"
                 onClick={() => {
-                  removeStatement(
-                    {
-                      id: info.row.original.statement_id,
-                    },
-                    {
-                      onSuccess: () => {
-                        toast.success('Berhasil menghapus laporan bank')
-                        refetch()
+                  if (info.row.original.is_archieved) {
+                    restoreStatement(
+                      {
+                        id: info.row.original.statement_id,
                       },
-                      onError: (error: any) => {
-                        toast.error(
-                          `Gagal menghapus laporan bank: ${error?.response?.data?.message}`
-                        )
+                      {
+                        onSuccess: () => {
+                          toast.success('Berhasil mengembalikan laporan bank')
+                          refetch()
+                        },
+                        onError: (error: any) => {
+                          toast.error(
+                            `Gagal mengembalikan laporan bank: ${error?.response?.data?.message}`
+                          )
+                        },
+                      }
+                    )
+                  } else {
+                    removeStatement(
+                      {
+                        id: info.row.original.statement_id,
                       },
-                    }
-                  )
+                      {
+                        onSuccess: () => {
+                          toast.success('Berhasil mengarsipkan laporan bank')
+                          refetch()
+                        },
+                        onError: (error: any) => {
+                          toast.error(
+                            `Gagal mengarsipkan laporan bank: ${error?.response?.data?.message}`
+                          )
+                        },
+                      }
+                    )
+                  }
                 }}
               >
-                <IconTrash size={20} color="#EA454C" />
+                {info.row.original.is_archieved ? (
+                  <div className="flex gap-2 items-center">
+                    Batal Arsip
+                    <IconVisible size={20} color="#EA454C" />
+                  </div>
+                ) : (
+                  <div className="flex gap-2 items-center">
+                    Arsipkan
+                    <IconUnvisible size={20} color="#EA454C" />
+                  </div>
+                )}
               </Button>
             </div>
           )
@@ -291,7 +283,7 @@ const TransactionStatementsTable = ({
         enableSorting: false,
       }),
     ],
-    [isDownloading, selectedStatementId]
+    []
   )
 
   const table = useReactTable({

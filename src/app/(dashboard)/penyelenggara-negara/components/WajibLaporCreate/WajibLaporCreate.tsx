@@ -55,6 +55,9 @@ const WajibLaporCreate = ({
           },
         }
       ),
+    onError: (error: any) => {
+      toast.error(`Gagal menambahkan PN: ${error?.response?.data?.message}`)
+    },
   })
 
   const { mutate, isPending } = useMutation({

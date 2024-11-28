@@ -1,5 +1,5 @@
 'use client'
-import { Card, Pagination } from '@/components'
+import { Card, InputSearch, Pagination } from '@/components'
 import {
   TransactionStatementsTable,
   TransactionStatementsFilter,
@@ -66,6 +66,7 @@ export interface IStatement {
   status: 'FAILED' | 'SUCCESS' | 'PENDING'
   created_at: string
   account_number?: string
+  is_archieved: boolean
 }
 
 const TransactionStatementList = ({ token }: { token: string }) => {
@@ -179,33 +180,41 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             }}
           />
         </div>
-        <div className="mb-6 flex gap-4 justify-end items-center">
-          <div className="flex gap-4 justify-end">
-            <button
-              className={`h-fit w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
-              onClick={() => setIsOpen(true)}
-            >
-              <div className="flex gap-2 items-center justify-center">
-                <div>Filter</div>
-                {countSelectedFilter > 0 && (
-                  <div className="bg-black rounded px-2 text-white text-xs">
-                    {countSelectedFilter}
-                  </div>
-                )}
-                <IconFilter />
-              </div>
-            </button>
+        <div className="flex justify-between">
+          <div className="w-[15rem] h-[2rem]">
+            <InputSearch
+              onSearch={() => {}}
+              placeholder="Masukkan Nama Laporan Bank..."
+            />
           </div>
-          <Button
-            variant="dark"
-            onClick={() => refetch()}
-            className="font-light"
-          >
-            <div className="flex gap-1 items-center">
-              Refresh
-              <IconRefresh color="white" size={14} />
+          <div className="mb-6 flex gap-4 justify-end items-center">
+            <div className="flex gap-4 justify-end">
+              <button
+                className={`h-fit w-[7.5rem] rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100 `}
+                onClick={() => setIsOpen(true)}
+              >
+                <div className="flex gap-2 items-center justify-center">
+                  <div>Filter</div>
+                  {countSelectedFilter > 0 && (
+                    <div className="bg-black rounded px-2 text-white text-xs">
+                      {countSelectedFilter}
+                    </div>
+                  )}
+                  <IconFilter />
+                </div>
+              </button>
             </div>
-          </Button>
+            <Button
+              variant="dark"
+              onClick={() => refetch()}
+              className="font-light"
+            >
+              <div className="flex gap-1 items-center">
+                Refresh
+                <IconRefresh color="white" size={14} />
+              </div>
+            </Button>
+          </div>
         </div>
         <TransactionStatementsTable
           token={token}
