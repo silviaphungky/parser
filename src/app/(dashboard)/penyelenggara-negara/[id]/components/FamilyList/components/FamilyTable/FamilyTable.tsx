@@ -85,7 +85,7 @@ const FamilyTable = ({ token }: { token: string }) => {
       is_monitored: boolean
     }>
   }>({
-    queryKey: ['familyList'],
+    queryKey: ['familyList', id],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.FAMILY_LIST}/${id}/list`,
