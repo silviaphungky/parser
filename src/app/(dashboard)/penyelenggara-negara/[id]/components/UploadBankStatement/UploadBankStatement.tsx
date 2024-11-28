@@ -153,6 +153,9 @@ const UploadBankStatement = ({
             onSuccess: () => {
               notify()
               setIsOpen(false)
+              setFile(null)
+              setSelectedBank(BANK_OPTIONS[0])
+              setSelectedCurrency(CURRENCY_OPTIONS[0])
               queryClient.invalidateQueries({
                 queryKey: ['statementList'],
               })
@@ -182,7 +185,12 @@ const UploadBankStatement = ({
     <Modal
       isOpen={isOpen}
       width="max-w-[30rem]"
-      onClose={() => setIsOpen(false)}
+      onClose={() => {
+        setIsOpen(false)
+        setFile(null)
+        setSelectedBank(BANK_OPTIONS[0])
+        setSelectedCurrency(CURRENCY_OPTIONS[0])
+      }}
     >
       <h2 className="text-xl font-bold mb-4">Unggah Laporan Bank</h2>
       <div className="mb-4">
