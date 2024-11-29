@@ -15,7 +15,7 @@ interface FilterValues {
   endDate?: Date
   selectedBank: MultiValue<{ value: string; label: string }>
   currency: string
-  status: string
+  status: string | 'FAILED' | 'PENDING' | 'SUCCESS'
 }
 
 interface FilterModalProps {
@@ -24,6 +24,13 @@ interface FilterModalProps {
   onClose: () => void
   onApplyFilter: (filterValues: FilterValues) => void
   currencyOptions: { id: string | number; label: string }[]
+  currency?: string
+  bank: MultiValue<{ value: string; label: string }>
+  status: 'SUCCESS' | 'FAILED' | 'PENDING' | string
+  date?: {
+    from: Date | undefined
+    to: Date | undefined
+  }
 }
 
 const statusOptions = [
@@ -39,26 +46,39 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
   onClose,
   onApplyFilter,
   currencyOptions,
+  currency: initialCurrency,
+  bank: initialBank,
+  status: initialStatus,
+  date: initialDate,
 }) => {
   const { id } = useParams()
   const [selectedDate, setSelectedDate] = useState<{
     from: Date | undefined
     to: Date | undefined
   }>({
-    from: undefined,
-    to: undefined,
+    from: initialDate?.from,
+    to: initialDate?.to,
   })
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
-  >([])
+  >(initialBank.length > 0 ? initialBank : [])
   const [currency, setCurrency] = useState<{
     id: string | number
     label: string
-  }>(currencyOptions[0])
+  }>(
+    initialCurrency
+      ? currencyOptions.find((el) => el.id === initialCurrency) ||
+          currencyOptions[0]
+      : currencyOptions[0]
+  )
   const [status, setStatus] = useState<{
     id: string | number
     label: string
-  }>(statusOptions[0])
+  }>(
+    initialStatus
+      ? statusOptions.find((el) => el.id === initialStatus) || statusOptions[0]
+      : statusOptions[0]
+  )
 
   const handleApplyFilter = () => {
     const filterValues: FilterValues = {
@@ -220,7 +240,22 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
       <div className="flex justify-end mt-8 gap-4">
         <button
           className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:opacity-80"
-          onClick={onClose}
+          onClick={() => {
+            onClose()
+            setSelectedBank(initialBank)
+            setSelectedDate({
+              from: initialDate?.from,
+              to: initialDate?.to,
+            })
+            setCurrency(
+              currencyOptions.find((el) => el.id === initialCurrency) ||
+                currencyOptions[0]
+            )
+            setStatus(
+              statusOptions.find((el) => el.id === initialStatus) ||
+                statusOptions[0]
+            )
+          }}
         >
           Batal
         </button>

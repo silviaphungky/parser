@@ -166,7 +166,7 @@ const TransactionStatementsTable = ({
               info.getValue() === 'FAILED'
                 ? 'rounded p-2 py-1 text-[#B71D18] font-bold text-xs w-fit'
                 : info.getValue() === 'PENDING'
-                ? ''
+                ? 'text-[#B76E00] rounded p-2 py-1  font-bold text-xs w-fit'
                 : 'bg-[#22c55e80] rounded px-2 py-1 text-[#118D57] font-bold text-xs w-fit'
             }`}
             style={{
@@ -174,7 +174,7 @@ const TransactionStatementsTable = ({
                 info.getValue() === 'FAILED'
                   ? 'rgba(255, 86,48, 0.2)'
                   : info.getValue() === 'PENDING'
-                  ? ''
+                  ? 'rgba(255,171,0, 0.2)'
                   : 'rgba(34, 197,98, 0.2)',
             }}
           >
@@ -223,6 +223,7 @@ const TransactionStatementsTable = ({
           return (
             <div className="flex gap-3">
               <Button
+                disabled={info.row.original.status === 'PENDING'}
                 loading={
                   info.row.original.is_archieved ? isRestoring : isPending
                 }

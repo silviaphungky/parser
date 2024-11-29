@@ -13,6 +13,7 @@ import { API_URL } from '@/constants/apiUrl'
 import Button from '@/components/Button'
 import { MultiValue } from 'react-select'
 import dayjs from 'dayjs'
+import useDebounce from '@/utils/useDebounce'
 
 const bankOptions = [
   { value: '', label: 'Semua Akun Bank' },
@@ -81,8 +82,10 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
   >([])
-
-  const [status, setSelectedStatus] = useState('')
+  const [keyword, setKeyword] = useState('')
+  const [status, setSelectedStatus] = useState<
+    string | 'FAILED' | 'SUCCESS' | 'PENDING'
+  >('')
   const [countSelectedFilter, setCountSelectedFilter] = useState(0)
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
@@ -93,6 +96,8 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const accountBanks = selectedBank.map((item) => {
     return item.value ? item.value : undefined
   })
+
+  const debouncedValue = useDebounce(keyword, 500)
 
   const {
     data = { statement_list: [], meta_data: { total_page: 1, total: 2 } },
@@ -119,6 +124,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
       status,
       sortBy,
       sortDir,
+      debouncedValue,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -136,6 +142,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             account_number: accountBanks,
             sort_by: sortBy === 'period' ? 'start_period' : sortBy,
             sort: sortDir,
+            search: debouncedValue,
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -158,6 +165,12 @@ const TransactionStatementList = ({ token }: { token: string }) => {
     setCountSelectedFilter(count)
   }, [currency, selectedBank, selectedDate, status])
 
+  useEffect(() => {
+    if (!!debouncedValue) {
+      setCurrentPage(1)
+    }
+  }, [debouncedValue])
+
   return (
     <div>
       <Card className="mb-8">
@@ -167,6 +180,10 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             isOpen={isOpen}
             currencyOptions={currencyOptions}
             onClose={() => setIsOpen(false)}
+            currency={currency}
+            bank={selectedBank}
+            status={status}
+            date={selectedDate}
             onApplyFilter={(value) => {
               const { currency, selectedBank, startDate, endDate, status } =
                 value
@@ -183,7 +200,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
         <div className="flex justify-between">
           <div className="w-[15rem] h-[2rem]">
             <InputSearch
-              onSearch={() => {}}
+              onSearch={(value) => setKeyword(value)}
               placeholder="Masukkan Nama Laporan Bank..."
             />
           </div>
