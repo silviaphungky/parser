@@ -8,6 +8,8 @@ import {
   AreaChart as RAreaChart,
   Area,
   Legend,
+  Label,
+  Text,
 } from 'recharts'
 import { ReactNode } from 'react'
 
@@ -55,19 +57,22 @@ const AreaChart = ({
             style={{ fontSize: '10px', display: hideXAxis ? 'none' : 'block' }}
             interval="preserveStart"
             tick={{ textAnchor: 'start' }}
-            // angle={45}
+            //
           />
 
           {/* Y-Axis */}
+
           <YAxis
             name={yLegend}
             type="number"
             domain={['dataMin', 'dataMax']}
-            orientation="left"
             axisLine={true}
             tickLine={true}
             style={{ fontSize: '10px' }}
-          />
+            tickFormatter={(value) => thousandSeparator(value)}
+          >
+            <Label angle={-45} />
+          </YAxis>
 
           {/* Tooltip */}
           <Tooltip

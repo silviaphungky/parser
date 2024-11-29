@@ -139,7 +139,7 @@ const FreqValueHeatmapDate = ({
   }>({
     queryKey: [
       'heatmapData',
-      selectedYear,
+      selectedYear.id,
       selectedCurrency.id,
       selectedType.id,
       transactionMethodPayload,
@@ -150,7 +150,7 @@ const FreqValueHeatmapDate = ({
         `${API_URL.TOP_TRANSACTION}/${id}/summary/calendar`,
         {
           params: {
-            year: selectedYear,
+            year: selectedYear.id,
             currency: selectedCurrency.id,
             direction: selectedType.id,
             transaction_method: transactionMethodPayload,
@@ -293,15 +293,17 @@ const FreqValueHeatmapDate = ({
           <ContributionCalendar
             data={formattedData}
             start={
-              selectedYear
-                ? dayjs(new Date(`${selectedYear}/1/1`)).format('YYYY-MM-DD')
+              selectedYear.id
+                ? dayjs(new Date(`${selectedYear.id}/1/1`)).format('YYYY-MM-DD')
                 : `${dayjs(new Date())
                     .subtract(1, 'year')
                     .format('YYYY-MM-DD')}`
             }
             end={
-              selectedYear
-                ? dayjs(new Date(`${selectedYear}/12/31`)).format('YYYY-MM-DD')
+              selectedYear.id
+                ? dayjs(new Date(`${selectedYear.id}/12/31`)).format(
+                    'YYYY-MM-DD'
+                  )
                 : `${dayjs(new Date()).format('YYYY-MM-DD')}`
             }
             daysOfTheWeek={['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat']}
