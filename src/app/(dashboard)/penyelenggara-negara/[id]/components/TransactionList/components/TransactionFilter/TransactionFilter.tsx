@@ -298,6 +298,9 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
                 if (value >= 0) {
                   setMaxMutation(value)
                 }
+                if (value < Number(minMutation)) {
+                  setMinMutation(value)
+                }
               }}
               placeholder="Masukkan nominal transaksi..."
             />
