@@ -277,7 +277,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
                 const value = Number(rawValue)
                 if (value >= 0) {
                   setMinMutation(value)
-                  if (value > maxMutation) {
+                  if (value > Number(maxMutation)) {
                     setMaxMutation(value)
                   }
                 }
