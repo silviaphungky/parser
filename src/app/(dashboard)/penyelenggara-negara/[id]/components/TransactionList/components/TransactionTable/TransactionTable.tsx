@@ -143,7 +143,11 @@ const TransactionTable = ({
         {
           id: 'date',
           header: 'Waktu',
-          cell: (info) => info.getValue(),
+          cell: (info) => (
+            <div>
+              {dayjs(new Date(info.row.original.date)).format('DD/MM/YYYY')}
+            </div>
+          ),
           enableSorting: true,
         }
       ),
