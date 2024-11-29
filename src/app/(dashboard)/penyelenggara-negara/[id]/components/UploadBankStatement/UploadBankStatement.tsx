@@ -57,11 +57,15 @@ const CURRENCY_OPTIONS = [
   },
 ]
 
-export const baseUrl = 'https://backend-itrtechkpk.replit.app'
+export const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
 const notify = () =>
   toast.success(
-    'Laporan bank Anda telah berhasil diunggah dan sedang diproses untuk ekstraksi. Proses ini membutuhkan waktu beberapa menit. Anda dapat meninggalkan halaman ini'
+    'Laporan bank Anda telah berhasil diunggah dan sedang diproses untuk ekstraksi. Proses ini membutuhkan waktu beberapa menit. Anda bisa memantau status ekstrak di menu Daftar Laporan Bank.',
+    {
+      duration: 1000,
+    }
   )
 
 const UploadBankStatement = ({
@@ -159,6 +163,11 @@ const UploadBankStatement = ({
                 queryKey: ['statementList'],
               })
             },
+            onError: (error: any) => {
+              toast.error(
+                `Laporan bank gagal diunggah: ${error?.response?.data?.message}`
+              )
+            },
           })
         } else {
           toast.error(
@@ -240,7 +249,7 @@ const UploadBankStatement = ({
               </>
             )}
             <div className="text-xs text-gray-500">
-              Ukuran maksimal: 5MB. Mendukung format file .xls, .xlsx, dan .txt
+              Ukuran maksimal: 10MB. Mendukung format file .xls, .xlsx, dan .txt
             </div>
           </label>
           <input
