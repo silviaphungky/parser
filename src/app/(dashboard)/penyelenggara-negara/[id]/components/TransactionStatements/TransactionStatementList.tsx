@@ -125,6 +125,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
       sortBy,
       sortDir,
       debouncedValue,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
