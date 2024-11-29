@@ -74,6 +74,7 @@ const AssetChart = ({
       selectedDate.from,
       selectedDate.to,
       selectedCurrency.id,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(

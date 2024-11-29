@@ -144,6 +144,7 @@ const FreqValueHeatmapDate = ({
       selectedType.id,
       transactionMethodPayload,
       debouncedValue,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(

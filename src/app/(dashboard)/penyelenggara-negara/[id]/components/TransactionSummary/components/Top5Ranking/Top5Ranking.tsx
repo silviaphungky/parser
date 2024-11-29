@@ -151,7 +151,13 @@ const Top5Ranking = ({
       }
     }
   }>({
-    queryKey: ['top5', selectedDate.from, selectedDate.to, selectedCurrency.id],
+    queryKey: [
+      'top5',
+      selectedDate.from,
+      selectedDate.to,
+      selectedCurrency.id,
+      id,
+    ],
     queryFn: async () => {
       const response = await axiosInstance.get(
         `${API_URL.TOP_TRANSACTION}/${id}/summary/top`,

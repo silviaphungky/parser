@@ -116,6 +116,7 @@ const TreemapSubjectFreqValue = ({
       selectedCurrency.id,
       selectedType.id,
       transactionMethodPayload,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(

@@ -40,9 +40,10 @@ import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
 import useDebounce from '@/utils/useDebounce'
 import axiosInstance from '@/utils/axiosInstance'
+import Button from '@/components/Button'
 
 type Person = {
-  id: string
+  account_reporter_id: string
   name: string
   nik: string
   bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
@@ -147,6 +148,8 @@ const PNTable = ({
     resolver: yupResolver(validationSchema),
   })
 
+  console.log({ errors })
+
   const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
@@ -164,7 +167,7 @@ const PNTable = ({
       }),
   })
 
-  const { mutate: linkFamily } = useMutation({
+  const { mutate: linkFamily, isPending } = useMutation({
     mutationFn: (payload: {
       parent_account_reporter_id: string
       child_account_reporter_id: string
@@ -432,7 +435,7 @@ const PNTable = ({
   const searchNIK = async (value: string) => {
     setSearch(value)
     const response = await fetch(
-      `${baseUrl}/${API_URL.UNASSIGNED_LIST}?${selectedPn.id}&search=${value}&limit=100`,
+      `${baseUrl}/${API_URL.UNASSIGNED_LIST}?account_reporter_id=${selectedPn.id}&search=${value}&limit=100`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -441,10 +444,10 @@ const PNTable = ({
     )
     const data = await response.json()
     const pn = data.data || {}
-    const pnList = (pn.account_reporter_list || []) as Array<{
+    const pnList = (pn.unassigned_family_list || []) as Array<{
       bank: Array<any>
       created_at: string
-      id: string
+      account_reporter_id: string
       name: string
       nik: string
       total_bank_account: number
@@ -453,11 +456,9 @@ const PNTable = ({
       total_transaction: number
       updated_at: string
     }>
-    const excludedCurrentPn =
-      pnList.filter((el) => el.id !== selectedPn.id) || []
 
-    return excludedCurrentPn.map((item: Person) => ({
-      value: item.id,
+    return pnList.map((item: Person) => ({
+      value: item.account_reporter_id,
       label: `${item.nik} - ${item.name}`,
     }))
   }
@@ -630,12 +631,11 @@ const PNTable = ({
             </div>
           )}
 
-          <button
-            type="submit"
-            className="mt-8 text-sm bg-black w-full text-white px-4 py-2 rounded-md hover:opacity-95"
-          >
-            Hubungkan Keluarga
-          </button>
+          <div className="mt-8">
+            <Button full loading={isPending} type="submit" variant="dark">
+              Hubungkan Keluarga
+            </Button>
+          </div>
         </form>
       </Modal>
 

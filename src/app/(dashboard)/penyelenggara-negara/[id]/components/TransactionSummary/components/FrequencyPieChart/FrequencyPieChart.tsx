@@ -118,6 +118,7 @@ const FrequencyPieChart = ({
       selectedDate.to,
       selectedCurrency.id,
       selectedGroup.id,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -159,6 +160,7 @@ const FrequencyPieChart = ({
       selectedDate.to,
       selectedCurrency.id,
       selectedGroup.id,
+      id,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
