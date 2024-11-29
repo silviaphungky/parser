@@ -16,6 +16,7 @@ export const API_URL = {
   // family
   FAMILY_LIST: 'v1/account-reporter/family',
   UNLINK_FAMILY: 'v1/account-reporter/family/revoke',
+  UNASSIGNED_LIST: 'v1/account-reporter/family/unassigned/list',
 
   // statements
   UPLOAD_STATEMENT: 'v1/statement/upload',
