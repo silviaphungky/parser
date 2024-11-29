@@ -71,7 +71,6 @@ const TransactionStatementsTable = ({
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
 }) => {
   const [sorting, setSorting] = useState<ColumnSort[]>([])
-  const [selectedStatementId, setSelectedStatementId] = useState('')
 
   useEffect(() => {
     setSortBy(sorting[0]?.id)
@@ -225,11 +224,11 @@ const TransactionStatementsTable = ({
               <Button
                 disabled={info.row.original.status === 'PENDING'}
                 loading={
-                  info.row.original.is_archieved ? isRestoring : isPending
+                  info.row.original.is_archived ? isRestoring : isPending
                 }
                 variant="white-outline"
                 onClick={() => {
-                  if (info.row.original.is_archieved) {
+                  if (info.row.original.is_archived) {
                     restoreStatement(
                       {
                         id: info.row.original.statement_id,
@@ -266,7 +265,7 @@ const TransactionStatementsTable = ({
                   }
                 }}
               >
-                {info.row.original.is_archieved ? (
+                {info.row.original.is_archived ? (
                   <div className="flex gap-2 items-center">
                     Batal Arsip
                     <IconVisible size={20} color="#EA454C" />
@@ -351,7 +350,9 @@ const TransactionStatementsTable = ({
             {table.getRowModel().rows.map((row) => (
               <tr
                 key={row.id}
-                className="hover:bg-gray-100 transition-colors duration-300"
+                className={`hover:bg-gray-100 transition-colors duration-300  ${
+                  row.original.is_archived ? 'opacity-50' : ''
+                }`}
               >
                 {row.getVisibleCells().map((cell) => (
                   <td

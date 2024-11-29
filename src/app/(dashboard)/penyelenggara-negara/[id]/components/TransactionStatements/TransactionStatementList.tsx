@@ -67,7 +67,7 @@ export interface IStatement {
   status: 'FAILED' | 'SUCCESS' | 'PENDING'
   created_at: string
   account_number?: string
-  is_archieved: boolean
+  is_archived: boolean
 }
 
 const TransactionStatementList = ({ token }: { token: string }) => {
