@@ -106,25 +106,28 @@ const NotificationList = ({ token }: { token: string }) => {
 
   return (
     <div className="mt-4">
-      <Card className="flex justify-between items-center mb-4">
-        <div>
-          <button
-            onClick={() => handleMarkAsRead([])}
-            className="mt-2 text-sm text-blue-500 hover:underline"
-          >
-            Tandai semua sebagai dibaca
-          </button>
-        </div>
-        <div>
-          <InputDropdown
-            options={filterOptions}
-            value={selectedFilter}
-            onChange={(option) => {
-              setSelectedFilter(option as { id: string; label: string })
-            }}
-          />
-        </div>
-      </Card>
+      {notifList.length > 0 && (
+        <Card className="flex justify-between items-center mb-4">
+          <div>
+            <button
+              onClick={() => handleMarkAsRead([])}
+              className="mt-2 text-sm text-blue-500 hover:underline"
+            >
+              Tandai semua sebagai dibaca
+            </button>
+          </div>
+
+          <div>
+            <InputDropdown
+              options={filterOptions}
+              value={selectedFilter}
+              onChange={(option) => {
+                setSelectedFilter(option as { id: string; label: string })
+              }}
+            />
+          </div>
+        </Card>
+      )}
       {isLoading && <Shimmer />}
       {!isLoading && (
         <div className="space-y-4">
