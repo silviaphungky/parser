@@ -111,8 +111,7 @@ const validationSchema = yup.object().shape({
 
 const columnHelper = createColumnHelper<Person & { action: string }>()
 
-const baseUrl =
-  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
+const baseUrl = 'https://backend-itrtechkpk.replit.app'
 
 const notify = () => toast.success('PN berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
@@ -429,8 +428,6 @@ const PNTable = ({
     setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
   }, [sorting])
 
-  const searchValue = useDebounce(search, 500)
-
   const searchNIK = async (value: string) => {
     setSearch(value)
     const response = await fetch(
@@ -443,9 +440,22 @@ const PNTable = ({
     )
     const data = await response.json()
     const pn = data.data || {}
-    const pnList = pn.account_reporter_list || []
+    const pnList = (pn.account_reporter_list || []) as Array<{
+      bank: Array<any>
+      created_at: string
+      id: string
+      name: string
+      nik: string
+      total_bank_account: number
+      total_family_member: number
+      total_statement: number
+      total_transaction: number
+      updated_at: string
+    }>
+    const excludedCurrentPn =
+      pnList.filter((el) => el.id !== selectedPn.id) || []
 
-    return pnList.map((item: Person) => ({
+    return excludedCurrentPn.map((item: Person) => ({
       value: item.id,
       label: `${item.nik} - ${item.name}`,
     }))

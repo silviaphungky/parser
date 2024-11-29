@@ -4,8 +4,7 @@ import axios from 'axios'
 import toast from 'react-hot-toast'
 
 const axiosInstance = axios.create({
-  baseURL:
-    'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev', // Your API URL from environment variables
+  baseURL: 'https://backend-itrtechkpk.replit.app', // Your API URL from environment variables
   headers: {
     'Content-Type': 'application/json',
   },
