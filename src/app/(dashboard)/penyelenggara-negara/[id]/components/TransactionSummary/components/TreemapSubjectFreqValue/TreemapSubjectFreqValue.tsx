@@ -46,18 +46,18 @@ const colorScale = {
 }
 
 export const mockTransactionMethod = [
-  { value: 'BANK TRANSFERS', label: 'Transfer Bank' },
+  { value: 'TRANSFER BANK', label: 'Transfer Bank' },
   {
-    value: 'CARD PAYMENTS (DEBIT/CREDIT)',
+    value: 'PEMBAYARAN KARTU (DEBIT/KREDIT)',
     label: 'Pembayaran Kartu (Debit/Kredit)',
   },
-  { value: 'DIGITAL WALLETS', label: 'Dompet Digital' },
-  { value: 'QR CODE PAYMENTS', label: 'Pembayaran dengan Kode QR' },
+  { value: 'DOMPET DIGITAL', label: 'Dompet Digital' },
+  { value: 'PEMBAYARAN DENGAN KODE QR', label: 'Pembayaran dengan Kode QR' },
   {
-    value: 'CASH TRANSACTIONS (INCLUDING ATM)',
+    value: 'TRANSAKSI TUNAI (TERMASUK ATM)',
     label: 'Transaksi Tunai (termasuk ATM)',
   },
-  { value: 'UNKNOWN', label: 'Tidak Diketahui (Unknown)' },
+  { value: 'TIDAK DIKETAHUI (UNKNOWN)', label: 'Tidak Diketahui (Unknown)' },
 ]
 
 const TreemapSubjectFreqValue = ({

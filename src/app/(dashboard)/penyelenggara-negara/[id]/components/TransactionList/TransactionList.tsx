@@ -183,6 +183,7 @@ const TransactionList = ({
       transactionMethod,
       minAmount,
       maxAmount,
+      selectedDate,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
@@ -201,6 +202,12 @@ const TransactionList = ({
           sort: sortDir,
           minimum_amount: minAmount > 0 ? minAmount : undefined,
           maximum_amount: maxAmount > 0 ? maxAmount : undefined,
+          start_period: selectedDate.from
+            ? dayjs(new Date(selectedDate.from)).format('yyyy-mm-dd')
+            : undefined,
+          end_period: selectedDate.to
+            ? dayjs(new Date(selectedDate.to)).format('yyyy-mm-dd')
+            : undefined,
         },
         headers: {
           Authorization: `Bearer ${token}`,
@@ -322,6 +329,15 @@ const TransactionList = ({
             onClose={() => {
               setIsOpen(false)
             }}
+            date={selectedDate}
+            transactionType={transactionType}
+            minMutation={minAmount}
+            maxMutation={maxAmount}
+            isHighlight={isHighlight}
+            bank={selectedBank}
+            currency={currency}
+            category={category}
+            transactionMethod={transactionMethod}
             onApplyFilter={(value) => {
               const {
                 startDate,

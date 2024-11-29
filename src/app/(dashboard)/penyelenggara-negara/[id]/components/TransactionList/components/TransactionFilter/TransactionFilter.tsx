@@ -37,6 +37,21 @@ const highlightOptions = [
   },
 ]
 
+export const transactionMethodOptions = [
+  { id: 'TRANSFER BANK', label: 'Transfer Bank' },
+  {
+    id: 'PEMBAYARAN KARTU (DEBIT/KREDIT)',
+    label: 'Pembayaran Kartu (Debit/Kredit)',
+  },
+  { id: 'DOMPET DIGITAL', label: 'Dompet Digital' },
+  { id: 'PEMBAYARAN DENGAN KODE QR', label: 'Pembayaran dengan Kode QR' },
+  {
+    id: 'TRANSAKSI TUNAI (TERMASUK ATM)',
+    label: 'Transaksi Tunai (termasuk ATM)',
+  },
+  { id: 'TIDAK DIKETAHUI (UNKNOWN)', label: 'Tidak Diketahui (Unknown)' },
+]
+
 interface FilterModalProps {
   token: string
   isOpen: boolean
@@ -44,6 +59,18 @@ interface FilterModalProps {
   onApplyFilter: (filterValues: FilterValues) => void
   currencyOptions: { id: string | number; label: string }[]
   transactionTypeOptions: { id: string | number; label: string }[]
+  currency?: string
+  bank: MultiValue<{ value: string; label: string }>
+  date?: {
+    from: Date | undefined
+    to: Date | undefined
+  }
+  transactionType?: string
+  minMutation?: number
+  maxMutation?: number
+  isHighlight: boolean | string
+  category?: string
+  transactionMethod?: string
 }
 
 const TransactionFilter: React.FC<FilterModalProps> = ({
@@ -53,40 +80,70 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
   onApplyFilter,
   currencyOptions,
   transactionTypeOptions,
+  date: initialDate,
+  transactionType: initialTransactionType,
+  minMutation: initialMinMutation,
+  maxMutation: initialMaxMutation,
+  isHighlight: initialIsHighlight,
+  bank: initialSelectedBank,
+  currency: initialCurrency,
+  category: initialCategory,
+  transactionMethod: initialTransactionMethod,
 }) => {
   const { id } = useParams()
   const [selectedDate, setSelectedDate] = useState<{
     from: Date | undefined
     to: Date | undefined
   }>({
-    from: undefined,
-    to: undefined,
+    from: initialDate?.from,
+    to: initialDate?.to,
   })
   const [highlight, setHighlight] = useState<{
     id: any
     label: string
-  }>(highlightOptions[0])
+  }>(
+    highlightOptions.find((el) => el.id === initialIsHighlight) ||
+      highlightOptions[0]
+  )
   const [category, setCategory] = useState<{
     id: string | number
     label: string
-  }>({ id: '', label: 'Semua Transaksi' })
+  }>(
+    mockCategoryOptions.find((el) => el.id === initialCategory) || {
+      id: '',
+      label: 'Semua Transaksi',
+    }
+  )
   const [transactionMethod, setTransactionMethod] = useState<{
     id: string | number
     label: string
-  }>({ id: '', label: 'Semua Transaksi' })
+  }>(
+    transactionMethodOptions.find(
+      (el) => el.id === initialTransactionMethod
+    ) || {
+      id: '',
+      label: 'Semua Transaksi',
+    }
+  )
   const [transactionType, setTransactionType] = useState<{
     id: string | number
     label: string
-  }>(transactionTypeOptions[0])
-  const [minMutation, setMinMutation] = useState(0)
-  const [maxMutation, setMaxMutation] = useState(0)
+  }>(
+    transactionTypeOptions.find((el) => el.id === initialTransactionType) ||
+      transactionTypeOptions[0]
+  )
+  const [minMutation, setMinMutation] = useState(initialMinMutation)
+  const [maxMutation, setMaxMutation] = useState(initialMaxMutation)
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
-  >([])
+  >(initialSelectedBank.length ? initialSelectedBank : [])
   const [currency, setCurrency] = useState<{
     id: string | number
     label: string
-  }>(currencyOptions[0])
+  }>(
+    currencyOptions.find((el) => el.id === initialCurrency) ||
+      currencyOptions[0]
+  )
 
   const handleApplyFilter = () => {
     const filterValues: FilterValues = {
@@ -150,7 +207,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       }))
     : [{ value: '', label: 'Semua Akun Bank' }]
 
-  if (!isOpen) return null
+  console.log({ initialTransactionMethod })
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
@@ -278,10 +335,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
               placeholder="Pilih metode transaksi..."
               options={[
                 { id: '', label: 'Semua Transaksi' },
-                ...mockTransactionMethod.map((item) => ({
-                  ...item,
-                  id: item.value,
-                })),
+                ...transactionMethodOptions,
               ]}
               value={transactionMethod}
               onChange={(option) => setTransactionMethod(option)}
@@ -293,7 +347,47 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       <div className="flex justify-end mt-8 gap-4">
         <button
           className="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-200 rounded-md hover:opacity-80"
-          onClick={onClose}
+          onClick={() => {
+            onClose()
+            setSelectedDate({
+              from: initialDate?.from,
+              to: initialDate?.to,
+            })
+
+            setHighlight(
+              highlightOptions.find((el) => el.id === initialIsHighlight) ||
+                highlightOptions[0]
+            )
+            setCategory(
+              mockCategoryOptions.find((el) => el.id === initialCategory) || {
+                id: '',
+                label: 'Semua Transaksi',
+              }
+            )
+            setTransactionMethod(
+              transactionMethodOptions.find(
+                (el) => el.id === initialTransactionMethod
+              ) || {
+                id: '',
+                label: 'Semua Transaksi',
+              }
+            )
+            setTransactionType(
+              transactionTypeOptions.find(
+                (el) => el.id === initialTransactionType
+              ) || transactionTypeOptions[0]
+            )
+            setMinMutation(initialMinMutation)
+            setMaxMutation(initialMaxMutation)
+
+            setSelectedBank(
+              initialSelectedBank.length ? initialSelectedBank : []
+            )
+            setCurrency(
+              currencyOptions.find((el) => el.id === initialCurrency) ||
+                currencyOptions[0]
+            )
+          }}
         >
           Batal
         </button>
