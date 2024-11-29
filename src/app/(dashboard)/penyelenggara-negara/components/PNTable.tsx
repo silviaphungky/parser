@@ -111,7 +111,8 @@ const validationSchema = yup.object().shape({
 
 const columnHelper = createColumnHelper<Person & { action: string }>()
 
-const baseUrl = 'https://backend-itrtechkpk.replit.app'
+const baseUrl =
+  'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
 
 const notify = () => toast.success('PN berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
@@ -431,7 +432,7 @@ const PNTable = ({
   const searchNIK = async (value: string) => {
     setSearch(value)
     const response = await fetch(
-      `${baseUrl}/${API_URL.PN_LIST}?search=${value}&limit=100`,
+      `${baseUrl}/${API_URL.UNASSIGNED_LIST}?${selectedPn.id}&search=${value}&limit=100`,
       {
         headers: {
           Authorization: `Bearer ${token}`,
