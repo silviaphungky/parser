@@ -499,6 +499,11 @@ const PNTable = ({
                     setIsOpenRemove(false)
                     setSelectedPn({} as Person)
                   },
+                  onError: (error: any) => {
+                    toast.error(
+                      `PN gagal diarsipkan: ${error?.response?.data?.message}`
+                    )
+                  },
                 }
               )
             }}

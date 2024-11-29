@@ -88,23 +88,23 @@ const WLInfo = ({
                   </button>
                   <div className="mt-2">
                     <div className="text-xs text-dark">
-                      Pembaruan laporan bank terbaru:{' '}
+                      Tanggal transaksi terbaru:{' '}
                       <strong>
                         {data?.newest_statement_period
                           ? dayjs(
                               new Date(data.newest_statement_period)
-                            ).format('MMMM YYYY')
+                            ).format('dd MMMM YYYY')
                           : '-'}
                       </strong>
                     </div>
                     <div className="text-xs text-dark">
-                      Pembaruan laporan bank terlama:{' '}
+                      Tanggal transaksi terlama:{' '}
                       <strong>
                         {' '}
                         {data?.oldest_statement_period
                           ? dayjs(
                               new Date(data.oldest_statement_period)
-                            ).format('MMMM YYYY')
+                            ).format('dd MMMM YYYY')
                           : '-'}
                       </strong>
                     </div>

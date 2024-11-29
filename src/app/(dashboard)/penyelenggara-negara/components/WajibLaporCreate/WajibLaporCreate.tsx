@@ -77,6 +77,9 @@ const WajibLaporCreate = ({
       setIsOpenCreateModal(false)
       notify()
     },
+    onError: (error: any) => {
+      toast.error(`PN gagal ditambahkan: ${error?.response?.data?.message}`)
+    },
   })
 
   const {

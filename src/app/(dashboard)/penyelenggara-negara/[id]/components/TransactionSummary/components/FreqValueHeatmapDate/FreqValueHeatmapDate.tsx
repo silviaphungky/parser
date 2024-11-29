@@ -11,6 +11,7 @@ import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useParams } from 'next/navigation'
 import useDebounce from '@/utils/useDebounce'
+import { thousandSeparator } from '@/utils/thousanSeparator'
 
 const mockTransactionType = [
   {
@@ -38,16 +39,10 @@ const mockBasedOn = [
   },
 ]
 
-const yearList = [
-  dayjs(new Date()).format('YYYY'),
-  dayjs(new Date()).subtract(1, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(2, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(3, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(4, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(5, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(6, 'y').format('YYYY'),
-  dayjs(new Date()).subtract(7, 'y').format('YYYY'),
-]
+const yearList = Array.from(Array(50).keys()).map((item, index) => ({
+  id: Number(dayjs(new Date()).format('YYYY')) - index,
+  label: `${Number(dayjs(new Date()).format('YYYY')) - index}`,
+}))
 
 const color = {
   IN: [
@@ -70,6 +65,16 @@ const color = {
   ],
 }
 
+const LEGEND_MAP = {
+  freq: ['1x - 4x', '5x - 7x', '8x - 10x', '>10x'],
+  value: [
+    `<=${thousandSeparator(2000000)}`,
+    `>${thousandSeparator(2000000)} - <=${thousandSeparator(10000000)}`,
+    `>${thousandSeparator(10000000)} - <=${thousandSeparator(20000000)}`,
+    `>${thousandSeparator(20000000)}`,
+  ],
+}
+
 const FreqValueHeatmapDate = ({
   selectedCurrency,
   token,
@@ -83,7 +88,10 @@ const FreqValueHeatmapDate = ({
 }) => {
   const { id } = useParams()
   const [keyword, setKeyword] = useState('')
-  const [selectedYear, setSelectedYear] = useState(yearList[0])
+  const [selectedYear, setSelectedYear] = useState<{
+    id: string | number
+    label: string
+  }>(yearList[0])
   const [selectedType, setSelectedType] = useState<{
     id: string | number
     label: string
@@ -109,8 +117,8 @@ const FreqValueHeatmapDate = ({
     setSelectedBased(option)
   }
 
-  const handleChangeYear = (year: string) => {
-    setSelectedYear(year)
+  const handleChangeYear = (props: { id: string | number; label: string }) => {
+    setSelectedYear(props)
   }
 
   const transactionMethodPayload = selectedTransactionMethod.map((item) => {
@@ -200,6 +208,13 @@ const FreqValueHeatmapDate = ({
       </div>
       <div className="flex justify-between items-center mb-6">
         <div className="flex gap-2">
+          <div className="w-20">
+            <InputDropdown
+              value={selectedYear}
+              options={yearList}
+              onChange={(item) => handleChangeYear(item)}
+            />
+          </div>
           <div className="w-[14rem]">
             <InputDropdown
               options={mockTransactionType}
@@ -309,17 +324,17 @@ const FreqValueHeatmapDate = ({
           />
         )}
       </div>
-      <div>
-        <div className="overflow-auto pr-6 flex gap-2">
-          {[...yearList].map((item, index) => (
-            <div
-              key={index}
-              className={`text-sm py-1 cursor-pointer ${
-                selectedYear === item && 'font-extrabold'
-              }`}
-              onClick={() => handleChangeYear(item)}
-            >
-              {item}
+      <div className="flex gap-4 items-center">
+        <div className="flex gap-2">
+          {color[selectedType.id as 'IN' | 'OUT'].map((item, i) => (
+            <div key={i} className="flex gap-1 mb-2 items-center">
+              <div
+                style={{ background: item }}
+                className="w-3 h-3 rounded-sm"
+              />
+              <div className="text-xs">
+                {LEGEND_MAP[selectedBased.id as 'freq' | 'value'][i]}
+              </div>
             </div>
           ))}
         </div>

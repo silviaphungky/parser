@@ -174,6 +174,11 @@ const Login = ({
                           setIsNewAcc(data.is_need_add_password)
                           setStep(2)
                         },
+                        onError: (error: any) => {
+                          toast.error(
+                            `Login gagal: ${error?.response?.data?.message}`
+                          )
+                        },
                       }
                     )
                   }}

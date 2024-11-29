@@ -158,6 +158,11 @@ const FamilyTable = ({ token }: { token: string }) => {
                     toast.success('Berhasil menghapus hubungan keluarga')
                     refetch()
                   },
+                  onError: (error: any) => {
+                    toast.success(
+                      `Gagal menghapus hubungan keluarga: ${error?.response?.data?.message}`
+                    )
+                  },
                 }
               )
             }}
