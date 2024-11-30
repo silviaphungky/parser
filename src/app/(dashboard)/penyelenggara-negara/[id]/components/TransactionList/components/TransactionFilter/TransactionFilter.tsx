@@ -381,8 +381,8 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
                 (el) => el.id === initialTransactionType
               ) || transactionTypeOptions[0]
             )
-            setMinMutation(initialMinMutation)
-            setMaxMutation(initialMaxMutation)
+            setMinMutation(initialMinMutation || 0)
+            setMaxMutation(initialMaxMutation || 0)
 
             setSelectedBank(
               initialSelectedBank.length ? initialSelectedBank : []

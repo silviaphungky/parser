@@ -130,7 +130,7 @@ const PNTable = ({
   setSortBy: Dispatch<SetStateAction<string | undefined>>
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   isLoading: boolean
-  pnList: Array<Person>
+  pnList: Array<Person & any>
   token: string
   refetch: () => void
   setKeyword: Dispatch<SetStateAction<string>>
@@ -456,7 +456,7 @@ const PNTable = ({
       updated_at: string
     }>
 
-    return pnList.map((item: Person) => ({
+    return pnList.map((item: Person & any) => ({
       value: item.account_reporter_id,
       label: `${item.nik} - ${item.name}`,
     }))
