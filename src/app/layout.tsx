@@ -31,7 +31,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${poppins.className} ${barlow.className}`}>
-        <Toaster />
+        <Toaster
+          toastOptions={{
+            style: {
+              fontSize: '14px',
+            },
+          }}
+        />
         <Providers>{children}</Providers>
       </body>
     </html>

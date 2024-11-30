@@ -360,6 +360,7 @@ const TransactionList = ({
               setIsHighlight(isHighlight)
               setTransactionType(transactionType)
               setCategory(category)
+
               setTransactionMethod(transactionMethod)
               setMinAmount(Number(minMutation))
               setMaxAmount(Number(maxMutation))

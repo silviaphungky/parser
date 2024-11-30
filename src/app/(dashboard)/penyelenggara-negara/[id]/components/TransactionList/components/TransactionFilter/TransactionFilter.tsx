@@ -206,8 +206,6 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       }))
     : [{ value: '', label: 'Semua Akun Bank' }]
 
-  console.log({ initialTransactionMethod })
-
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-lg font-bold mb-4">Filter Transaksi</h2>
@@ -237,7 +235,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <FormItem label="Bank Personal">
+          <FormItem label="Bank PN">
             <ReactSelect
               isMulti
               value={selectedBank}

@@ -148,8 +148,6 @@ const PNTable = ({
     resolver: yupResolver(validationSchema),
   })
 
-  console.log({ errors })
-
   const [sorting, setSorting] = useState<ColumnSort[]>([])
   const [selectedPn, setSelectedPn] = useState({} as Person)
   const [actionMenu, setActionMenu] = useState<string | null>(null)

@@ -201,6 +201,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
         <div className="flex justify-between">
           <div className="w-[17rem] h-[2rem]">
             <InputSearch
+              className="w-[17rem]"
               onSearch={(value) => setKeyword(value)}
               placeholder="Masukkan Nama Laporan Bank..."
             />

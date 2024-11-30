@@ -127,7 +127,7 @@ const TreemapSubjectFreqValue = ({
             end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
             currency: selectedCurrency.id,
             direction: selectedType.id,
-            transaction_method: transactionMethodPayload,
+            transaction_method: [...transactionMethodPayload],
           },
           headers: {
             Authorization: `Bearer ${token}`,

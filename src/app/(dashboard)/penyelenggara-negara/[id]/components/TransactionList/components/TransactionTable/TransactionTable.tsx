@@ -183,7 +183,7 @@ const TransactionTable = ({
         ) as any,
         cell: (info) => (
           <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
-            {info.getValue()}
+            {info.getValue() || 'unknown'}
           </div>
         ),
         enableSorting: false,
