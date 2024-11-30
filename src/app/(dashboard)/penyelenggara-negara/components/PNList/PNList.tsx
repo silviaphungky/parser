@@ -1,9 +1,8 @@
 'use client'
 import { Card, Pagination } from '@/components'
 import PNListHeader from '../PNListHeader/PNListHeader'
-import PNTable from '../PNTable'
+import PNTable, { Person } from '../PNTable'
 import { useEffect, useState } from 'react'
-import { getPNList } from '@/app/service/getPNList'
 import { API_URL } from '@/constants/apiUrl'
 import { useQuery } from '@tanstack/react-query'
 import useDebounce from '@/utils/useDebounce'
@@ -25,21 +24,7 @@ const PNList = ({ token }: { token: string }) => {
     isLoading,
     refetch,
   } = useQuery<{
-    account_reporter_list: Array<{
-      id: string
-      name: string
-      nik: string
-      bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
-      total_statement: number
-      total_transaction: number
-      total_family_member: number
-      created_at: string
-      updated_at?: string
-      total_bank_account: number
-      total_asset?: Array<{
-        [key: string]: number
-      }>
-    }>
+    account_reporter_list: Array<Person>
     meta_data: {
       total: number
       limit: number

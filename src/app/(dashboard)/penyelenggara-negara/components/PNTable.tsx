@@ -41,8 +41,7 @@ import useOutsideClick from '@/utils/useClickOutside'
 import axiosInstance from '@/utils/axiosInstance'
 import Button from '@/components/Button'
 
-type Person = {
-  id: string
+export type Person = {
   account_reporter_id: string
   name: string
   nik: string
@@ -130,7 +129,7 @@ const PNTable = ({
   setSortBy: Dispatch<SetStateAction<string | undefined>>
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   isLoading: boolean
-  pnList: Array<Person & any>
+  pnList: Array<Person>
   token: string
   refetch: () => void
   setKeyword: Dispatch<SetStateAction<string>>
@@ -454,7 +453,7 @@ const PNTable = ({
       updated_at: string
     }>
 
-    return pnList.map((item: Person & any) => ({
+    return pnList.map((item: Person) => ({
       value: item.account_reporter_id,
       label: `${item.nik} - ${item.name}`,
     }))
