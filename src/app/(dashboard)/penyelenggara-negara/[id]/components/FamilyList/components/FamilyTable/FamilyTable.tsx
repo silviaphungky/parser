@@ -141,7 +141,7 @@ const FamilyTable = ({ token }: { token: string }) => {
                 })
               }}
             >
-              Tambahkan Daftar Monitor
+              Tambahkan daftar monitor
             </Button>
           )}
           <Button
