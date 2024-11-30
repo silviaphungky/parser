@@ -93,7 +93,7 @@ const WLInfo = ({
                         {data?.newest_statement_period
                           ? dayjs(
                               new Date(data.newest_statement_period)
-                            ).format('dd MMMM YYYY')
+                            ).format('DD MMMM YYYY')
                           : '-'}
                       </strong>
                     </div>
@@ -104,7 +104,7 @@ const WLInfo = ({
                         {data?.oldest_statement_period
                           ? dayjs(
                               new Date(data.oldest_statement_period)
-                            ).format('dd MMMM YYYY')
+                            ).format('DD MMMM YYYY')
                           : '-'}
                       </strong>
                     </div>
