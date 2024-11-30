@@ -109,7 +109,11 @@ const TransactionStatementsTable = ({
       }),
       columnHelper.accessor('file_name', {
         header: 'Nama File',
-        cell: (info) => info.getValue(),
+        cell: (info) => (
+          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+            {info.getValue()}
+          </div>
+        ),
         enableSorting: false,
       }),
       columnHelper.accessor(

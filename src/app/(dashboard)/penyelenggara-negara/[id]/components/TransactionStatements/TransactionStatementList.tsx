@@ -145,6 +145,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             sort: sortDir,
             limit: itemsPerPage,
             search: debouncedValue,
+            page: currentPage,
           },
           headers: {
             Authorization: `Bearer ${token}`,
