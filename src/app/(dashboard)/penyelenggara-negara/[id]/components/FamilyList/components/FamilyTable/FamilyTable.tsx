@@ -122,7 +122,7 @@ const FamilyTable = ({ token }: { token: string }) => {
     columnHelper.accessor('actions', {
       header: '',
       cell: (info) => (
-        <div className="flex gap-4">
+        <div className="flex gap-4 items-center">
           {info.row.original.is_monitored && (
             <Link
               href={`/penyelenggara-negara/${info.row.original.account_reporter_id}/summary`}

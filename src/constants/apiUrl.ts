@@ -25,7 +25,7 @@ export const API_URL = {
   TOP_TRANSACTION: 'v1/statement',
   DELETE_STATEMENT: 'v1/statement/remove',
   RESTORE_STATEMENT: 'v1/statement/restore',
-  DOWNLOAD_STATEMENT: 'v1/statement/file/download-temp-statement',
+  DOWNLOAD_STATEMENT: 'v1/statement/file/download-statement',
 
   // transactions
   TRANSACTION_LIST: 'v1/transaction/list',

@@ -38,11 +38,11 @@ import {
 import AsyncSelect from 'react-select/async'
 import dayjs from 'dayjs'
 import useOutsideClick from '@/utils/useClickOutside'
-import useDebounce from '@/utils/useDebounce'
 import axiosInstance from '@/utils/axiosInstance'
 import Button from '@/components/Button'
 
 type Person = {
+  id: string
   account_reporter_id: string
   name: string
   nik: string
@@ -358,11 +358,10 @@ const PNTable = ({
                   className="absolute z-100 bg-white border border-gray-300 rounded shadow-lg mt-1 right-0 w-50"
                   style={{ zIndex: 1000 }}
                 >
-                  {/* NOTE: nanti diganti ke NIK, sementara by name dulu */}
                   <Link
                     href={`/penyelenggara-negara/${info.row.original.id}/summary`}
                   >
-                    <button className="w-full p-2 flex gap-2 text-left hover:bg-gray-100">
+                    <button className="w-full p-2 flex gap-2 text-left hover:bg-gray-100 items-center">
                       <IconExpand size={16} color={colorToken.grayVulkanik} />
                       <div className="text-sm">Lihat detail</div>
                     </button>

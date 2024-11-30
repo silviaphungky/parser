@@ -267,8 +267,8 @@ const TransactionStatementsTable = ({
               >
                 {info.row.original.is_archived ? (
                   <div className="flex gap-2 items-center">
-                    Batal Arsip
-                    <IconVisible size={20} color="#EA454C" />
+                    Pulihkan
+                    <IconVisible size={22} color="#EA454C" />
                   </div>
                 ) : (
                   <div className="flex gap-2 items-center">
