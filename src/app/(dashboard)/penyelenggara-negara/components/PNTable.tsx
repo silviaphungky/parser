@@ -45,16 +45,6 @@ export type Person = {
   account_reporter_id: string
   name: string
   nik: string
-  bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
-  total_statement: number
-  total_transaction: number
-  total_family_member: number
-  total_asset?: Array<{
-    [key: string]: number
-  }>
-  total_bank_account: number
-  created_at: string
-  updated_at?: string
 }
 
 interface FormValues {
@@ -109,7 +99,23 @@ const validationSchema = yup.object().shape({
   }),
 })
 
-const columnHelper = createColumnHelper<Person & { action: string }>()
+const columnHelper = createColumnHelper<
+  {
+    id: string
+    name: string
+    nik: string
+    bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+    total_statement: number
+    total_transaction: number
+    total_family_member: number
+    created_at: string
+    updated_at?: string
+    total_bank_account: number
+    total_asset?: Array<{
+      [key: string]: number
+    }>
+  } & { action: string }
+>()
 
 const baseUrl =
   'https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev'
@@ -129,7 +135,21 @@ const PNTable = ({
   setSortBy: Dispatch<SetStateAction<string | undefined>>
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   isLoading: boolean
-  pnList: Array<Person>
+  pnList: Array<{
+    id: string
+    name: string
+    nik: string
+    bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+    total_statement: number
+    total_transaction: number
+    total_family_member: number
+    created_at: string
+    updated_at?: string
+    total_bank_account: number
+    total_asset?: Array<{
+      [key: string]: number
+    }>
+  }>
   token: string
   refetch: () => void
   setKeyword: Dispatch<SetStateAction<string>>
@@ -148,7 +168,23 @@ const PNTable = ({
   })
 
   const [sorting, setSorting] = useState<ColumnSort[]>([])
-  const [selectedPn, setSelectedPn] = useState({} as Person)
+  const [selectedPn, setSelectedPn] = useState(
+    {} as {
+      id: string
+      name: string
+      nik: string
+      bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+      total_statement: number
+      total_transaction: number
+      total_family_member: number
+      created_at: string
+      updated_at?: string
+      total_bank_account: number
+      total_asset?: Array<{
+        [key: string]: number
+      }>
+    }
+  )
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const refDropdown = useRef(null)
 
@@ -405,12 +441,44 @@ const PNTable = ({
   }
 
   useOutsideClick(refDropdown, () => {
-    setSelectedPn({} as Person)
+    setSelectedPn(
+      {} as {
+        id: string
+        name: string
+        nik: string
+        bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+        total_statement: number
+        total_transaction: number
+        total_family_member: number
+        created_at: string
+        updated_at?: string
+        total_bank_account: number
+        total_asset?: Array<{
+          [key: string]: number
+        }>
+      }
+    )
     setActionMenu('')
   })
 
   const table = useReactTable({
-    data: pnList as Array<Person & { action: string }>,
+    data: pnList as Array<
+      {
+        id: string
+        name: string
+        nik: string
+        bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+        total_statement: number
+        total_transaction: number
+        total_family_member: number
+        created_at: string
+        updated_at?: string
+        total_bank_account: number
+        total_asset?: Array<{
+          [key: string]: number
+        }>
+      } & { action: string }
+    >,
     columns,
     state: {
       sorting,
@@ -441,19 +509,12 @@ const PNTable = ({
     const data = await response.json()
     const pn = data.data || {}
     const pnList = (pn.unassigned_family_list || []) as Array<{
-      bank: Array<any>
-      created_at: string
       account_reporter_id: string
       name: string
       nik: string
-      total_bank_account: number
-      total_family_member: number
-      total_statement: number
-      total_transaction: number
-      updated_at: string
     }>
 
-    return pnList.map((item: Person) => ({
+    return pnList.map((item) => ({
       value: item.account_reporter_id,
       label: `${item.nik} - ${item.name}`,
     }))
@@ -477,7 +538,23 @@ const PNTable = ({
         <div className="flex justify-end space-x-4 mt-6">
           <button
             onClick={() => {
-              setSelectedPn({} as Person)
+              setSelectedPn(
+                {} as {
+                  id: string
+                  name: string
+                  nik: string
+                  bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+                  total_statement: number
+                  total_transaction: number
+                  total_family_member: number
+                  created_at: string
+                  updated_at?: string
+                  total_bank_account: number
+                  total_asset?: Array<{
+                    [key: string]: number
+                  }>
+                }
+              )
               setIsOpenRemove(false)
             }}
             className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
@@ -495,7 +572,23 @@ const PNTable = ({
                     notify()
                     refetch()
                     setIsOpenRemove(false)
-                    setSelectedPn({} as Person)
+                    setSelectedPn(
+                      {} as {
+                        id: string
+                        name: string
+                        nik: string
+                        bank: Array<'Mandiri' | 'BCA' | 'BRI' | 'BNI'>
+                        total_statement: number
+                        total_transaction: number
+                        total_family_member: number
+                        created_at: string
+                        updated_at?: string
+                        total_bank_account: number
+                        total_asset?: Array<{
+                          [key: string]: number
+                        }>
+                      }
+                    )
                   },
                   onError: (error: any) => {
                     toast.error(
