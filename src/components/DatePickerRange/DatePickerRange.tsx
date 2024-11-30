@@ -58,7 +58,7 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
           'DD/MM/YYYY'
         )} - ${dayjs(range.to.toLocaleDateString()).format('DD/MM/YYYY')}`
       }
-      return 'Pilih rentang waktu'
+      return 'Semua Transaksi'
     }
 
     useOutsideClick(divRef, () => setIsCalendarOpen(false))

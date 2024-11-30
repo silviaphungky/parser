@@ -123,8 +123,12 @@ const TreemapSubjectFreqValue = ({
         `${API_URL.TOP_TRANSACTION}/${id}/summary/frequency`,
         {
           params: {
-            start_period: dayjs(selectedDate.from).format('YYYY-MM-DD'),
-            end_period: dayjs(selectedDate.to).format('YYYY-MM-DD'),
+            start_period: selectedDate.from
+              ? dayjs(selectedDate.from).format('YYYY-MM-DD')
+              : undefined,
+            end_period: selectedDate.to
+              ? dayjs(selectedDate.to).format('YYYY-MM-DD')
+              : undefined,
             currency: selectedCurrency.id,
             direction: selectedType.id,
             transaction_method: [...transactionMethodPayload],
