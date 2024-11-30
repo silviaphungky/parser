@@ -143,6 +143,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
             account_number: accountBanks,
             sort_by: sortBy === 'period' ? 'start_period' : sortBy,
             sort: sortDir,
+            limit: itemsPerPage,
             search: debouncedValue,
           },
           headers: {
