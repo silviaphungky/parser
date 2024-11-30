@@ -24,7 +24,6 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import InputDropdown from '@/components/InputDropdown'
 import { colorToken } from '@/constants/color-token'
 import { useMutation } from '@tanstack/react-query'
-import axios, { AxiosError } from 'axios'
 import { API_URL } from '@/constants/apiUrl'
 import toast, { Toaster } from 'react-hot-toast'
 import {
