@@ -6,7 +6,6 @@ import DatePickerRange from '@/components/DatePickerRange'
 import ReactSelect, { MultiValue } from 'react-select'
 import { mockCategoryOptions } from '../TransactionCategoryModal/TransactionCategoryModal'
 import Button from '@/components/Button'
-import { mockTransactionMethod } from '../../../TransactionSummary/components/TreemapSubjectFreqValue/TreemapSubjectFreqValue'
 import { useQuery } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
@@ -132,8 +131,8 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
     transactionTypeOptions.find((el) => el.id === initialTransactionType) ||
       transactionTypeOptions[0]
   )
-  const [minMutation, setMinMutation] = useState(initialMinMutation)
-  const [maxMutation, setMaxMutation] = useState(initialMaxMutation)
+  const [minMutation, setMinMutation] = useState(initialMinMutation || 0)
+  const [maxMutation, setMaxMutation] = useState(initialMaxMutation || 0)
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
   >(initialSelectedBank.length ? initialSelectedBank : [])
@@ -271,7 +270,9 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
             <Input
               type="text"
               className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              value={minMutation == 0 ? '' : thousandSeparator(minMutation)}
+              value={
+                minMutation == 0 ? '' : thousandSeparator(minMutation || 0)
+              }
               onChange={(e) => {
                 const rawValue = e.target.value.replace(/[^0-9]/g, '')
                 const value = Number(rawValue)
