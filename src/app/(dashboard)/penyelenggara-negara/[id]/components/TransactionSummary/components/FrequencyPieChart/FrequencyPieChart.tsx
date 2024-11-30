@@ -8,6 +8,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { useParams } from 'next/navigation'
 import { useState } from 'react'
+import { MultiValue } from 'react-select'
 
 const pieChartColorMap = [
   'rgb(112, 219, 255, 0.6)',
@@ -66,6 +67,7 @@ const FrequencyPieChart = ({
   selectedCurrency,
   selectedDate,
   token,
+  selectedBank,
 }: {
   selectedCurrency: {
     id: string | number
@@ -76,6 +78,7 @@ const FrequencyPieChart = ({
     to: Date | undefined
   }
   token: string
+  selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
   const [selectedGroup, setSelectedGroup] = useState<{
@@ -119,6 +122,7 @@ const FrequencyPieChart = ({
       selectedCurrency.id,
       selectedGroup.id,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -134,6 +138,7 @@ const FrequencyPieChart = ({
             currency: selectedCurrency.id,
             direction: 'IN',
             group_by: selectedGroup.id,
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,
@@ -165,6 +170,7 @@ const FrequencyPieChart = ({
       selectedCurrency.id,
       selectedGroup.id,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -180,6 +186,7 @@ const FrequencyPieChart = ({
             currency: selectedCurrency.id,
             direction: 'OUT',
             group_by: selectedGroup.id,
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,

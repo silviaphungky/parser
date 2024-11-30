@@ -64,6 +64,7 @@ const TreemapSubjectFreqValue = ({
   selectedCurrency,
   selectedDate,
   token,
+  selectedBank,
 }: {
   selectedCurrency: {
     id: string | number
@@ -78,6 +79,7 @@ const TreemapSubjectFreqValue = ({
     IN: Array<Record<string, string | number | Array<{}>>>
     OUT: Array<Record<string, string | number | Array<{}>>>
   }
+  selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
   const [selectedType, setSelectedType] = useState<{
@@ -117,6 +119,7 @@ const TreemapSubjectFreqValue = ({
       selectedType.id,
       transactionMethodPayload,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -132,6 +135,7 @@ const TreemapSubjectFreqValue = ({
             currency: selectedCurrency.id,
             direction: selectedType.id,
             transaction_method: [...transactionMethodPayload],
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,

@@ -7,6 +7,7 @@ import { useQuery } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
 import dayjs from 'dayjs'
+import { MultiValue } from 'react-select'
 
 const TransactionCard = ({
   selectedCurrency,
@@ -98,6 +99,7 @@ const Top5Ranking = ({
   selectedCurrency,
   selectedDate,
   token,
+  selectedBank,
 }: {
   selectedCurrency: {
     id: string | number
@@ -108,6 +110,7 @@ const Top5Ranking = ({
     to: Date | undefined
   }
   token: string
+  selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
   const {
@@ -157,6 +160,7 @@ const Top5Ranking = ({
       selectedDate.to,
       selectedCurrency.id,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -171,6 +175,7 @@ const Top5Ranking = ({
               ? dayjs(selectedDate.to).format('YYYY-MM-DD')
               : undefined,
             currency: selectedCurrency.id,
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,

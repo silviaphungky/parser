@@ -78,12 +78,13 @@ const LEGEND_MAP = {
 const FreqValueHeatmapDate = ({
   selectedCurrency,
   token,
+  selectedBank,
 }: {
   selectedCurrency: {
     id: string | number
     label: string
   }
-
+  selectedBank: MultiValue<{ value: string; label: string }>
   token: string
 }) => {
   const { id } = useParams()
@@ -145,6 +146,7 @@ const FreqValueHeatmapDate = ({
       transactionMethodPayload,
       debouncedValue,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -157,6 +159,7 @@ const FreqValueHeatmapDate = ({
             transaction_method: transactionMethodPayload,
             search:
               debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,

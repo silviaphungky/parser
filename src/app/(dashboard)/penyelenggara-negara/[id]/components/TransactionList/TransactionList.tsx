@@ -184,6 +184,7 @@ const TransactionList = ({
       minAmount,
       maxAmount,
       selectedDate,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
@@ -208,6 +209,7 @@ const TransactionList = ({
           end_period: selectedDate.to
             ? dayjs(new Date(selectedDate.to)).format('yyyy-mm-dd')
             : undefined,
+          account_number: selectedBank.map((item) => item.value),
         },
         headers: {
           Authorization: `Bearer ${token}`,

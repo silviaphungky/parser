@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { API_URL } from '@/constants/apiUrl'
 import dayjs from 'dayjs'
 import axiosInstance from '@/utils/axiosInstance'
+import { MultiValue } from 'react-select'
 
 const colorMap = [
   'rgb(112, 219, 255, 0.6)',
@@ -42,6 +43,7 @@ const AssetChart = ({
   selectedCurrency,
   selectedDate,
   token,
+  selectedBank,
 }: {
   selectedCurrency: {
     id: string | number
@@ -52,6 +54,7 @@ const AssetChart = ({
     to: Date | undefined
   }
   token: string
+  selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
   const {
@@ -75,6 +78,7 @@ const AssetChart = ({
       selectedDate.to,
       selectedCurrency.id,
       id,
+      selectedBank,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -89,6 +93,7 @@ const AssetChart = ({
               : undefined,
             currency: selectedCurrency.id,
             group_by: 'daily',
+            account_number: selectedBank.map((item) => item.value),
           },
           headers: {
             Authorization: `Bearer ${token}`,

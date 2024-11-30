@@ -482,12 +482,14 @@ const TransactionSummary = ({ token }: { token: string }) => {
         <AssetChart
           selectedCurrency={selectedCurrency}
           selectedDate={selectedDate}
+          selectedBank={selectedBank}
           token={token}
         />
         <Top5Ranking
           selectedCurrency={selectedCurrency}
           selectedDate={selectedDate}
           token={token}
+          selectedBank={selectedBank}
         />
       </div>
 
@@ -498,15 +500,18 @@ const TransactionSummary = ({ token }: { token: string }) => {
           selectedDate={selectedDate}
           token={token}
           data={dataTreemap}
+          selectedBank={selectedBank}
         />
         <FrequencyPieChart
           selectedCurrency={selectedCurrency}
           selectedDate={selectedDate}
           token={token}
+          selectedBank={selectedBank}
         />
         <FreqValueHeatmapDate
           selectedCurrency={selectedCurrency}
           token={token}
+          selectedBank={selectedBank}
         />
       </div>
     </div>
