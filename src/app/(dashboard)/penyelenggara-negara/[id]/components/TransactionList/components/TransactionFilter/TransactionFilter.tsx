@@ -31,6 +31,10 @@ const highlightOptions = [
     label: 'Semua Transaksi',
   },
   {
+    id: false,
+    label: 'Tanpa Tanda',
+  },
+  {
     id: true as any,
     label: 'Dengan Tanda',
   },
