@@ -66,7 +66,7 @@ const color = {
 }
 
 const LEGEND_MAP = {
-  freq: ['1x - 4x', '5x - 7x', '8x - 10x', '>10x'],
+  freq: ['1x - 2x', '3x - 5x', '6x - 9x', '>10x'],
   value: [
     `<=${thousandSeparator(2000000)}`,
     `>${thousandSeparator(2000000)} - <=${thousandSeparator(10000000)}`,
@@ -178,9 +178,9 @@ const FreqValueHeatmapDate = ({
     let levelVal = 0
 
     if (item[key].frequency > 10) levelFreq = 4
-    else if (item[key].frequency > 7 && item[key].frequency <= 10) levelFreq = 3
-    else if (item[key].frequency > 4 && item[key].frequency <= 7) levelFreq = 2
-    else if (item[key].frequency > 0 && item[key].frequency <= 4) levelFreq = 1
+    else if (item[key].frequency > 5 && item[key].frequency <= 9) levelFreq = 3
+    else if (item[key].frequency > 2 && item[key].frequency <= 5) levelFreq = 2
+    else if (item[key].frequency > 0 && item[key].frequency <= 2) levelFreq = 1
     else levelFreq = 0
 
     if (item[key].value > 20000000) levelVal = 4
