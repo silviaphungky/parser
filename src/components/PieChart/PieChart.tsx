@@ -8,6 +8,8 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
+import Card from '../Card'
+import { thousandSeparator } from '@/utils/thousanSeparator'
 
 interface Props {
   chartData: Array<{
@@ -60,7 +62,23 @@ const PieChart = ({ chartData, value, size, colorMap, cx, label }: Props) => {
             fontSize: '0.75rem',
           }}
         />
-        <Tooltip itemStyle={{ fontSize: 12 }} />
+        <Tooltip
+          itemStyle={{ fontSize: 12 }}
+          content={({ payload, label, active }) => {
+            if (active && payload) {
+              const value = payload[0]?.value as string
+              return (
+                <Card>
+                  <div className="text-xs">
+                    <div>{label}</div>
+                    <div>{thousandSeparator(Number(value))}</div>
+                  </div>
+                </Card>
+              )
+            }
+            return null
+          }}
+        />
       </RPieChart>
     </ResponsiveContainer>
   )
