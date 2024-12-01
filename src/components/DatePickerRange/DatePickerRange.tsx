@@ -114,4 +114,6 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
   }
 )
 
+DatePickerRange.displayName = 'DatePickerRange'
+
 export default DatePickerRange
