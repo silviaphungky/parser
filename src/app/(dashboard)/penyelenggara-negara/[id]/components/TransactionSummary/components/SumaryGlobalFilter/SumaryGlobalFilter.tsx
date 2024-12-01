@@ -20,7 +20,6 @@ const SumaryGlobalFilter = ({
   selectedCurrency,
   selectedBank,
   selectedDate,
-  initialRange,
   handleChangeBank,
   handleChangeCurrency,
   handleChangeDate,
@@ -32,7 +31,6 @@ const SumaryGlobalFilter = ({
   }
   selectedCurrency: { id: string | number; label: string }
   selectedBank: MultiValue<{ value: string; label: string }>
-  initialRange?: { from: Date | undefined; to: Date | undefined }
   handleChangeBank: (
     props: MultiValue<{ value: string; label: string }>
   ) => void
@@ -149,7 +147,6 @@ const SumaryGlobalFilter = ({
 
       <DatePickerRange
         selected={selectedDate}
-        initialRange={initialRange}
         onRangeChange={handleChangeDate}
       />
     </div>

@@ -1,8 +1,8 @@
-import { IconCalendar } from '@/icons'
+import { IconCalendar, IconX } from '@/icons'
 import useOutsideClick from '@/utils/useClickOutside'
 import dayjs from 'dayjs'
 import React, { useState, forwardRef, Ref, useRef, useEffect } from 'react'
-import { DayPicker } from 'react-day-picker'
+import { DateRange, DayPicker } from 'react-day-picker'
 import 'react-day-picker/style.css'
 
 interface DatePickerRangeProps {
@@ -18,7 +18,6 @@ interface DatePickerRangeProps {
 const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
   (
     {
-      selected,
       initialRange = { from: undefined, to: undefined },
       onRangeChange,
       className,
@@ -32,21 +31,23 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
     }>(initialRange)
     const [isCalendarOpen, setIsCalendarOpen] = useState(false)
 
-    const handleDayClick = (day: Date) => {
-      if (!range.from || (range.from && range.to)) {
-        const newRange = { from: day, to: undefined }
-        setRange(newRange)
-        onRangeChange?.(newRange) // Call the callback if provided
-      } else {
-        const newRange = { ...range, to: day }
-        setRange(newRange)
-        onRangeChange?.(newRange) // Call the callback if provided
+    const handleDayClick = (value?: DateRange) => {
+      if (!range.from || (!!range.from && !!range.to)) {
+        setRange({ from: value?.from, to: undefined })
+        return
+      }
+      if (!range.to) {
+        setRange({ from: value?.from, to: value?.to })
+
+        return
       }
     }
 
     useEffect(() => {
-      setRange(selected)
-    }, [selected])
+      if (onRangeChange) {
+        onRangeChange(range)
+      }
+    }, [range])
 
     const handleInputClick = () => {
       setIsCalendarOpen((prev) => !prev) // Toggle calendar visibility
@@ -66,7 +67,7 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
     return (
       <div ref={ref} className={`flex flex-col relative `}>
         <div
-          className={`p-2 border border-gray-300 rounded-lg cursor-pointer text-sm w-[14rem] ${className} flex gap-2 cursor-pointer bg-white`}
+          className={`p-2 border border-gray-300 rounded-lg cursor-pointer text-sm w-[14rem] ${className} flex gap-2 cursor-pointer bg-white items-center`}
         >
           <IconCalendar />
           <input
@@ -76,18 +77,31 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
             onClick={handleInputClick}
             className="w-full outline-none cursor-pointer"
           />
+          {range.from && range.to && (
+            <div
+              onClick={() => {
+                setRange({
+                  from: undefined,
+                  to: undefined,
+                })
+              }}
+            >
+              <IconX size={18} />
+            </div>
+          )}
         </div>
 
         {isCalendarOpen && (
           <div
-            className="p-4 border border-gray-300 rounded-lg shadow-md absolute bg-white top-[3rem] w-max right-0 z-10 bg-white"
+            className="p-4 border border-gray-300 rounded-lg shadow-md absolute top-[3rem] w-max right-0 z-10 bg-white"
             ref={divRef}
           >
             <DayPicker
               captionLayout="dropdown"
               mode="range"
               selected={range}
-              onDayClick={handleDayClick}
+              onSelect={handleDayClick}
+              defaultMonth={range.from}
               styles={{
                 selected: { backgroundColor: 'blue', color: 'white' },
                 today: { backgroundColor: 'green', color: 'white' },
@@ -99,7 +113,5 @@ const DatePickerRange = forwardRef<HTMLDivElement, DatePickerRangeProps>(
     )
   }
 )
-
-DatePickerRange.displayName = 'DatePickerRange'
 
 export default DatePickerRange

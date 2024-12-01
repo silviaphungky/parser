@@ -468,10 +468,6 @@ const TransactionSummary = ({ token }: { token: string }) => {
           token={token}
           selectedDate={selectedDate}
           selectedBank={selectedBank}
-          initialRange={{
-            from: dayjs(new Date()).subtract(1, 'months').toDate(),
-            to: new Date(),
-          }}
           selectedCurrency={selectedCurrency}
           handleChangeBank={handleChangeBank}
           handleChangeDate={handleChangeDate}
