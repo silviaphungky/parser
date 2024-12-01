@@ -260,8 +260,8 @@ const TransactionTable = ({
         (row) => (
           <div className="text-xs">
             {row.category_name_adjusted
-              ? row.category_name_adjusted || '-'
-              : row.category_name || '-'}
+              ? row.category_name_adjusted || 'unknown'
+              : row.category_name || 'unknown'}
           </div>
         ),
         {

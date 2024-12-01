@@ -91,14 +91,17 @@ const TransactionStatementsTable = ({
 
   const { mutate: restoreStatement, isPending: isRestoring } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axiosInstance.patch(`${baseUrl}/${API_URL.RESTORE_STATEMENT}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.RESTORE_STATEMENT}`,
+        {
           id: payload.id,
         },
-      }),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
   })
 
   const columns = useMemo(
@@ -224,64 +227,66 @@ const TransactionStatementsTable = ({
         header: () => <span>Aksi</span>,
         cell: (info) => {
           return (
-            <div className="flex gap-3">
-              <Button
-                disabled={info.row.original.status === 'PENDING'}
-                loading={
-                  info.row.original.is_archived ? isRestoring : isPending
-                }
-                variant="white-outline"
-                onClick={() => {
-                  if (info.row.original.is_archived) {
-                    restoreStatement(
-                      {
-                        id: info.row.original.statement_id,
-                      },
-                      {
-                        onSuccess: () => {
-                          toast.success('Berhasil mengembalikan laporan bank')
-                          refetch()
-                        },
-                        onError: (error: any) => {
-                          toast.error(
-                            `Gagal mengembalikan laporan bank: ${error?.response?.data?.message}`
-                          )
-                        },
-                      }
-                    )
-                  } else {
-                    removeStatement(
-                      {
-                        id: info.row.original.statement_id,
-                      },
-                      {
-                        onSuccess: () => {
-                          toast.success('Berhasil mengarsipkan laporan bank')
-                          refetch()
-                        },
-                        onError: (error: any) => {
-                          toast.error(
-                            `Gagal mengarsipkan laporan bank: ${error?.response?.data?.message}`
-                          )
-                        },
-                      }
-                    )
+            info.row.original.status === 'SUCCESS' && (
+              <div className="flex gap-3">
+                <Button
+                  disabled={info.row.original.status === 'PENDING'}
+                  loading={
+                    info.row.original.is_archived ? isRestoring : isPending
                   }
-                }}
-              >
-                {info.row.original.is_archived ? (
-                  <div className="flex gap-2 items-center">
-                    Pulihkan
-                    <IconVisible size={22} color="#EA454C" />
-                  </div>
-                ) : (
-                  <div className="flex gap-2 items-center">
-                    Arsipkan
-                    <IconUnvisible size={20} color="#EA454C" />
-                  </div>
-                )}
-              </Button>
-            </div>
+                  variant="white-outline"
+                  onClick={() => {
+                    if (info.row.original.is_archived) {
+                      restoreStatement(
+                        {
+                          id: info.row.original.statement_id,
+                        },
+                        {
+                          onSuccess: () => {
+                            toast.success('Berhasil mengembalikan laporan bank')
+                            refetch()
+                          },
+                          onError: (error: any) => {
+                            toast.error(
+                              `Gagal mengembalikan laporan bank: ${error?.response?.data?.message}`
+                            )
+                          },
+                        }
+                      )
+                    } else {
+                      removeStatement(
+                        {
+                          id: info.row.original.statement_id,
+                        },
+                        {
+                          onSuccess: () => {
+                            toast.success('Berhasil mengarsipkan laporan bank')
+                            refetch()
+                          },
+                          onError: (error: any) => {
+                            toast.error(
+                              `Gagal mengarsipkan laporan bank: ${error?.response?.data?.message}`
+                            )
+                          },
+                        }
+                      )
+                    }
+                  }}
+                >
+                  {info.row.original.is_archived ? (
+                    <div className="flex gap-2 items-center">
+                      Pulihkan
+                      <IconVisible size={22} color="#EA454C" />
+                    </div>
+                  ) : (
+                    <div className="flex gap-2 items-center">
+                      Arsipkan
+                      <IconUnvisible size={20} color="#EA454C" />
+                    </div>
+                  )}
+                </Button>
+              </div>
+            )
           )
         },
         enableSorting: false,
