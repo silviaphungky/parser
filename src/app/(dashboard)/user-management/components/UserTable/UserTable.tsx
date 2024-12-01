@@ -77,7 +77,7 @@ const UserTable: React.FC<UserTableProps> = ({
   setIsOpenModal,
 }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemPerPage] = useState(5)
+  const [itemsPerPage, setItemPerPage] = useState(20)
 
   const {
     data = {

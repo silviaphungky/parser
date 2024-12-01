@@ -23,7 +23,7 @@ const filterOptions = [
 
 const NotificationList = ({ token }: { token: string }) => {
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemPerPage] = useState(5)
+  const [itemsPerPage, setItemPerPage] = useState(20)
   const [selectedFilter, setSelectedFilter] = useState(filterOptions[0])
 
   const {

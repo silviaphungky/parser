@@ -90,7 +90,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [currentPage, setCurrentPage] = useState(1)
-  const [itemsPerPage, setItemPerPage] = useState(5)
+  const [itemsPerPage, setItemPerPage] = useState(20)
   const [isOpen, setIsOpen] = useState(false)
   const { id } = useParams()
   const accountBanks = selectedBank.map((item) => {

@@ -13,7 +13,7 @@ const PNList = ({ token }: { token: string }) => {
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [page, setPage] = useState(1)
-  const [perPage, setPerPage] = useState(10)
+  const [perPage, setPerPage] = useState(20)
   const [keyword, setKeyword] = useState('')
   const debouncedValue = useDebounce(keyword, 500)
   const {
