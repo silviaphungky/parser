@@ -230,7 +230,6 @@ const TransactionStatementsTable = ({
             info.row.original.status === 'SUCCESS' && (
               <div className="flex gap-3">
                 <Button
-                  disabled={info.row.original.status === 'PENDING'}
                   loading={
                     info.row.original.is_archived ? isRestoring : isPending
                   }
