@@ -41,10 +41,10 @@ import { thousandSeparator } from '@/utils/thousanSeparator'
 const columnHelper = createColumnHelper<ITransactionItem & { actions: any }>()
 
 const iconBankMap = {
-  BCA: <IconBCA size={24} />,
-  BRI: <IconBRI size={24} />,
-  BNI: <IconBNI size={24} />,
-  MANDIRI: <IconMandiri size={24} />,
+  BCA: <IconBCA size={40} />,
+  BRI: <IconBRI size={40} />,
+  BNI: <IconBNI size={40} />,
+  MANDIRI: <IconMandiri size={40} />,
 }
 
 const NoteCell = ({ text }: { text: string }) => {
