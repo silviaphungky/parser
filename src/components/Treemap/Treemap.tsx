@@ -27,6 +27,7 @@ const getColor = (frequency: number, colorScale: Array<string>) => {
 // Custom rendering cell function
 const CustomizedContent = (props: any) => {
   const {
+    index,
     x,
     y,
     width,
@@ -40,7 +41,7 @@ const CustomizedContent = (props: any) => {
   } = props
 
   return (
-    entity_name && (
+    (entity_name || entity_account_number || entity_bank) && (
       <g>
         <rect
           x={x}
@@ -50,24 +51,28 @@ const CustomizedContent = (props: any) => {
           fill={getColor(total_transaction, colorScale) || 'white'}
           stroke="white"
         />
-        <text
-          x={x + 10}
-          y={y + 20}
-          fontSize="12"
-          fontWeight="bold"
-          stroke="none"
-        >
-          {`${entity_name} - ${entity_bank} ${entity_account_number}`}
-        </text>
-        {total_transaction && (
-          <text x={x + 10} y={y + 35} fontSize="12px" stroke="none">
-            {`Frekuensi: ${total_transaction}`}
-          </text>
-        )}
-        {total_amount && (
-          <text x={x + 10} y={y + 50} fontSize="12" stroke="none">
-            {`Nominal transaksi: ${numberAbbv(total_amount)}`}
-          </text>
+        {index < 5 && (
+          <>
+            <text
+              x={x + 10}
+              y={y + 20}
+              fontSize="12"
+              fontWeight="bold"
+              stroke="none"
+            >
+              {`${entity_name} - ${entity_bank} ${entity_account_number}`}
+            </text>
+            {total_transaction && (
+              <text x={x + 10} y={y + 35} fontSize="12px" stroke="none">
+                {`Freq: ${total_transaction}`}
+              </text>
+            )}
+            {total_amount && (
+              <text x={x + 10} y={y + 50} fontSize="12" stroke="none">
+                {`Nominal: ${numberAbbv(total_amount)}`}
+              </text>
+            )}
+          </>
         )}
       </g>
     )
@@ -125,7 +130,7 @@ const Treemap = ({
         width={width || 600}
         height={height || 400}
         data={data}
-        dataKey="value" // Use value to control the size of the nodes
+        dataKey="size" // Use value to control the size of the nodes
         aspectRatio={4 / 4} // Adjusts the layout
         stroke="#fff"
         content={<CustomizedContent colorScale={colorScale} />} // Custom rendering for nodes

@@ -216,23 +216,26 @@ const TreemapSubjectFreqValue = ({
             </div>
           </div>
         </div>
+
         <div>
           {(isLoading || isFetching) && <Shimmer />}
           {!isLoading && !isFetching && (
             <>
               <Treemap
                 data={
-                  treemapData?.summary_frequency.map((item) => ({
-                    ...item,
-                    value: item.total_amount,
-                    frequency: item.total_transaction,
-                  })) || []
+                  treemapData?.summary_frequency
+                    .map((item) => ({
+                      ...item,
+                      size: item.total_amount,
+                      frequency: item.total_transaction,
+                    }))
+                    .sort((a, b) => b.total_amount - a.total_amount) || []
                 }
                 colorScale={
                   colorScale[selectedType.id as 'IN' | 'OUT'] as Array<string>
                 }
-                width={600}
                 height={400}
+                width={400}
               />
               {/* TODO: KASIH EMPTY STATE */}
             </>
