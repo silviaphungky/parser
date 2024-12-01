@@ -76,14 +76,15 @@ const Pagination: React.FC<PaginationProps> = ({
 
         {/* Pagination Controls */}
         <div className="flex items-center space-x-2 text-sm">
-          {/* Prev Button (with arrow) */}
-          <button
-            className={`px-4 py-2 disabled:opacity-50 transition-all`}
-            onClick={() => onPageChange(currentPage - 1)}
-            disabled={currentPage === 1}
-          >
-            Sebelumnya
-          </button>
+          {currentPage > 1 && (
+            <button
+              className={`px-4 py-2 disabled:opacity-50 transition-all`}
+              onClick={() => onPageChange(1)}
+              disabled={currentPage === 1}
+            >
+              Halaman Pertama
+            </button>
+          )}
 
           {/* Page Numbers */}
           {getPages().map((page) => (
@@ -100,14 +101,15 @@ const Pagination: React.FC<PaginationProps> = ({
             </button>
           ))}
 
-          {/* Next Button (with arrow) */}
-          <button
-            className={`px-4 py-2 rounded-lg disabled:opacity-50 transition-all`}
-            onClick={() => onPageChange(currentPage + 1)}
-            disabled={currentPage === totalPages}
-          >
-            Selanjutnya
-          </button>
+          {currentPage < totalPages && (
+            <button
+              className={`px-4 py-2 rounded-lg disabled:opacity-50 transition-all`}
+              onClick={() => onPageChange(totalPages)}
+              disabled={currentPage === totalPages}
+            >
+              Halaman Terakhir
+            </button>
+          )}
         </div>
       </div>
     </div>
