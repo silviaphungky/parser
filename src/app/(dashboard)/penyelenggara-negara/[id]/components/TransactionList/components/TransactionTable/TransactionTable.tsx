@@ -247,15 +247,7 @@ const TransactionTable = ({
         cell: (info) => info.getValue() || 'IDR',
         enableSorting: false,
       }),
-      columnHelper.accessor('description', {
-        header: 'Remark',
-        cell: (info) => (
-          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap capitalize">
-            {info.getValue().toLowerCase() || '-'}
-          </div>
-        ),
-        enableSorting: false,
-      }),
+
       columnHelper.accessor(
         (row) => (
           <div className="text-xs">
@@ -271,6 +263,15 @@ const TransactionTable = ({
           enableSorting: false,
         }
       ),
+      columnHelper.accessor('description', {
+        header: 'Remark',
+        cell: (info) => (
+          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap capitalize">
+            {info.getValue().toLowerCase() || '-'}
+          </div>
+        ),
+        enableSorting: false,
+      }),
       columnHelper.accessor('amount', {
         header: 'Nominal Transaksi',
         cell: (info) => (
