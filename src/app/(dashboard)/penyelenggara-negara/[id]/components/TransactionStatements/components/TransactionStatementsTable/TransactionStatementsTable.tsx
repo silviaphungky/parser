@@ -108,7 +108,8 @@ const TransactionStatementsTable = ({
     () => [
       columnHelper.accessor('created_at', {
         header: 'Tanggal Upload',
-        cell: (info) => dayjs(new Date(info.getValue())).format('DD/MM/YYYY'),
+        cell: (info) =>
+          dayjs(new Date(info.getValue())).format('DD/MM/YYYY HH:mm'),
       }),
       columnHelper.accessor('file_name', {
         header: 'Nama File',
