@@ -218,7 +218,6 @@ const TransactionList = ({
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
 
@@ -274,7 +273,6 @@ const TransactionList = ({
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
 

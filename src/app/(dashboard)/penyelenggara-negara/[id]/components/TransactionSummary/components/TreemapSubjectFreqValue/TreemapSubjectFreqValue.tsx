@@ -145,7 +145,6 @@ const TreemapSubjectFreqValue = ({
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
 

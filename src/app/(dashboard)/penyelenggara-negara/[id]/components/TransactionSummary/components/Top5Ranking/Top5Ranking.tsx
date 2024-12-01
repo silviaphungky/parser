@@ -185,7 +185,6 @@ const Top5Ranking = ({
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
 

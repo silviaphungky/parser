@@ -36,7 +36,7 @@ const Summary = ({ token }: { token: string }) => {
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
+
     refetchOnWindowFocus: false,
   })
 

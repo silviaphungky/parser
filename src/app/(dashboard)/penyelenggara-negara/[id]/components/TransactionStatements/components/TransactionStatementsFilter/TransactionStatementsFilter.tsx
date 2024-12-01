@@ -127,7 +127,6 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
       const data = response.data
       return data.data
     },
-    refetchOnMount: false,
     refetchOnWindowFocus: false,
   })
   const bankAccountOptions = currency.id
