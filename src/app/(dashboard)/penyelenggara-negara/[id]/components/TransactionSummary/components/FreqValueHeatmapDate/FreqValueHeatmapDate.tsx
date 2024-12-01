@@ -231,7 +231,17 @@ const FreqValueHeatmapDate = ({
               value={selectedTransactionMethod}
               onChange={(props) => setSelectedTransactionMethod(props)}
               name="colors"
-              options={mockTransactionMethod}
+              options={
+                selectedType.id === 'IN'
+                  ? mockTransactionMethod.filter(
+                      (el) => el.value !== 'DEBET BANK'
+                    )
+                  : selectedType.id === 'OUT'
+                  ? mockTransactionMethod.filter(
+                      (el) => el.value !== 'KREDIT BANK'
+                    )
+                  : mockTransactionMethod
+              }
               className="react-select-container"
               placeholder="Pilih metode transaksi"
               styles={{

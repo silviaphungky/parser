@@ -52,6 +52,14 @@ export const transactionMethodOptions = [
     id: 'TRANSAKSI TUNAI (TERMASUK ATM)',
     label: 'Transaksi Tunai (termasuk ATM)',
   },
+  {
+    id: 'KREDIT BANK',
+    label: 'Kredit Bank',
+  },
+  {
+    id: 'DEBET BANK',
+    label: 'Debit Bank',
+  },
   { id: 'TIDAK DIKETAHUI (UNKNOWN)', label: 'Tidak Diketahui (Unknown)' },
 ]
 
@@ -209,6 +217,13 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       }))
     : [{ value: '', label: 'Semua Akun Bank' }]
 
+  const method: any =
+    transactionType.id == 'IN'
+      ? transactionMethodOptions.filter((el) => el.id !== 'DEBET BANK')
+      : transactionType.id == 'OUT'
+      ? transactionMethodOptions.filter((el) => el.id !== 'KREDIT BANK')
+      : transactionMethodOptions
+
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <h2 className="text-lg font-bold mb-4">Filter Transaksi</h2>
@@ -338,10 +353,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
           <FormItem label="Metode Transaksi">
             <InputDropdown
               placeholder="Pilih metode transaksi..."
-              options={[
-                { id: '', label: 'Semua Transaksi' },
-                ...transactionMethodOptions,
-              ]}
+              options={[{ id: '', label: 'Semua Transaksi' }, ...method]}
               value={transactionMethod}
               onChange={(option) => setTransactionMethod(option)}
             />

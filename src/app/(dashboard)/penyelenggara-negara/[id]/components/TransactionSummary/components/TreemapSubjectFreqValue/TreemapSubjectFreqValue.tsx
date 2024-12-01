@@ -57,6 +57,14 @@ export const mockTransactionMethod = [
     value: 'TRANSAKSI TUNAI (TERMASUK ATM)',
     label: 'Transaksi Tunai (termasuk ATM)',
   },
+  {
+    value: 'KREDIT BANK',
+    label: 'Kredit Bank',
+  },
+  {
+    value: 'DEBET BANK',
+    label: 'Debit Bank',
+  },
   { value: 'TIDAK DIKETAHUI (UNKNOWN)', label: 'Tidak Diketahui (Unknown)' },
 ]
 
