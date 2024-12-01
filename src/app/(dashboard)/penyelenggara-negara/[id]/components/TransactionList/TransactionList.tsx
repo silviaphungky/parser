@@ -15,7 +15,7 @@ import dayjs from 'dayjs'
 import { MultiValue } from 'react-select'
 
 const searchFields = [
-  { label: 'Nama Akun Lawan Transaksi', id: 'search_entity_name' },
+  { label: 'Nama Lawan Transaksi', id: 'search_entity_name' },
   { label: 'Remark', id: 'search' },
 ]
 
