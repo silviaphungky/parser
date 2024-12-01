@@ -39,6 +39,8 @@ const colorMap = [
   'rgba(255, 187, 120, 0.8)',
 ]
 
+let groupBy = 'daily'
+
 const AssetChart = ({
   selectedCurrency,
   selectedDate,
@@ -57,6 +59,31 @@ const AssetChart = ({
   selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
+
+  if (selectedDate.from && selectedDate.to) {
+    if (
+      dayjs(new Date(selectedDate.to)).diff(
+        dayjs(new Date(selectedDate.from)),
+        'months'
+      ) >= 12
+    ) {
+      groupBy = 'monthly'
+    }
+
+    if (
+      dayjs(new Date(selectedDate.to)).diff(
+        dayjs(new Date(selectedDate.from)),
+        'months'
+      ) < 12 &&
+      dayjs(new Date(selectedDate.to)).diff(
+        dayjs(new Date(selectedDate.from)),
+        'months'
+      ) > 6
+    ) {
+      groupBy = 'weekly'
+    }
+  }
+
   const {
     data: chartData = { total_balance: 0, summary_line_chart: [] },
     isLoading,
@@ -79,6 +106,7 @@ const AssetChart = ({
       selectedCurrency.id,
       id,
       selectedBank,
+      groupBy,
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
@@ -92,7 +120,7 @@ const AssetChart = ({
               ? dayjs(selectedDate.to).format('YYYY-MM-DD')
               : undefined,
             currency: selectedCurrency.id,
-            group_by: 'daily',
+            group_by: groupBy,
             account_number: selectedBank.map((item) => item.value),
           },
           headers: {
