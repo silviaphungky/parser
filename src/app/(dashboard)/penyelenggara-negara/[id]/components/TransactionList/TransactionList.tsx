@@ -245,6 +245,27 @@ const TransactionList = ({
         `${baseUrl}/${API_URL.GENERATE_TRANSACTION_CSV}`,
         {
           ...payload,
+          page: currentPage,
+          limit: itemsPerPage,
+          account_reporter_id: id,
+          [searchBy]:
+            debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
+          is_starred: isHighlight === '' ? undefined : isHighlight,
+          currency: currency ? currency : undefined,
+          category: category ? category : undefined,
+          direction: transactionType,
+          method: transactionMethod,
+          sort_by: sortBy,
+          sort: sortDir,
+          minimum_amount: minAmount > 0 ? minAmount : undefined,
+          maximum_amount: maxAmount > 0 ? maxAmount : undefined,
+          start_period: selectedDate.from
+            ? dayjs(new Date(selectedDate.from)).format('yyyy-mm-dd')
+            : undefined,
+          end_period: selectedDate.to
+            ? dayjs(new Date(selectedDate.to)).format('yyyy-mm-dd')
+            : undefined,
+          account_number: selectedBank.map((item) => item.value),
         },
         {
           headers: {
@@ -280,7 +301,6 @@ const TransactionList = ({
     downloadCsv(
       {
         account_reporter_id: id as string,
-        search: '',
       },
       {
         onSuccess: ({ data }) => {
