@@ -580,14 +580,16 @@ const TransactionTable = ({
                 {table.getRowModel().rows.map((row) => (
                   <tr
                     key={row.id}
-                    className={`hover:bg-gray-100 transition-colors duration-300 ${
+                    className={` hover:bg-gray-100 transition-colors duration-300 ${
                       row.original.is_starred ? 'bg-orange-50' : ''
                     }`}
                   >
                     {row.getVisibleCells().map((cell, i) => (
                       <td
                         key={`${row.id}-${i}`}
-                        className={`px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
+                        className={`${
+                          cell.column.id === 'actions' ? 'relative' : ''
+                        } px-2 py-2 whitespace-nowrap text-sm text-gray-800 `}
                       >
                         {flexRender(
                           cell.column.columnDef.cell,
