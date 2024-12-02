@@ -13,7 +13,7 @@ const UserManagementPage = () => {
   }
 
   if (role !== 'SUPER_ADMIN') {
-    redirect('/penyelenggara-negara')
+    redirect('/daftar-monitor')
   }
 
   return (

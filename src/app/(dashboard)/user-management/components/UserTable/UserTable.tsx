@@ -19,7 +19,7 @@ import { API_URL } from '@/constants/apiUrl'
 import { Pagination, Shimmer } from '@/components'
 import CreateUserModal from '../CreateUserModal'
 import Button from '@/components/Button'
-import { baseUrl } from '@/app/(dashboard)/penyelenggara-negara/[id]/components/UploadBankStatement/UploadBankStatement'
+import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import toast from 'react-hot-toast'
 
 interface UserTableProps {

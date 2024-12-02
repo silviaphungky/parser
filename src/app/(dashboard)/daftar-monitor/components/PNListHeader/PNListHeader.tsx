@@ -61,12 +61,10 @@ const PNListHeader = ({
         isOpen={isOpenFoundModal}
         onClose={() => setIsOpenFoundModal(false)}
       >
-        <h2 className="font-semibold mb-4 text-lg">
-          Tambahkan Penyelenggara Negara
-        </h2>
+        <h2 className="font-semibold mb-4 text-lg">Tambahkan Daftar Monitor</h2>
         <div className="mt-2 text-sm">
           <span className="font-semibold">{existsPn.nik} </span>
-          <span>telah terdaftar sebagai Penyelenggara Negara dengan nama</span>
+          <span>telah terdaftar sebagai Daftar Monitor dengan nama</span>
           <span className="font-semibold"> {existsPn.name} </span>
           <span>pada {dayjs(existsPn.created_at).format('DD/MM/YYYY')}.</span>
         </div>
@@ -111,13 +109,13 @@ const PNListHeader = ({
         />
       </Modal>
       <div className="flex justify-between">
-        <Title title="Penyelenggara Negara" />
+        <Title title="Daftar Monitor" />
         <button
           className="flex gap-2 bg-primary text-white items-center p-2 pr-3 rounded-md text-sm hover:opacity-95"
           onClick={() => setIsOpenCreateModal(true)}
         >
           <IconPlus color="#fff" size={18} />
-          Tambah Penyelenggara Negara
+          Tambah Daftar Monitor
         </button>
       </div>
     </div>

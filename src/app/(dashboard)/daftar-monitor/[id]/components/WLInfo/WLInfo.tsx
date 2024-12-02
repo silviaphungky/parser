@@ -59,8 +59,8 @@ const WLInfo = ({
         <Breadcrumbs
           routes={[
             {
-              label: 'Penyelenggara Negara',
-              link: '/penyelenggara-negara',
+              label: 'Daftar Monitor',
+              link: '/daftar-monitor',
             },
             {
               label: data?.name || (id as string),
@@ -125,19 +125,18 @@ const WLInfo = ({
                   id: 'tab1',
                   label: 'Ringkasan Transaksi',
                   content: <></>,
-                  active: pathname === `/penyelenggara-negara/${id}/summary`,
+                  active: pathname === `/daftar-monitor/${id}/summary`,
                   handleClick: () => {
-                    router.push(`/penyelenggara-negara/${id}/summary`)
+                    router.push(`/daftar-monitor/${id}/summary`)
                   },
                 },
                 {
                   id: 'tab2',
                   label: 'Daftar Transaksi',
                   content: <></>,
-                  active:
-                    pathname === `/penyelenggara-negara/${id}/transaction-list`,
+                  active: pathname === `/daftar-monitor/${id}/transaction-list`,
                   handleClick: () => {
-                    router.push(`/penyelenggara-negara/${id}/transaction-list`)
+                    router.push(`/daftar-monitor/${id}/transaction-list`)
                   },
                 },
                 {
@@ -145,21 +144,18 @@ const WLInfo = ({
                   label: 'Daftar Laporan Bank',
                   content: <></>,
                   active:
-                    pathname ===
-                    `/penyelenggara-negara/${id}/transaction-statements`,
+                    pathname === `/daftar-monitor/${id}/transaction-statements`,
                   handleClick: () => {
-                    router.push(
-                      `/penyelenggara-negara/${id}/transaction-statements`
-                    )
+                    router.push(`/daftar-monitor/${id}/transaction-statements`)
                   },
                 },
                 {
                   id: 'tab4',
                   label: 'Daftar Relasi Keluarga',
                   content: <></>,
-                  active: pathname === `/penyelenggara-negara/${id}/family`,
+                  active: pathname === `/daftar-monitor/${id}/family`,
                   handleClick: () => {
-                    router.push(`/penyelenggara-negara/${id}/family`)
+                    router.push(`/daftar-monitor/${id}/family`)
                   },
                 },
               ]}

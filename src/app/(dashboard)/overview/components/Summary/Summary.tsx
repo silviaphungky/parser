@@ -1,6 +1,6 @@
 'use client'
 
-import { baseUrl } from '@/app/(dashboard)/penyelenggara-negara/[id]/components/UploadBankStatement/UploadBankStatement'
+import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useQuery } from '@tanstack/react-query'

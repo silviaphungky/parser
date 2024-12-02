@@ -131,9 +131,7 @@ const WajibLaporCreate = ({
 
   return (
     <div>
-      <h2 className="font-semibold mb-4 text-lg">
-        Tambah Penyelenggara Negara
-      </h2>
+      <h2 className="font-semibold mb-4 text-lg">Tambah Daftar Monitor</h2>
       <form onSubmit={handleSubmit(onSubmit)} className="max-w-lg ">
         <div className="w-full">
           <Controller

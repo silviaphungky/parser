@@ -391,7 +391,7 @@ const PNTable = ({
                   style={{ zIndex: 1000 }}
                 >
                   <Link
-                    href={`/penyelenggara-negara/${info.row.original.id}/summary`}
+                    href={`/daftar-monitor/${info.row.original.id}/summary`}
                   >
                     <button className="w-full p-2 flex gap-2 text-left hover:bg-gray-100 items-center">
                       <IconExpand size={16} color={colorToken.grayVulkanik} />
@@ -815,7 +815,7 @@ const PNTable = ({
                   Tidak ada data yang tersedia
                 </p>
                 <p className="text-sm">
-                  Tambahkan penyelenggara negara yang akan dimonitor
+                  Tambahkan daftar monitor yang akan dipantau
                 </p>
               </div>
             )}

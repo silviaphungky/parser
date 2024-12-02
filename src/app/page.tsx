@@ -9,6 +9,6 @@ export default function Home() {
     clearCookies()
     redirect('/login')
   } else {
-    redirect('/penyelenggara-negara')
+    redirect('/daftar-monitor')
   }
 }

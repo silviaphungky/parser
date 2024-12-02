@@ -14,7 +14,7 @@ export function middleware(request: NextRequest): NextResponse {
 
 export const config = {
   matcher: [
-    '/penyelenggara-negara/:path*',
+    '/daftar-monitor/:path*',
     '/overview',
     '/pemberitahuan',
     '/user-management',

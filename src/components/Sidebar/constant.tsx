@@ -6,8 +6,8 @@ import IconSetting from '@/icons/IconSetting'
 export const SIDEBAR_MENU = [
   {
     key: 'pn',
-    name: 'Penyelenggara Negara',
-    link: '/penyelenggara-negara',
+    name: 'Daftar Monitor',
+    link: '/daftar-monitor',
     icon: (isSelected: boolean) => (
       <IconUsers color={isSelected ? '#EA454C' : undefined} />
     ),

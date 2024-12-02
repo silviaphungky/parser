@@ -64,7 +64,7 @@ const Login = ({
       const role = user.role_name
       await handleSetSession(token, email, role)
 
-      router.push('/penyelenggara-negara')
+      router.push('/daftar-monitor')
     },
     onError: async (error: any) => {
       toast.error(error?.response?.data?.message)

@@ -124,7 +124,7 @@ const FamilyTable = ({ token }: { token: string }) => {
         <div className="flex gap-4 items-center">
           {info.row.original.is_monitored && (
             <Link
-              href={`/penyelenggara-negara/${info.row.original.account_reporter_id}/summary`}
+              href={`/daftar-monitor/${info.row.original.account_reporter_id}/summary`}
             >
               <Button variant="white-outline">Lihat Detail</Button>
             </Link>

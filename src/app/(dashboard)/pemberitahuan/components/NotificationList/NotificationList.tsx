@@ -1,7 +1,7 @@
 // app/notifications/page.tsx
 'use client'
 
-import { baseUrl } from '@/app/(dashboard)/penyelenggara-negara/[id]/components/UploadBankStatement/UploadBankStatement'
+import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import { Card, Pagination, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
