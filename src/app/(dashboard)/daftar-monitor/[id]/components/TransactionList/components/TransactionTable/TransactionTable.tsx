@@ -13,6 +13,7 @@ import {
   IconTriangleDown,
   IconKebab,
   IconMandiri,
+  IconChecklist,
 } from '@/icons'
 import {
   useReactTable,
@@ -32,11 +33,13 @@ import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
-import { useParams } from 'next/navigation'
+
 import toast from 'react-hot-toast'
 import Button from '@/components/Button'
 import { ITransactionItem } from '../../TransactionList'
 import { thousandSeparator } from '@/utils/thousanSeparator'
+import 'react-tooltip/dist/react-tooltip.css'
+import { Tooltip } from 'react-tooltip'
 
 const columnHelper = createColumnHelper<ITransactionItem & { actions: any }>()
 
@@ -52,7 +55,7 @@ const NoteCell = ({ text }: { text: string }) => {
   const toggleExpand = () => setIsExpanded(!isExpanded)
 
   return (
-    <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+    <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
       <div className={`overflow-hidden ${isExpanded ? '' : 'max-h-8'}`}>
         {isExpanded
           ? text
@@ -156,7 +159,7 @@ const TransactionTable = ({
           <div>
             <div className="flex gap-2 mt-2 items-center">
               {iconBankMap[row.owner_bank as 'BNI' | 'BCA' | 'BRI' | 'MANDIRI']}
-              <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+              <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
                 <div className="text-xs">{`${
                   row.owner_bank || 'unnamed'
                 }`}</div>
@@ -182,15 +185,15 @@ const TransactionTable = ({
           </div>
         ) as any,
         cell: (info) => (
-          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
-            {info.getValue() || 'unknown'}
+          <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap capitalize">
+            {info.getValue().toLowerCase() || 'unknown'}
           </div>
         ),
         enableSorting: false,
       }),
       columnHelper.accessor(
         (row) => (
-          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap">
+          <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
             <div className="text-xs">
               {row.entity_bank_adjusted
                 ? row.entity_bank_adjusted || 'unknown'
@@ -250,7 +253,7 @@ const TransactionTable = ({
 
       columnHelper.accessor(
         (row) => (
-          <div className="text-xs">
+          <div className="text-xs max-w-[5rem] break-words whitespace-pre-wrap">
             {row.category_name_adjusted
               ? row.category_name_adjusted || 'unknown'
               : row.category_name || 'unknown'}
@@ -259,17 +262,43 @@ const TransactionTable = ({
         {
           id: 'category_name',
           header: 'Kategori',
-          cell: (info) => info.getValue(),
+          cell: (info) => (
+            <div className="text-xs max-w-[5rem] break-words whitespace-pre-wrap">
+              {info.getValue()}
+            </div>
+          ),
           enableSorting: false,
         }
       ),
       columnHelper.accessor('description', {
         header: 'Remark',
         cell: (info) => (
-          <div className="text-xs max-w-[10rem] break-words whitespace-pre-wrap capitalize">
+          <div className="text-xs max-w-[5rem] break-words whitespace-pre-wrap capitalize">
             {info.getValue().toLowerCase() || '-'}
           </div>
         ),
+        enableSorting: false,
+      }),
+      columnHelper.accessor('is_entity_verified', {
+        header: 'Verifikasi Rekening',
+        cell: (info) =>
+          info.getValue() ? (
+            <>
+              <Tooltip
+                id={info.row.original.transaction_id}
+                place="bottom"
+                content="Nama: No. Account: Bank:"
+              />
+              <div
+                className="flex justify-center cursor-pointer"
+                data-tooltip-id={info.row.original.transaction_id}
+              >
+                <IconChecklist color={colorToken.greenBullish} />
+              </div>
+            </>
+          ) : (
+            '-'
+          ),
         enableSorting: false,
       }),
       columnHelper.accessor('amount', {

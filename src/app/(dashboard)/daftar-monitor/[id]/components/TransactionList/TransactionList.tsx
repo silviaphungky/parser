@@ -71,6 +71,7 @@ export interface ITransactionItem {
   entity_name_adjusted: string
   is_starred: boolean
   method: string
+  is_entity_verified: boolean
   note: string
   statement_id: string
   transaction_id: string

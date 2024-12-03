@@ -32,6 +32,7 @@ import IconDownload from './IconDownload'
 import IconUserStar from './IconUserStar'
 import IconVisible from './IconVisible'
 import IconUnvisible from './IconUnvisible'
+import IconChecklist from './IconChecklist'
 
 export {
   IconFileCheck,
@@ -68,4 +69,5 @@ export {
   IconUserStar,
   IconVisible,
   IconUnvisible,
+  IconChecklist,
 }
