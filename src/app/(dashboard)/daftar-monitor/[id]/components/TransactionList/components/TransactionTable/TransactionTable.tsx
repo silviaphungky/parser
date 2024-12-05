@@ -55,7 +55,7 @@ const NoteCell = ({ text }: { text: string }) => {
   const toggleExpand = () => setIsExpanded(!isExpanded)
 
   return (
-    <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
+    <div className="text-xs max-w-[7rem] break-words whitespace-pre-wrap">
       <div className={`overflow-hidden ${isExpanded ? '' : 'max-h-8'}`}>
         {isExpanded
           ? text
@@ -147,7 +147,7 @@ const TransactionTable = ({
           id: 'date',
           header: 'Waktu',
           cell: (info) => (
-            <div>
+            <div className="text-xs">
               {dayjs(new Date(info.row.original.date)).format('DD/MM/YYYY')}
             </div>
           ),
@@ -159,7 +159,7 @@ const TransactionTable = ({
           <div>
             <div className="flex gap-2 mt-2 items-center">
               {iconBankMap[row.owner_bank as 'BNI' | 'BCA' | 'BRI' | 'MANDIRI']}
-              <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
+              <div className="text-xs max-w-[7rem] break-words whitespace-pre-wrap">
                 <div className="text-xs">{`${
                   row.owner_bank || 'unnamed'
                 }`}</div>
@@ -185,7 +185,7 @@ const TransactionTable = ({
           </div>
         ) as any,
         cell: (info) => (
-          <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap capitalize">
+          <div className="text-xs max-w-[7rem] break-words whitespace-pre-wrap capitalize">
             {info.getValue().toLowerCase() || 'unknown'}
           </div>
         ),
@@ -193,7 +193,7 @@ const TransactionTable = ({
       }),
       columnHelper.accessor(
         (row) => (
-          <div className="text-xs max-w-[8rem] break-words whitespace-pre-wrap">
+          <div className="text-xs max-w-[7rem] break-words whitespace-pre-wrap">
             <div className="text-xs">
               {row.entity_bank_adjusted
                 ? row.entity_bank_adjusted || 'unknown'
@@ -287,17 +287,19 @@ const TransactionTable = ({
               <Tooltip
                 id={info.row.original.transaction_id}
                 place="bottom"
-                content="Nama: No. Account: Bank:"
+                content="Ilham - 42173531 BCA"
               />
               <div
                 className="flex justify-center cursor-pointer"
                 data-tooltip-id={info.row.original.transaction_id}
               >
-                <IconChecklist color={colorToken.greenBullish} />
+                <IconChecklist color={colorToken.greenBullish} size={20} />
               </div>
             </>
           ) : (
-            '-'
+            <div className="text-center text-xs max-w-[5rem] break-words whitespace-pre-wrap text-gray-400">
+              -
+            </div>
           ),
         enableSorting: false,
       }),
@@ -473,13 +475,35 @@ const TransactionTable = ({
             <h2 className="font-semibold text-lg">
               Konfirmasi Pengecekan Rekening
             </h2>
-            <div className="mt-2">
-              Apakah pengecekan informasi rekening transaksi akan dilakukan?
-            </div>
-            <div className="text-xs mt-3 text-gray-500">
-              *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan mungkin
-              dikenakan biaya tambahan.
-            </div>
+            {selected.is_entity_verified && (
+              <>
+                <div className="mt-2 text-sm">
+                  Transaksi ini telah dilakukan pengecekan sebelumnya dengan
+                  informasi:
+                </div>
+                <div className="text-sm mt-2">Nama: Ilham</div>
+                <div className="text-sm">Nomor Rekening: 13531853</div>
+                <div className="text-sm">Institusi: BCA</div>
+                <div className="text-sm mt-2">
+                  Apakah Anda ingin tetap melakukan pengecekan ulang?
+                </div>
+                <div className="text-xs mt-3 text-gray-500">
+                  *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan
+                  mungkin dikenakan biaya tambahan.
+                </div>
+              </>
+            )}
+            {!selected.is_entity_verified && (
+              <>
+                <div className="text-sm mt-2">
+                  Apakah Anda ingin tetap melakukan pengecekan ulang?
+                </div>
+                <div className="text-xs mt-3 text-gray-500">
+                  *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan
+                  mungkin dikenakan biaya tambahan.
+                </div>
+              </>
+            )}
 
             <div className="flex justify-end space-x-4 mt-4">
               <button
