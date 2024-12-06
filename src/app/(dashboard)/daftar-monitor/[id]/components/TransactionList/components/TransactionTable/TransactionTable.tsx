@@ -349,6 +349,47 @@ const TransactionTable = ({
               >
                 <button
                   onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenVerifModal(true)
+                    setActionMenu(null)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Cek Rekening
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpen(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Catatan
+                </button>
+
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenDestBankModal(true)
+                    setActionMenu(null)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Info Lawan Transaksi
+                </button>
+                <button
+                  onClick={() => {
+                    setSelected(info.row.original)
+                    setIsOpenCategoryModal(true)
+                  }}
+                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
+                >
+                  Ubah Kategori
+                </button>
+
+                <button
+                  onClick={() => {
                     mutate(
                       {
                         is_starred: !info.row.original.is_starred,
@@ -375,45 +416,6 @@ const TransactionTable = ({
                   {info.row.original.is_starred
                     ? 'Hapus Tanda'
                     : 'Tandai Transaksi'}
-                </button>
-                <button
-                  onClick={() => {
-                    setSelected(info.row.original)
-                    setIsOpen(true)
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                >
-                  Ubah Catatan
-                </button>
-                <button
-                  onClick={() => {
-                    setSelected(info.row.original)
-                    setIsOpenCategoryModal(true)
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                >
-                  Ubah Kategori
-                </button>
-
-                <button
-                  onClick={() => {
-                    setSelected(info.row.original)
-                    setIsOpenDestBankModal(true)
-                    setActionMenu(null)
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                >
-                  Ubah Info Lawan Transaksi
-                </button>
-                <button
-                  onClick={() => {
-                    setSelected(info.row.original)
-                    setIsOpenVerifModal(true)
-                    setActionMenu(null)
-                  }}
-                  className="block w-full px-4 py-2 text-left hover:bg-gray-100"
-                >
-                  Verifikasi Info Bank Transaksi
                 </button>
               </div>
             )}

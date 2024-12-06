@@ -22,7 +22,7 @@ const TransactionListPage = async () => {
   }) => {
     'use server'
     const response = await fetch(
-      `https://6170d78b-4b3c-4f02-a452-311836aaf499-00-274dya67izywv.sisko.replit.dev/${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
+      `https://backend-itrtechkpk.replit.app/${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
       {
         method: 'patch',
         headers: {
