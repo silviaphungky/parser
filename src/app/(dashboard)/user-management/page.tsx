@@ -3,6 +3,8 @@ import { cookies } from 'next/headers'
 import { UserList } from './components'
 import { clearCookies } from '../layout'
 
+const baseUrl = process.env.BASE_URL
+
 const UserManagementPage = () => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
   const role = cookies().get('ROLE')?.value || ''
@@ -18,7 +20,7 @@ const UserManagementPage = () => {
 
   return (
     <>
-      <UserList token={token} />
+      <UserList token={token} baseUrl={baseUrl} />
     </>
   )
 }

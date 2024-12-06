@@ -2,6 +2,8 @@ import { cookies } from 'next/headers'
 import Login from './Login'
 import { cookiesOptions } from './constants'
 
+const baseUrl = process.env.BASE_URL
+
 async function handleSetSession(token: string, email: string, role: string) {
   'use server'
   const cookiesStore = await cookies()
@@ -11,7 +13,7 @@ async function handleSetSession(token: string, email: string, role: string) {
 }
 
 const LoginPage = () => {
-  return <Login handleSetSession={handleSetSession} />
+  return <Login handleSetSession={handleSetSession} baseUrl={baseUrl} />
 }
 
 export default LoginPage

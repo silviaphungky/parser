@@ -14,6 +14,7 @@ import {
   IconKebab,
   IconMandiri,
   IconChecklist,
+  IconQMark,
 } from '@/icons'
 import {
   useReactTable,
@@ -297,8 +298,11 @@ const TransactionTable = ({
               </div>
             </>
           ) : (
-            <div className="text-center text-xs max-w-[5rem] break-words whitespace-pre-wrap text-gray-400">
-              -
+            <div
+              className="flex justify-center cursor-pointer"
+              data-tooltip-id={info.row.original.transaction_id}
+            >
+              <IconQMark color={colorToken.orangeJeruk} size={20} />
             </div>
           ),
         enableSorting: false,

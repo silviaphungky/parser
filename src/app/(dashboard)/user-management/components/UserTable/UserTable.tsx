@@ -19,10 +19,10 @@ import { API_URL } from '@/constants/apiUrl'
 import { Pagination, Shimmer } from '@/components'
 import CreateUserModal from '../CreateUserModal'
 import Button from '@/components/Button'
-import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import toast from 'react-hot-toast'
 
 interface UserTableProps {
+  baseUrl: string
   token: string
   currentUserRole: 'SUPER_ADMIN' | 'ADMIN'
   onCreateUser: () => void
@@ -68,6 +68,7 @@ const RoleBadge: React.FC<RoleBadgeProps> = ({ role }) => {
 }
 
 const UserTable: React.FC<UserTableProps> = ({
+  baseUrl,
   token,
   currentUserRole,
   onCreateUser,

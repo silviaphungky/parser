@@ -1,4 +1,3 @@
-import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import { FormItem, Input, Modal } from '@/components'
 import Button from '@/components/Button'
 import { API_URL } from '@/constants/apiUrl'

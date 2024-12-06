@@ -1,11 +1,10 @@
 'use client'
-import { Card, Pagination, Title } from '@/components'
+import { Card, Title } from '@/components'
 import UserTable from '../UserTable'
 import { useState } from 'react'
 import { IconPlus } from '@/icons'
-import CreateUserModal from '../CreateUserModal'
 
-const UserList = ({ token }: { token: string }) => {
+const UserList = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
   const [isOpenModal, setIsOpenModal] = useState(false)
   const currentUserRole = 'superadmin'
 
@@ -25,6 +24,7 @@ const UserList = ({ token }: { token: string }) => {
       </div>
       <Card className="w-full mt-6">
         <UserTable
+          baseUrl={baseUrl}
           isOpenModal={isOpenModal}
           setIsOpenModal={setIsOpenModal}
           token={token}

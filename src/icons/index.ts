@@ -33,6 +33,7 @@ import IconUserStar from './IconUserStar'
 import IconVisible from './IconVisible'
 import IconUnvisible from './IconUnvisible'
 import IconChecklist from './IconChecklist'
+import IconQMark from './IconQMark'
 
 export {
   IconFileCheck,
@@ -70,4 +71,5 @@ export {
   IconVisible,
   IconUnvisible,
   IconChecklist,
+  IconQMark,
 }
