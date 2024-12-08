@@ -192,7 +192,13 @@ const TransactionVerifyAccountModal = ({
                       setIsOpenVerifModal(false)
                       setSelected({} as ITransactionItem)
                       reset()
-                      setResult({})
+                      setResult(
+                        {} as {
+                          name: string
+                          account_no: string
+                          bank: string
+                        }
+                      )
                     }}
                     className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                   >
