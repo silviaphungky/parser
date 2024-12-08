@@ -93,7 +93,7 @@ const FamilyTable = ({
     queryKey: ['familyList', id],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.FAMILY_LIST}/${id}/list`,
+        `${baseUrl}/${API_URL.FAMILY_LIST}/${id}/list`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

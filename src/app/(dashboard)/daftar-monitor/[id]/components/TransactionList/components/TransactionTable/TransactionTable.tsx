@@ -23,7 +23,7 @@ import {
   createColumnHelper,
   ColumnSort,
 } from '@tanstack/react-table'
-import { Modal, Shimmer } from '@/components'
+import { Shimmer } from '@/components'
 import TransactionCategoryModal from '../TransactionCategoryModal'
 import { colorToken } from '@/constants/color-token'
 import dayjs from 'dayjs'
@@ -32,11 +32,9 @@ import useOutsideClick from '@/utils/useClickOutside'
 import TransactionNoteModal from '../TransactionNoteModal/TransactionNoteModal'
 import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 
 import toast from 'react-hot-toast'
-import Button from '@/components/Button'
 import { ITransactionItem } from '../../TransactionList'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import 'react-tooltip/dist/react-tooltip.css'
@@ -52,7 +50,7 @@ const iconBankMap = {
   MANDIRI: <IconMandiri size={40} />,
 }
 
-const NoteCell = ({ text }: { text: string }) => {
+const NoteCell = ({ text, baseUrl }: { text: string; baseUrl: string }) => {
   const [isExpanded, setIsExpanded] = useState(false)
   const toggleExpand = () => setIsExpanded(!isExpanded)
 
@@ -78,6 +76,7 @@ const NoteCell = ({ text }: { text: string }) => {
 }
 
 const TransactionTable = ({
+  baseUrl,
   token,
   transactionList,
   refetch,
@@ -86,6 +85,7 @@ const TransactionTable = ({
   setSortDir,
   verifyBankAccount,
 }: {
+  baseUrl: string
   setSortBy: Dispatch<SetStateAction<string | undefined>>
   setSortDir: Dispatch<SetStateAction<'asc' | 'desc' | undefined>>
   token: string
@@ -326,12 +326,15 @@ const TransactionTable = ({
         ),
         enableSorting: false,
       }),
-      columnHelper.accessor((row) => <NoteCell text={row.note || ''} />, {
-        id: 'note',
-        header: 'Catatan',
-        cell: (info) => info.getValue(),
-        enableSorting: false,
-      }),
+      columnHelper.accessor(
+        (row) => <NoteCell text={row.note || ''} baseUrl={baseUrl} />,
+        {
+          id: 'note',
+          header: 'Catatan',
+          cell: (info) => info.getValue(),
+          enableSorting: false,
+        }
+      ),
       columnHelper.accessor('actions', {
         header: '',
         cell: (info) => (
@@ -447,6 +450,7 @@ const TransactionTable = ({
   return (
     <>
       <TransactionBankDestModal
+        baseUrl={baseUrl}
         transactionId={selected.transaction_id}
         token={token}
         isOpen={isOpenDestBankModal}
@@ -459,6 +463,7 @@ const TransactionTable = ({
         }}
       />
       <TransactionCategoryModal
+        baseUrl={baseUrl}
         category={selected.category_name}
         refetch={refetch}
         transactionId={selected.transaction_id}
@@ -483,6 +488,7 @@ const TransactionTable = ({
       />
 
       <TransactionNoteModal
+        baseUrl={baseUrl}
         transactionId={selected.transaction_id}
         token={token}
         setIsOpen={setIsOpen}

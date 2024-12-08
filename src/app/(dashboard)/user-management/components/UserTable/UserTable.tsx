@@ -106,15 +106,18 @@ const UserTable: React.FC<UserTableProps> = ({
   }>({
     queryKey: ['notifList', currentPage, itemsPerPage],
     queryFn: async () => {
-      const response = await axiosInstance.get(`${API_URL.USER_LIST}`, {
-        params: {
-          page: currentPage,
-          limit: itemsPerPage,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.USER_LIST}`,
+        {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       const data = response.data
       return data.data
     },

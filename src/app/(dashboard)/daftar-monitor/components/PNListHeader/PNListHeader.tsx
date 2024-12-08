@@ -6,7 +6,6 @@ import { useState } from 'react'
 import { IconPlus } from '@/icons'
 import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
-import { baseUrl } from '../../[id]/components/UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 
@@ -14,9 +13,11 @@ const notify = () =>
   toast.success('PN berhasil ditambahkan sebagai daftar monitor')
 
 const PNListHeader = ({
+  baseUrl,
   token,
   refetch,
 }: {
+  baseUrl: string
   token: string
   refetch: () => void
 }) => {

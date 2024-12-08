@@ -24,7 +24,6 @@ import { IStatement } from '../../TransactionStatementList'
 import dayjs from 'dayjs'
 import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 import Button from '@/components/Button'
@@ -56,6 +55,7 @@ const iconBankMap = {
 const columnHelper = createColumnHelper<IStatement & { action: string }>()
 
 const TransactionStatementsTable = ({
+  baseUrl,
   token,
   statementList,
   isLoading,
@@ -63,6 +63,7 @@ const TransactionStatementsTable = ({
   setSortBy,
   setSortDir,
 }: {
+  baseUrl: string
   token: string
   statementList: Array<IStatement>
   isLoading: boolean

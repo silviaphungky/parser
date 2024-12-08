@@ -76,7 +76,7 @@ const PNList = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
 
   return (
     <div>
-      <PNListHeader token={token} refetch={refetch} />
+      <PNListHeader token={token} refetch={refetch} baseUrl={baseUrl} />
       <Card className="w-full mt-6">
         <PNTable
           baseUrl={baseUrl}

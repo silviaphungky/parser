@@ -48,7 +48,7 @@ const AssetChart = ({
   selectedBank,
   baseUrl,
 }: {
-  baseUrl
+  baseUrl: string
   selectedCurrency: {
     id: string | number
     label: string

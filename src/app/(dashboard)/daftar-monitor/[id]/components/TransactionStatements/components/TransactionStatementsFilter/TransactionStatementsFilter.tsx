@@ -20,6 +20,7 @@ interface FilterValues {
 
 interface FilterModalProps {
   token: string
+  baseUrl: string
   isOpen: boolean
   onClose: () => void
   onApplyFilter: (filterValues: FilterValues) => void
@@ -42,6 +43,7 @@ const statusOptions = [
 
 const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
   token,
+  baseUrl,
   isOpen,
   onClose,
   onApplyFilter,
@@ -114,7 +116,7 @@ const TransactionStatementsFilter: React.FC<FilterModalProps> = ({
     queryKey: ['accountBankList', currency.id],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.STATEMENT_LIST}/${id}/family/list`,
+        `${baseUrl}/${API_URL.STATEMENT_LIST}/${id}/family/list`,
         {
           params: {
             currency: currency.id ? currency.id : undefined,

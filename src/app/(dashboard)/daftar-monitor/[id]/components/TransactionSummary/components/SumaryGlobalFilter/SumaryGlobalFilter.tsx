@@ -4,7 +4,6 @@ import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
 import { useParams } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import ReactSelect, { MultiValue } from 'react-select'
 import { currencyOptions } from '../../TransactionSummary'
 
@@ -19,12 +18,14 @@ const SumaryGlobalFilter = ({
   token,
   selectedCurrency,
   selectedBank,
+  baseUrl,
   selectedDate,
   handleChangeBank,
   handleChangeCurrency,
   handleChangeDate,
 }: {
   token: string
+  baseUrl: string
   selectedDate: {
     from: Date | undefined
     to: Date | undefined
@@ -63,7 +64,7 @@ const SumaryGlobalFilter = ({
     queryKey: ['accountBankList', selectedCurrency.id],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.STATEMENT_LIST}/${id}/family/list`,
+        `${baseUrl}/${API_URL.STATEMENT_LIST}/${id}/family/list`,
         {
           params: {
             currency: selectedCurrency.id,

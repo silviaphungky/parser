@@ -37,11 +37,14 @@ const WLInfo = ({
   }>({
     queryKey: ['wlInfo', id],
     queryFn: async () => {
-      const response = await axiosInstance.get(`${API_URL.PN}/${id}/detail`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.PN}/${id}/detail`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       const data = response.data
       return data.data
     },

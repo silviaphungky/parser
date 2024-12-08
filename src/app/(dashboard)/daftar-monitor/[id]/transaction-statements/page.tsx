@@ -3,6 +3,8 @@ import TransactionStatementList from '../components/TransactionStatements/Transa
 import { redirect } from 'next/navigation'
 import { clearCookies } from '@/app/(dashboard)/layout'
 
+const baseUrl = process.env.BASE_URL || ''
+
 const TransactionStatementsPage = async () => {
   const cookiesStore = await cookies()
   const token = cookiesStore.get('ACCESS_TOKEN')?.value || ''
@@ -12,7 +14,7 @@ const TransactionStatementsPage = async () => {
     redirect('/login')
   }
 
-  return <TransactionStatementList token={token} />
+  return <TransactionStatementList token={token} baseUrl={baseUrl} />
 }
 
 export default TransactionStatementsPage

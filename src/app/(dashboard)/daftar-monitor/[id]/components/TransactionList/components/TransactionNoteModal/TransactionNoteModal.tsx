@@ -3,11 +3,11 @@ import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { useParams } from 'next/navigation'
 import toast from 'react-hot-toast'
 
 const TransactionNoteModal = ({
+  baseUrl,
   transactionId,
   token,
   initialNote,
@@ -15,6 +15,7 @@ const TransactionNoteModal = ({
   onClose,
   setIsOpen,
 }: {
+  baseUrl: string
   transactionId: string
   token: string
   initialNote?: string

@@ -4,7 +4,6 @@ import InputDropdown from '@/components/InputDropdown'
 import { Dispatch, SetStateAction, useState } from 'react'
 import axiosInstance from '@/utils/axiosInstance'
 import { useMutation } from '@tanstack/react-query'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 import { Controller, useForm } from 'react-hook-form'
@@ -1103,6 +1102,7 @@ const validationSchema = yup.object().shape({
 })
 
 const TransactionBankDestModal = ({
+  baseUrl,
   transactionId,
   token,
   isOpen,
@@ -1110,6 +1110,7 @@ const TransactionBankDestModal = ({
   selected,
   setIsOpenDestBankModal,
 }: {
+  baseUrl: string
   transactionId: string
   token: string
   isOpen: boolean

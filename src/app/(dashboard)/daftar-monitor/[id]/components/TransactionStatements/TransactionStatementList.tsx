@@ -70,7 +70,13 @@ export interface IStatement {
   is_archived: boolean
 }
 
-const TransactionStatementList = ({ token }: { token: string }) => {
+const TransactionStatementList = ({
+  token,
+  baseUrl,
+}: {
+  token: string
+  baseUrl: string
+}) => {
   const [currency, setCurrency] = useState('')
   const [selectedDate, setSelectedDate] = useState<{
     from: Date | undefined
@@ -129,7 +135,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.STATEMENT_LIST}/${id}/list`,
+        `${baseUrl}/${API_URL.STATEMENT_LIST}/${id}/list`,
         {
           params: {
             currency: currency ? currency : undefined,
@@ -179,6 +185,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
         <div className="flex items-center">
           <TransactionStatementsFilter
             token={token}
+            baseUrl={baseUrl}
             isOpen={isOpen}
             currencyOptions={currencyOptions}
             onClose={() => setIsOpen(false)}
@@ -238,6 +245,7 @@ const TransactionStatementList = ({ token }: { token: string }) => {
         </div>
         <TransactionStatementsTable
           token={token}
+          baseUrl={baseUrl}
           refetch={refetch}
           statementList={data?.statement_list || []}
           isLoading={isLoading || isFetching}

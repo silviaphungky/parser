@@ -4,7 +4,6 @@ import InputDropdown from '@/components/InputDropdown'
 import axiosInstance from '@/utils/axiosInstance'
 import { useMutation } from '@tanstack/react-query'
 import { Dispatch, useState } from 'react'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 
@@ -36,6 +35,7 @@ export const mockCategoryOptions = [
 ]
 
 const TransactionCategoryModal = ({
+  baseUrl,
   refetch,
   transactionId,
   category,
@@ -44,6 +44,7 @@ const TransactionCategoryModal = ({
   onClose,
   setIsOpenCategoryModal,
 }: {
+  baseUrl: string
   refetch: () => void
   transactionId: string
   category: string

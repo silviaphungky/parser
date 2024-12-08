@@ -36,7 +36,13 @@ export const currencyOptions = [
   },
 ]
 
-const TransactionSummary = ({ token, baseUrl }: { token: string; baseUrl }) => {
+const TransactionSummary = ({
+  token,
+  baseUrl,
+}: {
+  token: string
+  baseUrl: string
+}) => {
   const [selectedBank, setSelectedBank] = useState<
     MultiValue<{ value: string; label: string }>
   >([])
@@ -83,6 +89,7 @@ const TransactionSummary = ({ token, baseUrl }: { token: string; baseUrl }) => {
       <div className="mb-12">
         <SumaryGlobalFilter
           token={token}
+          baseUrl={baseUrl}
           selectedDate={selectedDate}
           selectedBank={selectedBank}
           selectedCurrency={selectedCurrency}

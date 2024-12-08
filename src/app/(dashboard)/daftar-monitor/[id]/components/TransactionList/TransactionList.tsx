@@ -292,11 +292,14 @@ const TransactionList = ({
   }>({
     queryKey: ['wlInfo', id],
     queryFn: async () => {
-      const response = await axiosInstance.get(`${API_URL.PN}/${id}/detail`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.PN}/${id}/detail`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       const data = response.data
       return data.data
     },
@@ -351,6 +354,7 @@ const TransactionList = ({
         {isOpen && (
           <TransactionFilter
             token={token}
+            baseUrl={baseUrl}
             isOpen={isOpen}
             onClose={() => {
               setIsOpen(false)
@@ -434,6 +438,7 @@ const TransactionList = ({
         </div>
         <TransactionTable
           token={token}
+          baseUrl={baseUrl}
           refetch={refetch}
           transactionList={data?.transaction_list || []}
           isLoading={isLoading || isFetching}
