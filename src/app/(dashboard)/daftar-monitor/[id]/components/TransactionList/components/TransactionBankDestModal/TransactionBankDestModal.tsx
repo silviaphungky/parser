@@ -1090,10 +1090,6 @@ export const bankOptions = [
     label: 'GOPAY',
     id: 'EWALLET_GOPAY',
   },
-  {
-    label: 'Lainnya',
-    id: 'other',
-  },
 ]
 
 const validationSchema = yup.object().shape({
@@ -1236,16 +1232,6 @@ const TransactionBankDestModal = ({
             }}
           />
         </FormItem>
-
-        {selectedBank.id === 'other' && (
-          <FormItem label="Bank (opsional)">
-            <Input
-              className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-              onChange={() => {}}
-              placeholder="Masukkan bank..."
-            />
-          </FormItem>
-        )}
 
         <div className="text-xs mt-2 text-gray-600">
           {`*Info lawan transaksi awal: ${

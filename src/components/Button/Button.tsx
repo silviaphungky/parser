@@ -28,7 +28,7 @@ const TYPE_MAPPING: {
   'white-outline':
     'rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 disabled:bg-gray-100',
   primary:
-    'bg-primary text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70',
+    'bg-primary text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70 disabled:bg-red-400 disabled:hover:opacity-100',
   dark: 'bg-black text-white font-semibold text-sm px-4 py-2 rounded-md hover:opacity-70 disabled:bg-gray-700 disabled:hover:opacity-100',
   text: 'text-gray-600 px-4 py-2 text-sm',
   'primary-outline':

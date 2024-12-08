@@ -193,34 +193,37 @@ const TransactionList = ({
       selectedBank,
     ],
     queryFn: async () => {
-      const response = await axiosInstance.get(`${API_URL.TRANSACTION_LIST}`, {
-        params: {
-          page: currentPage,
-          limit: itemsPerPage,
-          account_reporter_id: id,
-          [searchBy]:
-            debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
-          is_starred: isHighlight === '' ? undefined : isHighlight,
-          currency: currency ? currency : undefined,
-          category: category ? category : undefined,
-          direction: transactionType,
-          method: transactionMethod ? [transactionMethod] : undefined,
-          sort_by: sortBy,
-          sort: sortDir,
-          minimum_amount: minAmount > 0 ? minAmount : undefined,
-          maximum_amount: maxAmount > 0 ? maxAmount : undefined,
-          start_period: selectedDate.from
-            ? dayjs(new Date(selectedDate.from)).format('yyyy-mm-dd')
-            : undefined,
-          end_period: selectedDate.to
-            ? dayjs(new Date(selectedDate.to)).format('yyyy-mm-dd')
-            : undefined,
-          account_number: selectedBank.map((item) => item.value),
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.TRANSACTION_LIST}`,
+        {
+          params: {
+            page: currentPage,
+            limit: itemsPerPage,
+            account_reporter_id: id,
+            [searchBy]:
+              debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
+            is_starred: isHighlight === '' ? undefined : isHighlight,
+            currency: currency ? currency : undefined,
+            category: category ? category : undefined,
+            direction: transactionType,
+            method: transactionMethod ? [transactionMethod] : undefined,
+            sort_by: sortBy,
+            sort: sortDir,
+            minimum_amount: minAmount > 0 ? minAmount : undefined,
+            maximum_amount: maxAmount > 0 ? maxAmount : undefined,
+            start_period: selectedDate.from
+              ? dayjs(new Date(selectedDate.from)).format('yyyy-mm-dd')
+              : undefined,
+            end_period: selectedDate.to
+              ? dayjs(new Date(selectedDate.to)).format('yyyy-mm-dd')
+              : undefined,
+            account_number: selectedBank.map((item) => item.value),
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       const data = response.data
       return data.data
     },

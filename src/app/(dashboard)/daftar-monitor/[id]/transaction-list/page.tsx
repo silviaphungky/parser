@@ -22,7 +22,7 @@ const TransactionListPage = async () => {
   }) => {
     'use server'
     const response = await fetch(
-      `${baseUrl}//${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
+      `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
       {
         method: 'post',
         headers: {

@@ -3,7 +3,7 @@ import { ITransactionItem } from '../../TransactionList'
 import Button from '@/components/Button'
 import toast from 'react-hot-toast'
 import { Dispatch, SetStateAction, useState } from 'react'
-import { Controller, useForm } from 'react-hook-form'
+import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import InputDropdown from '@/components/InputDropdown'
@@ -13,7 +13,7 @@ import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
 
 const validationSchema = yup.object().shape({
-  accountNo: yup.string(),
+  accountNo: yup.string().required('Wajib diisi'),
 })
 
 const TransactionVerifyAccountModal = ({
@@ -65,6 +65,7 @@ const TransactionVerifyAccountModal = ({
       toast.success('Berhasil mengecek info rekening transaksi')
       setResult(data)
       setStepVerify(2)
+      setSelectedBank({ id: '', label: '' })
     } else {
       setStepVerify(3)
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
@@ -97,6 +98,7 @@ const TransactionVerifyAccountModal = ({
       setSelected({} as ITransactionItem)
       setStepVerify(1)
       reset()
+      setSelectedBank({ id: '', label: '' })
     },
     onError: (error: any) => {
       toast.error(
@@ -105,8 +107,22 @@ const TransactionVerifyAccountModal = ({
     },
   })
 
+  const accountNo = useWatch({
+    control,
+    name: 'accountNo',
+  })
+
   return (
-    <Modal isOpen={isOpen} onClose={() => setIsOpenVerifModal(false)}>
+    <Modal
+      isOpen={isOpen}
+      onClose={() => {
+        setIsOpenVerifModal(false)
+        reset()
+        setStepVerify(1)
+        setSelectedBank({ id: '', label: '' })
+        setSelected({} as ITransactionItem)
+      }}
+    >
       <>
         <h2 className="font-semibold text-lg">
           Konfirmasi Pengecekan Rekening
@@ -144,16 +160,6 @@ const TransactionVerifyAccountModal = ({
                     />
                   </FormItem>
 
-                  {selectedBank.id === 'other' && (
-                    <FormItem label="Bank">
-                      <Input
-                        className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                        onChange={() => {}}
-                        placeholder="Masukkan bank..."
-                      />
-                    </FormItem>
-                  )}
-
                   <Controller
                     name="accountNo"
                     control={control}
@@ -169,19 +175,21 @@ const TransactionVerifyAccountModal = ({
                     )}
                   />
 
-                  <div className="text-xs mt-2 text-gray-600">
-                    {`*Info lawan transaksi awal: ${
-                      selected.entity_bank_verified || 'unknown'
-                    } - ${selected.entity_name_verified || 'unnamed'} - ${
-                      selected.entity_account_number_verified || 'N/A'
-                    }`}
-                  </div>
-
+                  {selected.is_entity_verified && (
+                    <div className="text-xs mt-2 text-gray-600">
+                      {`*Hasil pengecekan awal: ${
+                        selected.entity_bank || 'unknown'
+                      } - ${selected.entity_name || 'unnamed'} - ${
+                        selected.entity_account_number || 'N/A'
+                      }`}
+                    </div>
+                  )}
                   <div className="flex justify-end space-x-4 mt-8">
                     <button
                       onClick={() => {
                         setIsOpenVerifModal(false)
                         reset()
+                        setSelectedBank({ id: '', label: '' })
                         setSelected({} as ITransactionItem)
                         setStepVerify(1)
                       }}
@@ -192,6 +200,7 @@ const TransactionVerifyAccountModal = ({
                     <Button
                       variant="primary"
                       onClick={handleSubmit(handleUpdate)}
+                      disabled={!selectedBank.id || !accountNo}
                     >
                       Cek
                     </Button>
@@ -206,19 +215,21 @@ const TransactionVerifyAccountModal = ({
                 </div>
                 <div className="text-sm mt-2">{`Institusi: ${result?.bank}`}</div>
                 <div className="text-sm">{`Nomor Rekening: ${result?.account_number}`}</div>
-                <div className="text-sm">{`Nama: ${result?.name}`}</div>
+                <div className="text-sm mb-2">{`Nama: ${result?.name}`}</div>
 
                 <div className="text-sm">
                   Apakah Anda ingin memperbarui info lawan transaksi?
                 </div>
 
-                <div className="text-xs mt-2 text-gray-600">
-                  {`*Info lawan transaksi awal: ${
-                    selected.entity_bank || 'unknown'
-                  } - ${selected.entity_name || 'unnamed'} - ${
-                    selected.entity_account_number || 'N/A'
-                  }`}
-                </div>
+                {selected.is_entity_verified && (
+                  <div className="text-xs mt-2 text-gray-600">
+                    {`*Hasil pengecekan awal: ${
+                      selected.entity_bank || 'unknown'
+                    } - ${selected.entity_name || 'unnamed'} - ${
+                      selected.entity_account_number || 'N/A'
+                    }`}
+                  </div>
+                )}
 
                 <div className="flex justify-end space-x-4 mt-4">
                   <button
@@ -226,6 +237,10 @@ const TransactionVerifyAccountModal = ({
                       setIsOpenVerifModal(false)
                       setSelected({} as ITransactionItem)
                       reset()
+                      setSelectedBank({
+                        id: '',
+                        label: '',
+                      })
                       setResult(
                         {} as {
                           name: string
