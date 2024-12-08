@@ -218,7 +218,7 @@ const TransactionVerifyAccountModal = ({
                 <div className="text-sm mb-2">{`Nama: ${result?.name}`}</div>
 
                 <div className="text-sm">
-                  Apakah Anda ingin memperbarui info lawan transaksi?
+                  Apa Anda ingin mengubah rekening tercatat?
                 </div>
 
                 {selected.is_entity_verified && (
