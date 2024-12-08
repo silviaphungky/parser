@@ -189,14 +189,17 @@ const PNTable = ({
 
   const { mutate } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axiosInstance.patch(`${baseUrl}/${API_URL.ARCHIVE_ACCOUNT_REPORTER}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.ARCHIVE_ACCOUNT_REPORTER}`,
+        {
           id: payload.id,
         },
-      }),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
   })
 
   const { mutate: linkFamily, isPending } = useMutation({
