@@ -41,6 +41,7 @@ import { ITransactionItem } from '../../TransactionList'
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
+import TransactionVerifyAccountModal from '../TransactionVerifyAccountModal'
 
 const columnHelper = createColumnHelper<ITransactionItem & { actions: any }>()
 
@@ -95,13 +96,13 @@ const TransactionTable = ({
     transaction_id,
   }: {
     transaction_id: string
-  }) => Promise<{ isSuccess: boolean; error?: string }>
+  }) => Promise<{ isSuccess: boolean; error?: string; data?: any }>
 }) => {
   const refDropdown = useRef(null)
   const [selected, setSelected] = useState({} as ITransactionItem)
   const [actionMenu, setActionMenu] = useState<string | null>(null)
   const [isOpen, setIsOpen] = useState(false)
-  const [isOpenVerfiModal, setIsOpenVerifModal] = useState(false)
+  const [isOpenVerifModal, setIsOpenVerifModal] = useState(false)
   const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
   const [isOpenDestBankModal, setIsOpenDestBankModal] = useState(false)
   const [sorting, setSorting] = useState<ColumnSort[]>([])
@@ -470,105 +471,14 @@ const TransactionTable = ({
           setIsOpenCategoryModal(false)
         }}
       />
-      <Modal
-        isOpen={isOpenVerfiModal}
-        onClose={() => setIsOpenVerifModal(false)}
-      >
-        {(selected.entity_account_number ||
-          selected.entity_account_number_adjusted) &&
-        (selected.entity_bank || selected.entity_bank_adjusted) ? (
-          <>
-            <h2 className="font-semibold text-lg">
-              Konfirmasi Pengecekan Rekening
-            </h2>
-            {selected.is_entity_verified && (
-              <>
-                <div className="mt-2 text-sm">
-                  Transaksi ini telah dilakukan pengecekan sebelumnya dengan
-                  informasi:
-                </div>
-                <div className="text-sm mt-2">Nama: Ilham</div>
-                <div className="text-sm">Nomor Rekening: 13531853</div>
-                <div className="text-sm">Institusi: BCA</div>
-                <div className="text-sm mt-2">
-                  Apakah Anda ingin tetap melakukan pengecekan ulang?
-                </div>
-                <div className="text-xs mt-3 text-gray-500">
-                  *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan
-                  mungkin dikenakan biaya tambahan.
-                </div>
-              </>
-            )}
-            {!selected.is_entity_verified && (
-              <>
-                <div className="text-sm mt-2">
-                  Apakah Anda ingin tetap melakukan pengecekan ulang?
-                </div>
-                <div className="text-xs mt-3 text-gray-500">
-                  *Pengecekan ini bekerja sama dengan mitra pihak ketiga dan
-                  mungkin dikenakan biaya tambahan.
-                </div>
-              </>
-            )}
-
-            <div className="flex justify-end space-x-4 mt-4">
-              <button
-                onClick={() => {
-                  setIsOpenVerifModal(false)
-                  setSelected({} as ITransactionItem)
-                }}
-                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
-              >
-                Batal
-              </button>
-              <Button
-                variant="dark"
-                onClick={async () => {
-                  const { isSuccess, error } = await verifyBankAccount({
-                    transaction_id: selected.transaction_id,
-                  })
-
-                  if (isSuccess) {
-                    toast.success('Berhasil mengecek info rekening transaksi')
-                    setIsOpenVerifModal(false)
-                    setSelected({} as ITransactionItem)
-                    refetch()
-                  } else {
-                    setIsOpenVerifModal(false)
-                    setSelected({} as ITransactionItem)
-                    toast.error(
-                      `Gagal mengecek info rekening transaksi: ${error}`
-                    )
-                  }
-                }}
-              >
-                Cek
-              </Button>
-            </div>
-          </>
-        ) : (
-          <>
-            <h2 className="font-semibold text-lg">Verifikasi Nomor Rekening</h2>
-            <div className="mt-2 text-sm">
-              Verifikasi nomor rekening hanya bisa dilakukan untuk transaksi
-              yang memiliki informasi institusi dan nomor rekening pihak lawan
-              transaksi
-            </div>
-            <div className="flex justify-end space-x-4 mt-6">
-              <button
-                onClick={() => {
-                  // hit BE API
-                  setIsOpenVerifModal(false)
-                  setSelected({} as ITransactionItem)
-                }}
-                className="bg-black text-white items-center p-2 px-6 rounded-md text-sm hover:opacity-95"
-              >
-                Mengerti
-              </button>
-            </div>
-          </>
-        )}
-      </Modal>
+      <TransactionVerifyAccountModal
+        isOpen={isOpenVerifModal}
+        setIsOpenVerifModal={setIsOpenVerifModal}
+        selected={selected}
+        verifyBankAccount={verifyBankAccount}
+        refetch={refetch}
+        setSelected={setSelected}
+      />
 
       <TransactionNoteModal
         transactionId={selected.transaction_id}

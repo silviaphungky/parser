@@ -94,7 +94,7 @@ const TransactionList = ({
     transaction_id,
   }: {
     transaction_id: string
-  }) => Promise<{ isSuccess: boolean; error?: string }>
+  }) => Promise<{ isSuccess: boolean; error?: string; data?: any }>
 }) => {
   const { id } = useParams()
   const [countSelectedFilter, setCountSelectedFilter] = useState(0)

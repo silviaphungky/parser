@@ -12,7 +12,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import { ITransactionItem } from '../../TransactionList'
 
-const bankOptions = [
+export const bankOptions = [
   {
     bank_code: '014',
     pt: 'PT. BANK CENTRAL ASIA, TBK.',
@@ -187,6 +187,55 @@ const bankOptions = [
     swift_code: 'BICNIDJA',
     label: 'Bank Commonwealth',
     id: 'COMMONWEALTH',
+  },
+  {
+    id: 'BPR_SUPRA',
+    bank_code: '600',
+    pt: 'PT. BPR SUPRA ARTAPERSADA',
+    swift_code: null,
+    label: 'BPR Supra',
+  },
+  {
+    id: 'MANDIRI_BPR',
+    bank_code: '608',
+    pt: 'PT. BPR MANDIRI ARTHA ABADI',
+    swift_code: null,
+    label: 'Mandiri - BPR',
+  },
+  {
+    id: 'BPR_KS',
+    bank_code: '688',
+    pt: 'PT. BPR KARYAJATNIKA SADAYA',
+    swift_code: null,
+    label: 'BPR KS',
+  },
+  {
+    id: 'IMKAS',
+    bank_code: '789',
+    pt: 'PT. INDOSAT OOREDOO HUTCHISON TBK (ISAT)',
+    swift_code: null,
+    label: 'IMkas',
+  },
+  {
+    id: 'BPR_EKA',
+    bank_code: '867',
+    pt: 'PT. BPR EKA BUMI ARTHA',
+    swift_code: null,
+    label: 'BPR Eka',
+  },
+  {
+    id: 'LINKAJA',
+    bank_code: '911',
+    pt: 'PT. FINTEK KARYA NUSANTARA',
+    swift_code: null,
+    label: 'LinkAja',
+  },
+  {
+    id: 'ALADIN_SYARIAH',
+    bank_code: '947',
+    pt: 'PT. BANK ALADIN SYARIAH',
+    swift_code: null,
+    label: 'Bank Aladin Syariah',
   },
   {
     bank_code: '011',
@@ -1165,10 +1214,10 @@ const TransactionBankDestModal = ({
           name="accountNo"
           control={control}
           render={({ field, fieldState: { error } }) => (
-            <FormItem label="Nomor Lawan Transaksi (opsional)">
+            <FormItem label="Nomor Rekening (opsional)">
               <Input
                 className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
-                placeholder="Masukkan nomor lawan transaksi..."
+                placeholder="Masukkan rekening transaksi..."
                 {...field}
                 errorMessage={error?.message}
               />
@@ -1176,9 +1225,9 @@ const TransactionBankDestModal = ({
           )}
         />
 
-        <FormItem label="Institusi Lawan Transaksi (opsional)">
+        <FormItem label="Bank (opsional)">
           <InputDropdown
-            placeholder="Pilih institusi lawan transaksi..."
+            placeholder="Pilih bank..."
             options={bankOptions}
             value={selectedBank}
             onChange={(option) => {
@@ -1188,11 +1237,11 @@ const TransactionBankDestModal = ({
         </FormItem>
 
         {selectedBank.id === 'other' && (
-          <FormItem label="Nama Institusi Lawan Transaksi (opsional)">
+          <FormItem label="Bank (opsional)">
             <Input
               className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
               onChange={() => {}}
-              placeholder="Masukkan nama institusi lawan transaksi..."
+              placeholder="Masukkan bank..."
             />
           </FormItem>
         )}
