@@ -14,11 +14,13 @@ const validationSchema = yup.object().shape({
 })
 
 const CreateUserModal = ({
+  baseUrl,
   token,
   isOpen,
   setIsOpen,
   refetch,
 }: {
+  baseUrl: string
   token: string
   isOpen: boolean
   setIsOpen: Dispatch<SetStateAction<boolean>>

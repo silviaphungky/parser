@@ -221,6 +221,7 @@ const UserTable: React.FC<UserTableProps> = ({
     <>
       {
         <CreateUserModal
+          baseUrl={baseUrl}
           isOpen={isOpenModal}
           setIsOpen={setIsOpenModal}
           refetch={refetch}

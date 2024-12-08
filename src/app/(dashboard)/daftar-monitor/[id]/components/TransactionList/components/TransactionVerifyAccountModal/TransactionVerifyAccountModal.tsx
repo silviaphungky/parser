@@ -34,7 +34,13 @@ const TransactionVerifyAccountModal = ({
 }) => {
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
   const [stepVerify, setStepVerify] = useState(1)
-  const [result, setResult] = useState({})
+  const [result, setResult] = useState(
+    {} as {
+      name: string
+      account_no: string
+      bank: string
+    }
+  )
 
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
