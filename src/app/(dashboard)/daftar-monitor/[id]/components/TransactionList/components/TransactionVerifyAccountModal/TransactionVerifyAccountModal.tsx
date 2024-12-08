@@ -61,6 +61,7 @@ const TransactionVerifyAccountModal = ({
     } else {
       setStepVerify(3)
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
+      setIsOpenVerifModal(false)
     }
   }
 
