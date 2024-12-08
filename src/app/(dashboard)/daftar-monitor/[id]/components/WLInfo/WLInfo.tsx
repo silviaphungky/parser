@@ -13,9 +13,11 @@ import axiosInstance from '@/utils/axiosInstance'
 import dayjs from 'dayjs'
 
 const WLInfo = ({
+  baseUrl,
   token,
   children,
 }: {
+  baseUrl: string
   token: string
   children: ReactNode
 }) => {
@@ -54,6 +56,7 @@ const WLInfo = ({
         isOpen={isOpenUploadForm}
         setIsOpen={setIsOpenUploadForm}
         nik={data?.nik || ''}
+        baseUrl={baseUrl}
       />
       <div>
         <Breadcrumbs

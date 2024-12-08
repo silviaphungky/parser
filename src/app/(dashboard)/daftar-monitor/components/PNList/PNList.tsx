@@ -7,9 +7,8 @@ import { API_URL } from '@/constants/apiUrl'
 import { useQuery } from '@tanstack/react-query'
 import useDebounce from '@/utils/useDebounce'
 import axiosInstance from '@/utils/axiosInstance'
-import { baseUrl } from '../../[id]/components/UploadBankStatement/UploadBankStatement'
 
-const PNList = ({ token }: { token: string }) => {
+const PNList = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
   const [sortBy, setSortBy] = useState<string | undefined>(undefined)
   const [sortDir, setSortDir] = useState<'asc' | 'desc' | undefined>(undefined)
   const [page, setPage] = useState(1)
@@ -80,6 +79,7 @@ const PNList = ({ token }: { token: string }) => {
       <PNListHeader token={token} refetch={refetch} />
       <Card className="w-full mt-6">
         <PNTable
+          baseUrl={baseUrl}
           isLoading={isLoading}
           pnList={data.account_reporter_list}
           token={token}

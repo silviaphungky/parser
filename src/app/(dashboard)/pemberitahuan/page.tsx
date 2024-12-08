@@ -4,6 +4,8 @@ import { redirect } from 'next/navigation'
 import { cookies } from 'next/headers'
 import { clearCookies } from '../layout'
 
+const baseUrl = process.env.BASE_URL || ''
+
 const NotificationPage = () => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
 
@@ -23,7 +25,7 @@ const NotificationPage = () => {
         kategori, penandaan atau penghapusan tanda pada transaksi, serta
         penambahan atau penghapusan relasi keluarga.
       </div>
-      <NotificationList token={token} />
+      <NotificationList token={token} baseUrl={baseUrl} />
     </div>
   )
 }

@@ -1,7 +1,6 @@
 // app/notifications/page.tsx
 'use client'
 
-import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import { Card, Pagination, Shimmer } from '@/components'
 import InputDropdown from '@/components/InputDropdown'
 import { API_URL } from '@/constants/apiUrl'
@@ -21,7 +20,13 @@ const filterOptions = [
   },
 ]
 
-const NotificationList = ({ token }: { token: string }) => {
+const NotificationList = ({
+  token,
+  baseUrl,
+}: {
+  token: string
+  baseUrl: string
+}) => {
   const [currentPage, setCurrentPage] = useState(1)
   const [itemsPerPage, setItemPerPage] = useState(20)
   const [selectedFilter, setSelectedFilter] = useState(filterOptions[0])

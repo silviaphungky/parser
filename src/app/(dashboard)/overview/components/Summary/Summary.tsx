@@ -1,6 +1,5 @@
 'use client'
 
-import { baseUrl } from '@/app/(dashboard)/daftar-monitor/[id]/components/UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
 import axiosInstance from '@/utils/axiosInstance'
 import { useQuery } from '@tanstack/react-query'
@@ -9,7 +8,7 @@ import { thousandSeparator } from '@/utils/thousanSeparator'
 import { IconReceipt, IconUsers, IconUserStar } from '@/icons'
 import { Shimmer } from '@/components'
 
-const Summary = ({ token }: { token: string }) => {
+const Summary = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
   const {
     data = {
       total_account_reporter: 0,

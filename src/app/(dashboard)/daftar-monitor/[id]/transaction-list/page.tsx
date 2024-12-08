@@ -2,9 +2,9 @@ import { cookies } from 'next/headers'
 import TransactionList from '../components/TransactionList'
 import { redirect } from 'next/navigation'
 import { clearCookies } from '@/app/(dashboard)/layout'
-import axiosInstance from '@/utils/axiosInstance'
-import { baseUrl } from '../components/UploadBankStatement/UploadBankStatement'
 import { API_URL } from '@/constants/apiUrl'
+
+const baseUrl = process.env.BASE_URL || ''
 
 const TransactionListPage = async () => {
   const cookiesStore = await cookies()
@@ -24,7 +24,7 @@ const TransactionListPage = async () => {
     const response = await fetch(
       `https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.replit.dev/${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
       {
-        method: 'patch',
+        method: 'post',
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -39,7 +39,13 @@ const TransactionListPage = async () => {
     }
   }
 
-  return <TransactionList token={token} verifyBankAccount={verifyBankAccount} />
+  return (
+    <TransactionList
+      token={token}
+      verifyBankAccount={verifyBankAccount}
+      baseUrl={baseUrl}
+    />
+  )
 }
 
 export default TransactionListPage

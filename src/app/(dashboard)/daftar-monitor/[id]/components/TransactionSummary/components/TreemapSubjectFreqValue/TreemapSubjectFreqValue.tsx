@@ -69,11 +69,13 @@ export const mockTransactionMethod = [
 ]
 
 const TreemapSubjectFreqValue = ({
+  baseUrl,
   selectedCurrency,
   selectedDate,
   token,
   selectedBank,
 }: {
+  baseUrl: string
   selectedCurrency: {
     id: string | number
     label: string
@@ -83,10 +85,6 @@ const TreemapSubjectFreqValue = ({
     to: Date | undefined
   }
   token: string
-  data: {
-    IN: Array<Record<string, string | number | Array<{}>>>
-    OUT: Array<Record<string, string | number | Array<{}>>>
-  }
   selectedBank: MultiValue<{ value: string; label: string }>
 }) => {
   const { id } = useParams()
@@ -131,7 +129,7 @@ const TreemapSubjectFreqValue = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/frequency`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/frequency`,
         {
           params: {
             start_period: selectedDate.from

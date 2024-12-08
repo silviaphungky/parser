@@ -64,11 +64,13 @@ const mockBasedOn = [
 ]
 
 const FrequencyPieChart = ({
+  baseUrl,
   selectedCurrency,
   selectedDate,
   token,
   selectedBank,
 }: {
+  baseUrl: string
   selectedCurrency: {
     id: string | number
     label: string
@@ -126,7 +128,7 @@ const FrequencyPieChart = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
         {
           params: {
             start_period: selectedDate.from
@@ -173,7 +175,7 @@ const FrequencyPieChart = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/pie-chart`,
         {
           params: {
             start_period: selectedDate.from

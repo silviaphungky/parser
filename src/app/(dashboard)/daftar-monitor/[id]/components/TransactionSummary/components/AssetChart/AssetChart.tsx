@@ -46,7 +46,9 @@ const AssetChart = ({
   selectedDate,
   token,
   selectedBank,
+  baseUrl,
 }: {
+  baseUrl
   selectedCurrency: {
     id: string | number
     label: string
@@ -110,7 +112,7 @@ const AssetChart = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/line-chart`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/line-chart`,
         {
           params: {
             start_period: selectedDate.from

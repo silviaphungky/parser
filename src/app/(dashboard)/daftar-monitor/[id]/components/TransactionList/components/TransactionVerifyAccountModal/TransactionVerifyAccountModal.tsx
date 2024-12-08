@@ -8,12 +8,17 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
 import InputDropdown from '@/components/InputDropdown'
 import { bankOptions } from '../TransactionBankDestModal/TransactionBankDestModal'
+import { useMutation } from '@tanstack/react-query'
+import axiosInstance from '@/utils/axiosInstance'
+import { API_URL } from '@/constants/apiUrl'
 
 const validationSchema = yup.object().shape({
   accountNo: yup.string(),
 })
 
 const TransactionVerifyAccountModal = ({
+  token,
+  baseUrl,
   selected,
   verifyBankAccount,
   isOpen,
@@ -21,6 +26,8 @@ const TransactionVerifyAccountModal = ({
   refetch,
   setSelected,
 }: {
+  token: string
+  baseUrl: string
   isOpen: boolean
   selected: ITransactionItem
   verifyBankAccount: ({
@@ -37,7 +44,7 @@ const TransactionVerifyAccountModal = ({
   const [result, setResult] = useState(
     {} as {
       name: string
-      account_no: string
+      account_number: string
       bank: string
     }
   )
@@ -61,9 +68,42 @@ const TransactionVerifyAccountModal = ({
     } else {
       setStepVerify(3)
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
+      setStepVerify(1)
       setIsOpenVerifModal(false)
     }
   }
+
+  const { mutate, isPending } = useMutation({
+    mutationFn: (payload: {
+      entity_name: string
+      entity_bank: string
+      entity_account_number: string
+    }) =>
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${selected.transaction_id}/verified-entity`,
+        {
+          ...payload,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
+    onSuccess: () => {
+      refetch()
+      toast.success('Info rekening lawan transaksi berhasil diperbarui')
+      setIsOpenVerifModal(false)
+      setSelected({} as ITransactionItem)
+      setStepVerify(1)
+      reset()
+    },
+    onError: (error: any) => {
+      toast.error(
+        `Gagal memperbarui info rekening lawan transaksi: ${error?.response?.data?.message}`
+      )
+    },
+  })
 
   return (
     <Modal isOpen={isOpen} onClose={() => setIsOpenVerifModal(false)}>
@@ -77,19 +117,11 @@ const TransactionVerifyAccountModal = ({
               Transaksi ini telah dilakukan pengecekan sebelumnya dengan
               informasi:
             </div>
-            <div className="text-sm mt-2">Institusi: BCA</div>
-            <div className="text-sm">Nomor Rekening: 13531853</div>
-            <div className="text-sm">Nama: Ilham</div>
+            <div className="text-sm mt-2">{`Institusi: ${selected.entity_bank_label_verified}`}</div>
+            <div className="text-sm">{`Nomor Rekening: ${selected.entity_account_number_verified}`}</div>
+            <div className="text-sm">{`Nama: ${selected.entity_name_verified}`}</div>
             <div className="text-sm mt-2">
               Apakah Anda ingin tetap melakukan pengecekan ulang?
-            </div>
-
-            <div className="text-xs mt-2 text-gray-600">
-              {`*Info lawan transaksi awal: ${
-                selected.entity_bank || 'unknown'
-              } - ${selected.entity_name || 'unnamed'} - ${
-                selected.entity_account_number || 'N/A'
-              }`}
             </div>
           </>
         )}
@@ -139,9 +171,9 @@ const TransactionVerifyAccountModal = ({
 
                   <div className="text-xs mt-2 text-gray-600">
                     {`*Info lawan transaksi awal: ${
-                      selected.entity_bank || 'unknown'
-                    } - ${selected.entity_name || 'unnamed'} - ${
-                      selected.entity_account_number || 'N/A'
+                      selected.entity_bank_verified || 'unknown'
+                    } - ${selected.entity_name_verified || 'unnamed'} - ${
+                      selected.entity_account_number_verified || 'N/A'
                     }`}
                   </div>
 
@@ -151,6 +183,7 @@ const TransactionVerifyAccountModal = ({
                         setIsOpenVerifModal(false)
                         reset()
                         setSelected({} as ITransactionItem)
+                        setStepVerify(1)
                       }}
                       className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                     >
@@ -172,8 +205,12 @@ const TransactionVerifyAccountModal = ({
                   Informasi rekening ditemukan:
                 </div>
                 <div className="text-sm mt-2">{`Institusi: ${result?.bank}`}</div>
-                <div className="text-sm">{`Nomor Rekening: ${result?.account_no}`}</div>
+                <div className="text-sm">{`Nomor Rekening: ${result?.account_number}`}</div>
                 <div className="text-sm">{`Nama: ${result?.name}`}</div>
+
+                <div className="text-sm">
+                  Apakah Anda ingin memperbarui info lawan transaksi?
+                </div>
 
                 <div className="text-xs mt-2 text-gray-600">
                   {`*Info lawan transaksi awal: ${
@@ -181,10 +218,6 @@ const TransactionVerifyAccountModal = ({
                   } - ${selected.entity_name || 'unnamed'} - ${
                     selected.entity_account_number || 'N/A'
                   }`}
-                </div>
-
-                <div className="text-sm">
-                  Apakah Anda ingin memperbarui info lawan transaksi?
                 </div>
 
                 <div className="flex justify-end space-x-4 mt-4">
@@ -196,10 +229,11 @@ const TransactionVerifyAccountModal = ({
                       setResult(
                         {} as {
                           name: string
-                          account_no: string
+                          account_number: string
                           bank: string
                         }
                       )
+                      setStepVerify(1)
                     }}
                     className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                   >
@@ -207,8 +241,13 @@ const TransactionVerifyAccountModal = ({
                   </button>
                   <Button
                     variant="dark"
+                    loading={isPending}
                     onClick={async () => {
-                      //TODO: PATCH TO BE UPDATE DATA
+                      mutate({
+                        entity_name: result.name,
+                        entity_account_number: result.account_number,
+                        entity_bank: result.bank,
+                      })
                     }}
                   >
                     Perbarui Info Lawan Transaksi

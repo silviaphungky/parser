@@ -478,6 +478,8 @@ const TransactionTable = ({
         verifyBankAccount={verifyBankAccount}
         refetch={refetch}
         setSelected={setSelected}
+        token={token}
+        baseUrl={baseUrl}
       />
 
       <TransactionNoteModal

@@ -17,32 +17,7 @@ const barlow = Barlow({
   subsets: ['latin'],
 })
 
-const PNDATA = {
-  name: 'Anton',
-  nik: '12345678',
-  totalAsset: 456789876,
-  family: [
-    {
-      name: 'Lina',
-      relation: 'Istri/Suami',
-      id: '5',
-      NIK: '999999',
-    },
-    {
-      name: 'Burhan',
-      relation: 'Orang tua',
-      id: '3',
-      NIK: '88888',
-    },
-    {
-      name: 'Inara',
-      relation: 'Lainnya',
-      relationNote: 'Tante',
-      id: '3',
-      NIK: '77777',
-    },
-  ],
-}
+const baseUrl = process.env.BASE_URL || ''
 
 const AnalyticLayout = ({ children }: { children: ReactNode }) => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
@@ -54,7 +29,9 @@ const AnalyticLayout = ({ children }: { children: ReactNode }) => {
 
   return (
     <div className={`${barlow.className} ${poppins.className} `}>
-      <WLInfo token={token}>{children}</WLInfo>
+      <WLInfo token={token} baseUrl={baseUrl}>
+        {children}
+      </WLInfo>
     </div>
   )
 }

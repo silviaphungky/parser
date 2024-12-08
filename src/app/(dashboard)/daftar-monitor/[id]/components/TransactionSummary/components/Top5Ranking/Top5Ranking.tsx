@@ -96,11 +96,13 @@ const TransactionCard = ({
 }
 
 const Top5Ranking = ({
+  baseUrl,
   selectedCurrency,
   selectedDate,
   token,
   selectedBank,
 }: {
+  baseUrl: string
   selectedCurrency: {
     id: string | number
     label: string
@@ -164,7 +166,7 @@ const Top5Ranking = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/top`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/top`,
 
         {
           params: {

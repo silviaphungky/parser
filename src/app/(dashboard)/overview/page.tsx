@@ -5,6 +5,8 @@ import { Summary } from './components'
 import { redirect } from 'next/navigation'
 import { clearCookies } from '../layout'
 
+const baseUrl = process.env.BASE_URL || ''
+
 const OverviewPage = () => {
   const token = cookies().get('ACCESS_TOKEN')?.value || ''
 
@@ -16,7 +18,7 @@ const OverviewPage = () => {
   return (
     <div>
       <Title title="Ringkasan" />
-      <Summary token={token} />
+      <Summary token={token} baseUrl={baseUrl} />
     </div>
   )
 }

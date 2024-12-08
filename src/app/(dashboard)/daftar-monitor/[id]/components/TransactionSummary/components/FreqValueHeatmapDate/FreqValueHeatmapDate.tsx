@@ -76,10 +76,12 @@ const LEGEND_MAP = {
 }
 
 const FreqValueHeatmapDate = ({
+  baseUrl,
   selectedCurrency,
   token,
   selectedBank,
 }: {
+  baseUrl: string
   selectedCurrency: {
     id: string | number
     label: string
@@ -150,7 +152,7 @@ const FreqValueHeatmapDate = ({
     ],
     queryFn: async () => {
       const response = await axiosInstance.get(
-        `${API_URL.TOP_TRANSACTION}/${id}/summary/calendar`,
+        `${baseUrl}/${API_URL.TOP_TRANSACTION}/${id}/summary/calendar`,
         {
           params: {
             year: selectedYear.id,

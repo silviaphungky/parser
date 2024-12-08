@@ -8,7 +8,6 @@ import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import Button from '@/components/Button'
-import { baseUrl } from '../UploadBankStatement/UploadBankStatement'
 import useDebounce from '@/utils/useDebounce'
 import toast from 'react-hot-toast'
 import dayjs from 'dayjs'
@@ -63,10 +62,14 @@ export interface ITransactionItem {
   direction: 'IN' | 'OUT'
   entity_account_number: string
   entity_account_number_adjusted: string
+  entity_account_number_verified: string
   entity_bank: string
   entity_bank_adjusted: string
   entity_bank_label: string
   entity_bank_label_adjusted: string
+  entity_bank_label_verified: string
+  entity_bank_verified: string
+  entity_name_verified: string
   entity_name: string
   entity_name_adjusted: string
   is_starred: boolean
@@ -87,9 +90,11 @@ export interface ITransactionItem {
 
 const TransactionList = ({
   token,
+  baseUrl,
   verifyBankAccount,
 }: {
   token: string
+  baseUrl: string
   verifyBankAccount: ({
     transaction_id,
   }: {

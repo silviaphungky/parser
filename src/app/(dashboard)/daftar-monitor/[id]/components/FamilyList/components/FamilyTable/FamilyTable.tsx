@@ -11,7 +11,6 @@ import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
 import { useParams } from 'next/navigation'
 import { Shimmer } from '@/components'
-import { baseUrl } from '../../../UploadBankStatement/UploadBankStatement'
 import toast from 'react-hot-toast'
 import Button from '@/components/Button'
 
@@ -26,7 +25,13 @@ const columnHelper = createColumnHelper<
   } & { actions: any }
 >()
 
-const FamilyTable = ({ token }: { token: string }) => {
+const FamilyTable = ({
+  token,
+  baseUrl,
+}: {
+  token: string
+  baseUrl: string
+}) => {
   const { id } = useParams()
 
   const { mutate: unlinkFamily } = useMutation({
