@@ -93,6 +93,7 @@ const AreaChart = ({
               return null
             }}
           />
+          {console.log({ dataKeys })}
 
           {/* Gradient Definitions */}
           <defs>

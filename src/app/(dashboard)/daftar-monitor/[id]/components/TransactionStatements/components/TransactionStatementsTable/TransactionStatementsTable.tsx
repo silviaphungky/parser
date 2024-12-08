@@ -79,14 +79,17 @@ const TransactionStatementsTable = ({
 
   const { mutate: archieveStatement, isPending } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axiosInstance.patch(`${baseUrl}/${API_URL.ARCHIVE_STATEMENT}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        data: {
+      axiosInstance.patch(
+        `${baseUrl}/${API_URL.ARCHIVE_STATEMENT}`,
+        {
           id: payload.id,
         },
-      }),
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ),
   })
 
   const { mutate: unarchieveStatement, isPending: isRestoring } = useMutation({
