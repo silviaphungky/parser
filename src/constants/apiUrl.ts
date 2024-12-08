@@ -12,6 +12,8 @@ export const API_URL = {
   LINK_FAMILY: 'v1/account-reporter/family/assign',
   REMOVE_FAMILY: 'v1/account-reporter/revoke',
   PN_EXIST: 'v1/account-reporter/is-exist',
+  ARCHIVE_ACCOUNT_REPORTER: 'v1/account-reporter/archive',
+  UNARCHIVE_ACCOUNT_REPORTER: 'v1/account-reporter/unarchive',
 
   // family
   FAMILY_LIST: 'v1/account-reporter/family',
@@ -26,6 +28,8 @@ export const API_URL = {
   DELETE_STATEMENT: 'v1/statement/remove',
   RESTORE_STATEMENT: 'v1/statement/restore',
   DOWNLOAD_STATEMENT: 'v1/statement/file/download-statement',
+  ARCHIVE_STATEMENT: 'v1/statement/archive',
+  UNARCHIVE_STATEMENT: 'v1/statement/unarchive',
 
   // transactions
   TRANSACTION_LIST: 'v1/transaction/list',

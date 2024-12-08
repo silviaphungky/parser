@@ -117,7 +117,7 @@ const columnHelper = createColumnHelper<
 >()
 
 const baseUrl =
-  'https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.repl.co'
+  'https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.replit.dev'
 
 const notify = () => toast.success('PN berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
@@ -189,7 +189,7 @@ const PNTable = ({
 
   const { mutate } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axiosInstance.delete(`${baseUrl}/${API_URL.DELETE_PN}`, {
+      axiosInstance.patch(`${baseUrl}/${API_URL.ARCHIVE_ACCOUNT_REPORTER}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

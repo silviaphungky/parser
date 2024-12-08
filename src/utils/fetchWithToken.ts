@@ -1,7 +1,7 @@
 import { cookies } from 'next/headers'
 
 const baseUrl =
-  'https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.repl.co'
+  'https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.replit.dev'
 
 export async function fetchWithToken(
   url: string,

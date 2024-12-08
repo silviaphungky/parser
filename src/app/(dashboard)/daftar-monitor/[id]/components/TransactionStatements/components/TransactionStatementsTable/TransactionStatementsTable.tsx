@@ -77,9 +77,9 @@ const TransactionStatementsTable = ({
     setSortDir(sorting[0]?.desc ? 'desc' : 'asc')
   }, [sorting])
 
-  const { mutate: removeStatement, isPending } = useMutation({
+  const { mutate: archieveStatement, isPending } = useMutation({
     mutationFn: (payload: { id: string }) =>
-      axiosInstance.delete(`${baseUrl}/${API_URL.DELETE_STATEMENT}`, {
+      axiosInstance.patch(`${baseUrl}/${API_URL.ARCHIVE_STATEMENT}`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },
@@ -89,7 +89,7 @@ const TransactionStatementsTable = ({
       }),
   })
 
-  const { mutate: restoreStatement, isPending: isRestoring } = useMutation({
+  const { mutate: unarchieveStatement, isPending: isRestoring } = useMutation({
     mutationFn: (payload: { id: string }) =>
       axiosInstance.patch(
         `${baseUrl}/${API_URL.RESTORE_STATEMENT}`,
@@ -237,7 +237,7 @@ const TransactionStatementsTable = ({
                   variant="white-outline"
                   onClick={() => {
                     if (info.row.original.is_archived) {
-                      restoreStatement(
+                      unarchieveStatement(
                         {
                           id: info.row.original.statement_id,
                         },
@@ -254,7 +254,7 @@ const TransactionStatementsTable = ({
                         }
                       )
                     } else {
-                      removeStatement(
+                      archieveStatement(
                         {
                           id: info.row.original.statement_id,
                         },
