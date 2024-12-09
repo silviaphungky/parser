@@ -14,6 +14,8 @@ const PNPage = async () => {
     redirect('/login')
   }
 
+  console.log(baseUrl)
+
   return <PNList token={token} baseUrl={baseUrl} />
 }
 
