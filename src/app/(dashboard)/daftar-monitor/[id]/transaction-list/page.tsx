@@ -17,13 +17,28 @@ const TransactionListPage = async () => {
 
   const verifyBankAccount = async ({
     transaction_id,
+    entity_name,
+    entity_account_number,
+    entity_bank,
+    currency,
   }: {
     transaction_id: string
+    entity_name: string
+    entity_account_number: string
+    entity_bank: string
+    currency: string
   }) => {
     'use server'
     const response = await fetch(
-      `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/${transaction_id}/entity/verify`,
+      `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/entity/verify`,
       {
+        body: JSON.stringify({
+          transaction_id,
+          entity_name,
+          entity_account_number,
+          entity_bank,
+          currency,
+        }),
         method: 'post',
         headers: {
           Authorization: `Bearer ${token}`,

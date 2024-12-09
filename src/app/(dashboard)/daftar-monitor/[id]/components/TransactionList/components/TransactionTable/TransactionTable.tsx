@@ -94,8 +94,16 @@ const TransactionTable = ({
   isLoading: boolean
   verifyBankAccount: ({
     transaction_id,
+    entity_name,
+    entity_account_number,
+    entity_bank,
+    currency,
   }: {
     transaction_id: string
+    entity_name: string
+    entity_account_number: string
+    entity_bank: string
+    currency: string
   }) => Promise<{ isSuccess: boolean; error?: string; data?: any }>
 }) => {
   const refDropdown = useRef(null)
@@ -289,7 +297,7 @@ const TransactionTable = ({
               <Tooltip
                 id={info.row.original.transaction_id}
                 place="bottom"
-                content="Ilham - 42173531 BCA"
+                content={`${info.row.original.entity_name_verified} - ${info.row.original.entity_bank_verified} ${info.row.original.entity_account_number_verified}`}
               />
               <div
                 className="flex justify-center cursor-pointer"

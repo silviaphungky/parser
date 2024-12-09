@@ -97,8 +97,16 @@ const TransactionList = ({
   baseUrl: string
   verifyBankAccount: ({
     transaction_id,
+    entity_name,
+    entity_account_number,
+    entity_bank,
+    currency,
   }: {
     transaction_id: string
+    entity_name: string
+    entity_account_number: string
+    entity_bank: string
+    currency: string
   }) => Promise<{ isSuccess: boolean; error?: string; data?: any }>
 }) => {
   const { id } = useParams()

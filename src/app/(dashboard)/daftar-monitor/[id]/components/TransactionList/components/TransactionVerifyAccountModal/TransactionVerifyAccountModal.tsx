@@ -2,7 +2,7 @@ import { FormItem, Input, Modal } from '@/components'
 import { ITransactionItem } from '../../TransactionList'
 import Button from '@/components/Button'
 import toast from 'react-hot-toast'
-import { Dispatch, SetStateAction, useState } from 'react'
+import { Dispatch, SetStateAction, useEffect, useState } from 'react'
 import { Controller, useForm, useWatch } from 'react-hook-form'
 import { yupResolver } from '@hookform/resolvers/yup'
 import * as yup from 'yup'
@@ -32,13 +32,22 @@ const TransactionVerifyAccountModal = ({
   selected: ITransactionItem
   verifyBankAccount: ({
     transaction_id,
+    entity_name,
+    entity_account_number,
+    entity_bank,
+    currency,
   }: {
     transaction_id: string
+    entity_name: string
+    entity_account_number: string
+    entity_bank: string
+    currency: string
   }) => Promise<{ isSuccess: boolean; error?: string; data?: any }>
   setIsOpenVerifModal: Dispatch<SetStateAction<boolean>>
   refetch: () => void
   setSelected: Dispatch<SetStateAction<ITransactionItem>>
 }) => {
+  const [isShowForm, setIsShowForm] = useState(selected.is_entity_verified)
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
   const [stepVerify, setStepVerify] = useState(1)
   const [result, setResult] = useState(
@@ -49,6 +58,10 @@ const TransactionVerifyAccountModal = ({
     }
   )
 
+  useEffect(() => {
+    setIsShowForm(selected.is_entity_verified)
+  }, [selected.is_entity_verified])
+
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       accountNo: '',
@@ -56,9 +69,13 @@ const TransactionVerifyAccountModal = ({
     resolver: yupResolver(validationSchema),
   })
 
-  const handleUpdate = async () => {
+  const handleUpdate = async (value: { accountNo: string }) => {
     const { isSuccess, error, data } = await verifyBankAccount({
       transaction_id: selected.transaction_id,
+      entity_name: '',
+      entity_account_number: value.accountNo,
+      entity_bank: selectedBank.id,
+      currency: selected.currency,
     })
 
     if (isSuccess) {
@@ -66,11 +83,11 @@ const TransactionVerifyAccountModal = ({
       setResult(data)
       setStepVerify(2)
       setSelectedBank({ id: '', label: '' })
+      reset()
     } else {
-      setStepVerify(3)
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
       setStepVerify(1)
-      setIsOpenVerifModal(false)
+      reset()
     }
   }
 
@@ -141,7 +158,7 @@ const TransactionVerifyAccountModal = ({
             </div>
           </>
         )}
-        {!selected.is_entity_verified && (
+        {isShowForm && (
           <>
             {stepVerify === 1 && (
               <div>
@@ -184,6 +201,7 @@ const TransactionVerifyAccountModal = ({
                       }`}
                     </div>
                   )}
+
                   <div className="flex justify-end space-x-4 mt-8">
                     <button
                       onClick={() => {
@@ -208,6 +226,7 @@ const TransactionVerifyAccountModal = ({
                 </form>
               </div>
             )}
+
             {stepVerify === 2 && (
               <>
                 <div className="text-sm mt-2">
