@@ -3,7 +3,7 @@ import { PNList } from './components'
 import { redirect } from 'next/navigation'
 import { clearCookies } from '../layout'
 
-const baseUrl = process.env.BASEE_URL || ''
+const baseUrl = process.env.BASE_URL || ''
 
 const PNPage = async () => {
   const cookiesStore = await cookies()
