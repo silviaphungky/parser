@@ -144,7 +144,7 @@ const TransactionVerifyAccountModal = ({
         <h2 className="font-semibold text-lg">
           Konfirmasi Pengecekan Rekening
         </h2>
-        {selected.is_entity_verified && (
+        {selected.is_entity_verified && !isShowForm && (
           <>
             <div className="mt-2 text-sm">
               Transaksi ini telah dilakukan pengecekan sebelumnya dengan
