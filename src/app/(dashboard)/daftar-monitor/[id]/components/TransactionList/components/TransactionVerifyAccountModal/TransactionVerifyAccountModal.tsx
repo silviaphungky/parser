@@ -47,7 +47,7 @@ const TransactionVerifyAccountModal = ({
   refetch: () => void
   setSelected: Dispatch<SetStateAction<ITransactionItem>>
 }) => {
-  const [isShowForm, setIsShowForm] = useState(selected.is_entity_verified)
+  const [isShowForm, setIsShowForm] = useState(!selected.is_entity_verified)
   const [selectedBank, setSelectedBank] = useState({ id: '', label: '' })
   const [stepVerify, setStepVerify] = useState(1)
   const [result, setResult] = useState(
@@ -59,7 +59,7 @@ const TransactionVerifyAccountModal = ({
   )
 
   useEffect(() => {
-    setIsShowForm(selected.is_entity_verified)
+    setIsShowForm(!selected.is_entity_verified)
   }, [selected.is_entity_verified])
 
   const { control, handleSubmit, reset } = useForm({
@@ -155,6 +155,24 @@ const TransactionVerifyAccountModal = ({
             <div className="text-sm">{`Nama: ${selected.entity_name_verified}`}</div>
             <div className="text-sm mt-2">
               Apakah Anda ingin tetap melakukan pengecekan ulang?
+            </div>
+
+            <div className="flex justify-end space-x-4 mt-8">
+              <button
+                onClick={() => {
+                  setIsOpenVerifModal(false)
+                  reset()
+                  setSelectedBank({ id: '', label: '' })
+                  setSelected({} as ITransactionItem)
+                  setStepVerify(1)
+                }}
+                className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+              >
+                Batal
+              </button>
+              <Button variant="primary" onClick={() => setIsShowForm(true)}>
+                Lanjut
+              </Button>
             </div>
           </>
         )}
