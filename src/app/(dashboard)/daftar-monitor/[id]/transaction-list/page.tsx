@@ -29,6 +29,7 @@ const TransactionListPage = async () => {
     currency: string
   }) => {
     'use server'
+
     const response = await fetch(
       `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/entity/verify`,
       {
@@ -39,8 +40,9 @@ const TransactionListPage = async () => {
           entity_bank,
           currency,
         }),
-        method: 'post',
+        method: 'POST',
         headers: {
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
       }

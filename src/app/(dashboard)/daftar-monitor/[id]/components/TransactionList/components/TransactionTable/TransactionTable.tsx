@@ -297,7 +297,7 @@ const TransactionTable = ({
               <Tooltip
                 id={info.row.original.transaction_id}
                 place="bottom"
-                content={`${info.row.original.entity_name_verified} - ${info.row.original.entity_bank_verified} ${info.row.original.entity_account_number_verified}`}
+                content={`${info.row.original.entity_name_verified} - ${info.row.original.entity_bank_label_verified} ${info.row.original.entity_account_number_verified}`}
               />
               <div
                 className="flex justify-center cursor-pointer"

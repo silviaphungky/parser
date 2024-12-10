@@ -24,7 +24,7 @@ export const bankOptions = [
     pt: 'PT. BANK MANDIRI, TBK.',
     swift_code: 'BMRIIDJA',
     label: 'Bank Mandiri',
-    id: 'Mandiri ',
+    id: 'Mandiri',
   },
   {
     bank_code: '002',

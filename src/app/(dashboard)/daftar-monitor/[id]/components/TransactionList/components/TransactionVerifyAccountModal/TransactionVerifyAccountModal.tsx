@@ -151,7 +151,7 @@ const TransactionVerifyAccountModal = ({
               Transaksi ini telah dilakukan pengecekan sebelumnya dengan
               informasi:
             </div>
-            <div className="text-sm mt-2">{`Institusi: ${selected.entity_bank_label_verified}`}</div>
+            <div className="text-sm mt-2">{`Bank: ${selected.entity_bank_label_verified}`}</div>
             <div className="text-sm">{`Nomor Rekening: ${selected.entity_account_number_verified}`}</div>
             <div className="text-sm">{`Nama: ${selected.entity_name_verified}`}</div>
             <div className="text-sm mt-2">
@@ -214,9 +214,9 @@ const TransactionVerifyAccountModal = ({
                   {selected.is_entity_verified && (
                     <div className="text-xs mt-2 text-gray-600">
                       {`*Hasil pengecekan awal: ${
-                        selected.entity_bank || 'unknown'
-                      } - ${selected.entity_name || 'unnamed'} - ${
-                        selected.entity_account_number || 'N/A'
+                        selected.entity_bank_label_verified || 'unknown'
+                      } - ${selected.entity_name_verified || 'unnamed'} - ${
+                        selected.entity_account_number_verified || 'N/A'
                       }`}
                     </div>
                   )}
@@ -262,9 +262,9 @@ const TransactionVerifyAccountModal = ({
                 {selected.is_entity_verified && (
                   <div className="text-xs mt-2 text-gray-600">
                     {`*Hasil pengecekan awal: ${
-                      selected.entity_bank || 'unknown'
-                    } - ${selected.entity_name || 'unnamed'} - ${
-                      selected.entity_account_number || 'N/A'
+                      selected.entity_bank_label_verified || 'unknown'
+                    } - ${selected.entity_name_verified || 'unnamed'} - ${
+                      selected.entity_account_number_verified || 'N/A'
                     }`}
                   </div>
                 )}
