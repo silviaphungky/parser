@@ -27,18 +27,6 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
-          {
-            key: 'Content-Security-Policy',
-            value: "frame-ancestors 'self'",
-          },
-          {
-            key: 'X-Forwarded-Host',
-            value: 'courageous-dolphin-fe4b45.netlify.app',
-          },
-          {
-            key: 'Origin',
-            value: 'https://courageous-dolphin-fe4b45.netlify.app',
-          },
         ],
       },
     ]
