@@ -6,7 +6,6 @@ const baseUrl = process.env.BASE_URL || ''
 
 async function handleSetSession(token: string, email: string, role: string) {
   'use server'
-  console.log('asd')
   const cookiesStore = await cookies()
   cookiesStore.set('ACCESS_TOKEN', token, { ...cookiesOptions })
   cookiesStore.set('USER', email, { ...cookiesOptions })
