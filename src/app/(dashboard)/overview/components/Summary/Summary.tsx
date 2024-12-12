@@ -44,7 +44,7 @@ const Summary = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
   ) : (
     <div className="flex gap-4 flex-1 mt-6">
       <SummaryCard
-        title="Total PN dipantau"
+        title="Total Daftar Monitor dipantau"
         description={thousandSeparator(data.total_account_reporter)}
         icon={
           <div className="bg-[#00b8d928] rounded-full p-4">
@@ -53,7 +53,7 @@ const Summary = ({ token, baseUrl }: { token: string; baseUrl: string }) => {
         }
       />
       <SummaryCard
-        title="Total PN ditandai"
+        title="Total Daftar Monitor ditandai"
         description={thousandSeparator(data.total_starred_account_reporter)}
         icon={
           <div className="bg-[#FFE0EB] rounded-full p-4">

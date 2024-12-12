@@ -19,11 +19,11 @@ const NotificationPage = () => {
       <Title title="Pemberitahuan" />
       <div className="text-sm">
         Menampilkan semua aktivitas yang dilakukan oleh admin lain terhadap
-        daftar PN yang Anda kelola. Aktivitas tersebut mencakup penambahan
-        daftar pantauan, pengunduhan daftar transaksi, pengunggahan laporan
-        bank, perubahan catatan, pembaruan informasi lawan transaksi, pengubahan
-        kategori, penandaan atau penghapusan tanda pada transaksi, serta
-        penambahan atau penghapusan relasi keluarga.
+        daftar Daftar Monitor yang Anda kelola. Aktivitas tersebut mencakup
+        penambahan daftar pantauan, pengunduhan daftar transaksi, pengunggahan
+        laporan bank, perubahan catatan, pembaruan informasi lawan transaksi,
+        pengubahan kategori, penandaan atau penghapusan tanda pada transaksi,
+        serta penambahan atau penghapusan relasi keluarga.
       </div>
       <NotificationList token={token} baseUrl={baseUrl} />
     </div>

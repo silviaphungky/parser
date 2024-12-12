@@ -255,7 +255,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
 
       <div className="flex gap-4">
         <div className="flex-1">
-          <FormItem label="Bank PN">
+          <FormItem label="Bank Daftar Monitor">
             <ReactSelect
               isMulti
               value={selectedBank}

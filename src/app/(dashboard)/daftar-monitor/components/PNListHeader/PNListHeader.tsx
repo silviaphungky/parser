@@ -10,7 +10,7 @@ import { API_URL } from '@/constants/apiUrl'
 import toast from 'react-hot-toast'
 
 const notify = () =>
-  toast.success('PN berhasil ditambahkan sebagai daftar monitor')
+  toast.success('Daftar Monitor berhasil ditambahkan sebagai daftar monitor')
 
 const PNListHeader = ({
   baseUrl,
@@ -52,7 +52,7 @@ const PNListHeader = ({
       notify()
     },
     onError: () => {
-      toast.error('Gagal menambahkan PN sebagai daftar monitor')
+      toast.error('Gagal menambahkan Daftar Monitor sebagai daftar monitor')
     },
   })
 
@@ -103,6 +103,7 @@ const PNListHeader = ({
       >
         <WajibLaporCreate
           token={token}
+          baseUrl={baseUrl}
           setIsOpenFoundModal={setIsOpenFoundModal}
           setIsOpenCreateModal={setIsOpenCreateModal}
           refetch={refetch}

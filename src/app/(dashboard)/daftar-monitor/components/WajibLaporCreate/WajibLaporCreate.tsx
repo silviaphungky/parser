@@ -19,19 +19,18 @@ const validationSchema = yup.object().shape({
   nik: yup.string().required('NIK wajib diisi'),
 })
 
-const baseUrl =
-  'https://499e2567-eab8-4cda-bdb4-d2dd8fb584b8-00-2ns1p7d6pfgj6.pike.replit.dev'
-
-const notify = () => toast.success('PN berhasil ditambahkan')
+const notify = () => toast.success('Daftar Monitor berhasil ditambahkan')
 
 const WajibLaporCreate = ({
   token,
+  baseUrl,
   setIsOpenFoundModal,
   setIsOpenCreateModal,
   refetch,
   setExistsPn,
 }: {
   token: string
+  baseUrl: string
   setIsOpenFoundModal: Dispatch<SetStateAction<boolean>>
   setIsOpenCreateModal: Dispatch<SetStateAction<boolean>>
   setExistsPn: Dispatch<{
@@ -56,7 +55,9 @@ const WajibLaporCreate = ({
         }
       ),
     onError: (error: any) => {
-      toast.error(`Gagal menambahkan PN: ${error?.response?.data?.message}`)
+      toast.error(
+        `Gagal menambahkan Daftar Monitor: ${error?.response?.data?.message}`
+      )
     },
   })
 
@@ -79,7 +80,9 @@ const WajibLaporCreate = ({
       notify()
     },
     onError: (error: any) => {
-      toast.error(`PN gagal ditambahkan: ${error?.response?.data?.message}`)
+      toast.error(
+        `Daftar Monitor gagal ditambahkan: ${error?.response?.data?.message}`
+      )
     },
   })
 

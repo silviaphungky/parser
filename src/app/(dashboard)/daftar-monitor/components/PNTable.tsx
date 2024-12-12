@@ -116,9 +116,7 @@ const columnHelper = createColumnHelper<
   } & { action: string }
 >()
 
-
-
-const notify = () => toast.success('PN berhasil diarsipkan')
+const notify = () => toast.success('Daftar Monitor berhasil diarsipkan')
 const notifyLink = () => toast.success('Relasi keluarga berhasil ditambahkan')
 
 const PNTable = ({
@@ -260,7 +258,9 @@ const PNTable = ({
           const isConflict = error.status === 409
 
           if (isConflict) {
-            toast.error(`PN telah terhubung dengan ${data.familyName.label}`)
+            toast.error(
+              `Daftar Monitor telah terhubung dengan ${data.familyName.label}`
+            )
           }
         },
       }
@@ -530,7 +530,7 @@ const PNTable = ({
         isOpen={isOpenRemove}
         onClose={() => setIsOpenRemove(false)}
       >
-        <h2 className="font-semibold mb-4 text-lg">Arsipkan PN</h2>
+        <h2 className="font-semibold mb-4 text-lg">Arsipkan Daftar Monitor</h2>
         <div className="mt-2 text-sm">
           Apakah Anda yakin mengarsipkan{' '}
           <strong>
@@ -595,7 +595,7 @@ const PNTable = ({
                   },
                   onError: (error: any) => {
                     toast.error(
-                      `PN gagal diarsipkan: ${error?.response?.data?.message}`
+                      `Daftar Monitor gagal diarsipkan: ${error?.response?.data?.message}`
                     )
                   },
                 }
@@ -645,7 +645,7 @@ const PNTable = ({
               name="parent_family_role"
               render={({ field, fieldState }) => (
                 <FormItem
-                  label="Hubungan PN terhadap Keluarga"
+                  label="Hubungan Daftar Monitor terhadap Keluarga"
                   errorMessage={fieldState.error?.message}
                 >
                   <InputDropdown
@@ -687,7 +687,7 @@ const PNTable = ({
               name="child_family_role"
               render={({ field, fieldState }) => (
                 <FormItem
-                  label="Hubungan Keluarga terhadap PN"
+                  label="Hubungan Keluarga terhadap Daftar Monitor"
                   errorMessage={fieldState.error?.message}
                 >
                   <InputDropdown
@@ -734,7 +734,7 @@ const PNTable = ({
       <div className="mb-4 flex justify-between">
         <InputSearch
           onSearch={handleSearch}
-          placeholder="Masukkan NIK atau Nama PN ..."
+          placeholder="Masukkan NIK atau Nama Daftar Monitor..."
         />
       </div>
       <div className="p-2">

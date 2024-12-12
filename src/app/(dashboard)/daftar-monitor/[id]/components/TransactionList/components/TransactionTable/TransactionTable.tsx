@@ -182,7 +182,7 @@ const TransactionTable = ({
         ),
         {
           id: 'owner_account_id',
-          header: 'Info Bank PN',
+          header: 'Info Bank Daftar Monitor',
           cell: (info) => info.getValue(),
           enableSorting: false,
         }
