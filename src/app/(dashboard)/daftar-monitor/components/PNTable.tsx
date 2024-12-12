@@ -734,7 +734,7 @@ const PNTable = ({
       <div className="mb-4 flex justify-between">
         <InputSearch
           onSearch={handleSearch}
-          placeholder="Masukkan NIK atau Nama Daftar Monitor..."
+          placeholder="Masukkan NIK atau Nama..."
         />
       </div>
       <div className="p-2">
