@@ -687,7 +687,7 @@ const PNTable = ({
               name="child_family_role"
               render={({ field, fieldState }) => (
                 <FormItem
-                  label="Hubungan Keluarga terhadap Daftar Monitor"
+                  label="Hubungan Keluarga terhadap Individu"
                   errorMessage={fieldState.error?.message}
                 >
                   <InputDropdown
