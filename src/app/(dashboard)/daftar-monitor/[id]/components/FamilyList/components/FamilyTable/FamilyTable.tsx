@@ -67,11 +67,11 @@ const FamilyTable = ({
       ),
     onSuccess: () => {
       refetch()
-      toast.success('PN berhasil ditambahkan sebagai daftar monitor')
+      toast.success('Daftar Monitor berhasil ditambahkan sebagai daftar monitor')
     },
     onError: (error: any) => {
       toast.error(
-        `Gagal menambahkan PN sebagai daftar monitor: ${error?.response?.data?.message}`
+        `Gagal menambahkan Daftar Monitor sebagai daftar monitor: ${error?.response?.data?.message}`
       )
     },
   })
@@ -120,7 +120,7 @@ const FamilyTable = ({
       ),
     }),
     columnHelper.accessor('child_role', {
-      header: 'Hubungan terhadap PN',
+      header: 'Hubungan terhadap Daftar Monitor',
       cell: (info) => info.getValue(),
     }),
     columnHelper.accessor('actions', {
