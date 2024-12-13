@@ -1,4 +1,4 @@
-import { cookies } from 'next/headers'
+import { cookies, headers } from 'next/headers'
 import Login from './Login'
 import { cookiesOptions } from './constants'
 

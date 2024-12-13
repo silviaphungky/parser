@@ -29,7 +29,7 @@ const nextConfig = {
           },
           {
             key: 'X-Forwarded-Host',
-            value: 'fantasi-app.kpk.go.id',
+            value: 'frontend-app',
           },
           {
             key: 'Origin',
