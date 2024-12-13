@@ -27,6 +27,14 @@ const nextConfig = {
             key: 'X-XSS-Protection',
             value: '1; mode=block',
           },
+          {
+            key: 'X-Forwarded-Host',
+            value: 'fantasi-app.kpk.go.id',
+          },
+          {
+            key: 'Origin',
+            value: 'https://fantasi-app.kpk.go.id',
+          },
         ],
       },
     ]
