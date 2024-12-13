@@ -15,6 +15,7 @@ import { ReactNode } from 'react'
 
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { Card } from '..'
+import { numberAbbv } from '@/utils/numberAbbv'
 
 interface Props {
   data: Array<Record<string | number, string | number>>
@@ -57,10 +58,7 @@ const AreaChart = ({
             style={{ fontSize: '10px', display: hideXAxis ? 'none' : 'block' }}
             interval="preserveStart"
             tick={{ textAnchor: 'start' }}
-            //
           />
-
-          {/* Y-Axis */}
 
           <YAxis
             name={yLegend}
@@ -69,11 +67,16 @@ const AreaChart = ({
             axisLine={true}
             tickLine={true}
             style={{ fontSize: '10px' }}
-            tickFormatter={(value) => thousandSeparator(value)}
+            tickFormatter={(value) => numberAbbv(value)}
           >
-            <Label angle={-45} />
+            <Label
+              value={yLegend}
+              angle={-90}
+              position="insideLeft"
+              offset={-10}
+              style={{ textAnchor: 'middle', fontSize: '10px' }}
+            />
           </YAxis>
-
           {/* Tooltip */}
           <Tooltip
             content={({ payload, label, active }) => {
