@@ -1,5 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'fantasi-app.kpk.go.id',
+        'frontend-app',
+        'http://localhost:3003',
+      ],
+    },
+  },
   async headers() {
     return [
       {
