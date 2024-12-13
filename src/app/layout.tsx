@@ -18,9 +18,8 @@ const barlow = Barlow({
 })
 
 export const metadata: Metadata = {
-  title: 'Bank Statement Parser & Analyzer',
-  description:
-    'Unlock deep financial insights with our Bank Statement Parser. Instantly analyze bank statements to reveal spending patterns, income trends, and financial health—all in one streamlined tool for smarter decision-making.',
+  title: 'KPK Parser | Analisis Mutasi Keuangan Daftar Monitor',
+  description: 'KPK Parser | Analisis Mutasi Keungan Daftar Monitor',
 }
 
 export default function RootLayout({
