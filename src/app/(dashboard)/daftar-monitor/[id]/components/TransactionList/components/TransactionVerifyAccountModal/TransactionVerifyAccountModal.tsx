@@ -11,9 +11,18 @@ import { bankOptions } from '../TransactionBankDestModal/TransactionBankDestModa
 import { useMutation } from '@tanstack/react-query'
 import axiosInstance from '@/utils/axiosInstance'
 import { API_URL } from '@/constants/apiUrl'
+import { IconChecklist } from '@/icons'
+import { colorToken } from '@/constants/color-token'
+
+const STATUS_MAP = {
+  ['FULL MATCH']: 'Cocok Sepenuhnya',
+  ['PARTIAL MATCH']: 'Cocok Sebagian',
+  ['NO MATCH']: 'Tidak Cocok',
+}
 
 const validationSchema = yup.object().shape({
   accountNo: yup.string().required('Wajib diisi'),
+  name: yup.string().required('Wajib diisi'),
 })
 
 const TransactionVerifyAccountModal = ({
@@ -55,6 +64,7 @@ const TransactionVerifyAccountModal = ({
       name: string
       account_number: string
       bank: string
+      status: 'FULL MATCH' | 'PARTIAL MATCH' | 'NO MATCH'
     }
   )
 
@@ -65,14 +75,25 @@ const TransactionVerifyAccountModal = ({
   const { control, handleSubmit, reset } = useForm({
     defaultValues: {
       accountNo: '',
+      name: '',
     },
     resolver: yupResolver(validationSchema),
   })
 
-  const handleUpdate = async (value: { accountNo: string }) => {
+  const accountNo = useWatch({
+    control,
+    name: 'accountNo',
+  })
+
+  const name = useWatch({
+    control,
+    name: 'name',
+  })
+
+  const handleUpdate = async (value: { accountNo: string; name: string }) => {
     const { isSuccess, error, data } = await verifyBankAccount({
       transaction_id: selected.transaction_id,
-      entity_name: '',
+      entity_name: value.name,
       entity_account_number: value.accountNo,
       entity_bank: selectedBank.id,
       currency: selected.currency,
@@ -80,7 +101,7 @@ const TransactionVerifyAccountModal = ({
 
     if (isSuccess) {
       toast.success('Berhasil mengecek info rekening transaksi')
-      setResult(data)
+      setResult({ ...data, status: data.status || 'FULL MATCH' })
       setStepVerify(2)
       setSelectedBank({ id: '', label: '' })
       reset()
@@ -125,11 +146,6 @@ const TransactionVerifyAccountModal = ({
     },
   })
 
-  const accountNo = useWatch({
-    control,
-    name: 'accountNo',
-  })
-
   return (
     <Modal
       isOpen={isOpen}
@@ -142,9 +158,7 @@ const TransactionVerifyAccountModal = ({
       }}
     >
       <>
-        <h2 className="font-semibold text-lg">
-          Konfirmasi Pengecekan Rekening
-        </h2>
+        <h2 className="font-semibold text-lg">Verifikasi Rekening</h2>
         {selected.is_entity_verified && !isShowForm && (
           <>
             <div className="mt-2 text-sm">
@@ -181,10 +195,25 @@ const TransactionVerifyAccountModal = ({
           <>
             {stepVerify === 1 && (
               <div>
-                <div className="text-sm mt-2">
+                <div className="text-sm mt-2 mb-2">
                   Masukkan detail info rekening untuk melakukan pengecekan
                 </div>
                 <form onSubmit={(e) => e.preventDefault()}>
+                  <Controller
+                    name="name"
+                    control={control}
+                    render={({ field, fieldState: { error } }) => (
+                      <FormItem label="Nama" errorMessage={error?.message}>
+                        <Input
+                          className="w-full px-3 text-sm py-2 mt-1 border border-gray-300 rounded-md focus:outline-none focus:ring-1 focus:ring-indigo-500"
+                          placeholder="Masukkan nama..."
+                          {...field}
+                          errorMessage={error?.message}
+                        />
+                      </FormItem>
+                    )}
+                  />
+
                   <FormItem label="Bank">
                     <InputDropdown
                       placeholder="Pilih bank..."
@@ -239,7 +268,7 @@ const TransactionVerifyAccountModal = ({
                       onClick={handleSubmit(handleUpdate)}
                       disabled={!selectedBank.id || !accountNo}
                     >
-                      Cek
+                      Verifikasi
                     </Button>
                   </div>
                 </form>
@@ -248,12 +277,67 @@ const TransactionVerifyAccountModal = ({
 
             {stepVerify === 2 && (
               <>
-                <div className="text-sm mt-2">
-                  Informasi rekening ditemukan:
+                <div className="text-sm mt-4 flex gap-1 items-center">
+                  Status verifikasi:{' '}
+                  <div
+                    className={`${
+                      result.status === 'FULL MATCH'
+                        ? 'bg-[#22c55e80] text-[#118D57]'
+                        : result.status === 'PARTIAL MATCH'
+                        ? 'bg-[#ffab0033] text-[#B76E00]'
+                        : 'bg-#ff563033 text-[#B71D18]'
+                    } rounded px-2 py-1 text-[#118D57] font-bold text-xs`}
+                  >
+                    {STATUS_MAP[result.status]}
+                  </div>
                 </div>
-                <div className="text-sm mt-2">{`Institusi: ${result?.bank}`}</div>
-                <div className="text-sm">{`Nomor Rekening: ${result?.account_number}`}</div>
-                <div className="text-sm mb-2">{`Nama: ${result?.name}`}</div>
+                <div className="text-sm mt-2">
+                  Berikut hasil verifikasi berdasarkan data yang telah
+                  dimasukkan:
+                </div>
+                <table className="min-w-full table-auto border-collapse border text-sm border-gray-300 mt-3 mb-3">
+                  <thead>
+                    <tr className="bg-gray-100">
+                      <th className="border border-gray-300 px-4 py-2">
+                        Data Awal
+                      </th>
+                      <th className="border border-gray-300 px-4 py-2">
+                        Hasil Verifikasi
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr className="even:bg-gray-50">
+                      <td className="border border-gray-300 px-4  text-sm">
+                        <div>
+                          <div>
+                            <strong>Bank:</strong> {selectedBank.id}
+                          </div>
+                          <div>
+                            <strong>Nomor Rekening:</strong> {accountNo}
+                          </div>
+                          <div>
+                            <strong>Nama:</strong> {name}
+                          </div>
+                        </div>
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-sm">
+                        <div>
+                          <div>
+                            <strong>Bank:</strong> {result.bank}
+                          </div>
+                          <div>
+                            <strong>Nomor Rekening:</strong>{' '}
+                            {result.account_number}
+                          </div>
+                          <div>
+                            <strong>Nama:</strong> {result.name}
+                          </div>
+                        </div>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
 
                 <div className="text-sm">
                   Apa Anda ingin mengubah rekening tercatat?
@@ -269,7 +353,7 @@ const TransactionVerifyAccountModal = ({
                   </div>
                 )}
 
-                <div className="flex justify-end space-x-4 mt-4">
+                <div className="flex justify-end space-x-4 mt-6">
                   <button
                     onClick={() => {
                       setIsOpenVerifModal(false)
@@ -284,6 +368,7 @@ const TransactionVerifyAccountModal = ({
                           name: string
                           account_number: string
                           bank: string
+                          status: 'FULL MATCH' | 'PARTIAL MATCH' | 'NO MATCH'
                         }
                       )
                       setStepVerify(1)
@@ -293,7 +378,7 @@ const TransactionVerifyAccountModal = ({
                     Batal
                   </button>
                   <Button
-                    variant="dark"
+                    variant="primary"
                     loading={isPending}
                     onClick={async () => {
                       mutate({

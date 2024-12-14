@@ -1,14 +1,5 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  experimental: {
-    serverActions: {
-      allowedOrigins: [
-        'fantasi-app.kpk.go.id',
-        'frontend-app',
-        'http://localhost:3003',
-      ],
-    },
-  },
   async headers() {
     return [
       {
@@ -37,12 +28,12 @@ const nextConfig = {
             value: '1; mode=block',
           },
           {
-            key: 'X-Forwarded-Host',
-            value: 'frontend-app',
+            key: 'Origin',
+            value: 'https://courageous-dolphin-fe4b45.netlify.app',
           },
           {
-            key: 'Origin',
-            value: 'https://fantasi-app.kpk.go.id',
+            key: 'X-Forwaded-Host',
+            value: 'courageous-dolphin-fe4b45.netlify.app',
           },
         ],
       },
