@@ -103,8 +103,6 @@ const TransactionVerifyAccountModal = ({
       toast.success('Berhasil mengecek info rekening transaksi')
       setResult({ ...data, status: data.status || 'FULL MATCH' })
       setStepVerify(2)
-      setSelectedBank({ id: '', label: '' })
-      reset()
     } else {
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
       setStepVerify(1)
