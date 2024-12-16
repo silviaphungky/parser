@@ -56,16 +56,19 @@ const NotificationList = ({
   }>({
     queryKey: ['notifList', currentPage, itemsPerPage, selectedFilter.id],
     queryFn: async () => {
-      const response = await axiosInstance.get(`${API_URL.NOTIF_LIST}`, {
-        params: {
-          status: selectedFilter.id,
-          page: currentPage,
-          limit: itemsPerPage,
-        },
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
+      const response = await axiosInstance.get(
+        `${baseUrl}/${API_URL.NOTIF_LIST}`,
+        {
+          params: {
+            status: selectedFilter.id,
+            page: currentPage,
+            limit: itemsPerPage,
+          },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
       const data = response.data
       return data.data
     },
