@@ -80,7 +80,7 @@ const TransactionCard = ({
                     className={`${color}`}
                   />
                   <div className="text-xs text-gray-600">
-                    {`${item.percentage.toFixed(0)}%`}
+                    {`${item.percentage.toFixed(1)}%`}
                   </div>
                 </div>
                 <div className="font-semibold -mt-1 text-sm">{`${

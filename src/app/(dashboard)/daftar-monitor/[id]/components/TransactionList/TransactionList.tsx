@@ -268,7 +268,7 @@ const TransactionList = ({
           [searchBy]:
             debouncedValue.toLowerCase() === 'unknown' ? '' : debouncedValue,
           is_starred: isHighlight === '' ? undefined : isHighlight,
-          currency: currency ? currency : undefined,
+          currency: currency ? [currency] : undefined,
           category: category ? category : undefined,
           direction: transactionType,
           method: transactionMethod ? [transactionMethod] : undefined,
