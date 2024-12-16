@@ -96,7 +96,7 @@ const TransactionStatementsTable = ({
   const { mutate: unarchieveStatement, isPending: isRestoring } = useMutation({
     mutationFn: (payload: { id: string }) =>
       axiosInstance.patch(
-        `${baseUrl}/${API_URL.RESTORE_STATEMENT}`,
+        `${baseUrl}/${API_URL.UNARCHIVE_STATEMENT}`,
         {
           id: payload.id,
         },
