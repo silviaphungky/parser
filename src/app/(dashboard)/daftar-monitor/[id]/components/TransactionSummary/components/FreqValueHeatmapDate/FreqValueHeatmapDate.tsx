@@ -227,7 +227,7 @@ const FreqValueHeatmapDate = ({
               onChange={handleChangeType}
             />
           </div>
-          <div className="w-[20rem]">
+          <div className="w-[15rem]">
             <ReactSelect
               isMulti
               value={selectedTransactionMethod}
@@ -297,7 +297,7 @@ const FreqValueHeatmapDate = ({
           <div className="flex justify-between">
             <InputSearch
               onSearch={handleSearch}
-              placeholder="Masukkan Info Lawan Transaksi"
+              placeholder="Info Lawan Transaksi..."
             />
           </div>
         </div>
