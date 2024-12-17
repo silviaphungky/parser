@@ -113,6 +113,7 @@ const Sidebar = ({
         className={`${
           isCollapsed ? 'ml-20' : 'ml-64'
         } w-full bg-soft min-h-[100vh] px-6 pt-6`}
+        style={{ maxWidth: isCollapsed ? 'calc(100vw - 16rem)' : '' }}
       >
         <div className="font-semibold text-lg text-right mb-4">
           Hi, {email} 👋🏼
