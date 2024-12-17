@@ -4,6 +4,7 @@ import { Poppins, Barlow } from 'next/font/google'
 import Providers from '@/utils/provider'
 import '@/utils/axiosInstance'
 import { Toaster } from 'react-hot-toast'
+import Head from 'next/head'
 
 const poppins = Poppins({
   weight: ['400', '500', '600', '700', '800', '900'],
@@ -29,6 +30,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+      </Head>
       <body className={`${poppins.className} ${barlow.className}`}>
         <Toaster
           toastOptions={{
