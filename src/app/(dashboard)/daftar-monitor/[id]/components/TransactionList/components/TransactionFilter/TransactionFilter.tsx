@@ -254,7 +254,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
       </div>
 
       <div className="flex gap-4">
-        <div className="flex-1">
+        <div className="flex-1" style={{ maxWidth: '14rem' }}>
           <FormItem label="Bank Daftar Monitor">
             <ReactSelect
               isMulti
