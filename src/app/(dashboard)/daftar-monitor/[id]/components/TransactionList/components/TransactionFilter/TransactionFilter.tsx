@@ -264,6 +264,45 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
               options={bankAccountOptions}
               onChange={(props) => setSelectedBank(props)}
               className="react-select-container"
+              styles={{
+                option: (styles, state) => ({
+                  ...styles,
+                  backgroundColor: state.isSelected ? '#E6EFF5' : '',
+                  '&:hover': {
+                    // overriding hover
+                    ...styles, // apply initial styles
+                    backgroundColor: '#E6EFF5',
+                  },
+                }),
+                indicatorsContainer: (base, props) => {
+                  return {
+                    ...base,
+                    alignItems: 'start',
+                  }
+                },
+                clearIndicator: (base) => {
+                  return {
+                    ...base,
+                    cursor: 'pointer',
+                  }
+                },
+                dropdownIndicator: (base) => {
+                  return {
+                    ...base,
+                    cursor: 'pointer',
+                  }
+                },
+                control: (baseStyles, state) => {
+                  return {
+                    ...baseStyles,
+                    borderColor: 'rgb(209, 213, 219)',
+                    boxShadow: 'none',
+                    borderRadius: '0.375rem',
+                    height: '34px',
+                    overflow: 'auto',
+                  }
+                },
+              }}
             />
           </FormItem>
         </div>
