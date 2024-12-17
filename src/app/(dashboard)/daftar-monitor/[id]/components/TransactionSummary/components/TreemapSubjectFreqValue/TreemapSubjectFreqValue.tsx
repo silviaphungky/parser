@@ -232,7 +232,7 @@ const TreemapSubjectFreqValue = ({
                   treemapData?.summary_frequency
                     .map((item) => ({
                       ...item,
-                      size: item.total_amount,
+                      size: Math.pow(item.total_amount, 0.5),
                       frequency: item.total_transaction,
                     }))
                     .sort((a, b) => b.total_amount - a.total_amount) || []
@@ -243,7 +243,6 @@ const TreemapSubjectFreqValue = ({
                 height={400}
                 width={400}
               />
-              {/* TODO: KASIH EMPTY STATE */}
             </>
           )}
           <div className=" mt-8 mb-4 flex gap-4 justify-between">
