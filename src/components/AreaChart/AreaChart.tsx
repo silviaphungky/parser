@@ -88,8 +88,15 @@ const AreaChart = ({
                       {payload.map((entry, i) => {
                         const { name, value, color } = entry
                         return (
-                          <div key={i} style={{ color }} className="font-bold">
-                            {`${name}: ${thousandSeparator(Number(value))}`}
+                          <div
+                            key={i}
+                            style={{ color }}
+                            className="font-bold flex gap-1"
+                          >
+                            <div>{`${name}: `}</div>
+                            <div className="text-black">{`${thousandSeparator(
+                              Number(value)
+                            )}`}</div>
                           </div>
                         )
                       })}
