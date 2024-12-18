@@ -1,5 +1,6 @@
 'use client'
 
+import React from 'react'
 import {
   YAxis,
   ResponsiveContainer,
@@ -9,10 +10,7 @@ import {
   Area,
   Legend,
   Label,
-  Text,
 } from 'recharts'
-import { ReactNode } from 'react'
-
 import { thousandSeparator } from '@/utils/thousanSeparator'
 import { Card } from '..'
 import { numberAbbv } from '@/utils/numberAbbv'
@@ -53,19 +51,20 @@ const AreaChart = ({
           {/* X-Axis */}
           <XAxis
             dataKey={xAxis}
-            axisLine={true}
-            tickLine={true}
+            axisLine
+            tickLine
             style={{ fontSize: '10px', display: hideXAxis ? 'none' : 'block' }}
             interval="preserveStart"
             tick={{ textAnchor: 'start' }}
           />
 
+          {/* Y-Axis */}
           <YAxis
             name={yLegend}
             type="number"
             domain={['dataMin', 'dataMax']}
-            axisLine={true}
-            tickLine={true}
+            axisLine
+            tickLine
             style={{ fontSize: '10px' }}
             tickFormatter={(value) => numberAbbv(value)}
           >
@@ -77,18 +76,23 @@ const AreaChart = ({
               style={{ textAnchor: 'middle', fontSize: '10px' }}
             />
           </YAxis>
+
           {/* Tooltip */}
           <Tooltip
             content={({ payload, label, active }) => {
               if (active && payload) {
-                const value = payload[0]?.value as string
                 return (
                   <Card>
                     <div className="text-xs">
                       <div>{label}</div>
-                      <div>
-                        {`${yLegend} : ${thousandSeparator(Number(value))}`}
-                      </div>
+                      {payload.map((entry, i) => {
+                        const { name, value, color } = entry
+                        return (
+                          <div key={i} style={{ color }} className="font-bold">
+                            {`${name}: ${thousandSeparator(Number(value))}`}
+                          </div>
+                        )
+                      })}
                     </div>
                   </Card>
                 )
