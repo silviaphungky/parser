@@ -240,7 +240,7 @@ const TransactionFilter: React.FC<FilterModalProps> = ({
           </FormItem>
         </div>
         <div className="flex-1">
-          <FormItem label="Mata Uang">
+          <FormItem label="Mata Uang" required>
             <InputDropdown
               options={currencyOptions}
               value={currency}
