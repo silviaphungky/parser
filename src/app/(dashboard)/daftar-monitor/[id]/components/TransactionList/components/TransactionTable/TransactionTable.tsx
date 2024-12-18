@@ -206,7 +206,7 @@ const TransactionTable = ({
           <div className="text-xs max-w-[7rem] break-words whitespace-pre-wrap">
             <div className="text-xs">
               {row.entity_bank_adjusted
-                ? row.entity_bank_adjusted || 'unknown'
+                ? row.entity_bank_label_adjusted || 'unknown'
                 : row.entity_bank || 'unknown'}
             </div>
             <div className="text-xs">{`${
