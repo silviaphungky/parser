@@ -48,6 +48,7 @@ const TransactionListPage = async () => {
       }
     )
     const data = await response.json()
+    console.log(`verifikasi: ${data}`)
 
     return {
       isSuccess: data.status === 200,
