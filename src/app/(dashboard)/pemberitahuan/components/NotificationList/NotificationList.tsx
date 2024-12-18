@@ -8,6 +8,7 @@ import axiosInstance from '@/utils/axiosInstance'
 import { useMutation, useQuery } from '@tanstack/react-query'
 import React, { useState } from 'react'
 import toast from 'react-hot-toast'
+import parse from 'html-react-parser'
 
 const filterOptions = [
   {
@@ -143,7 +144,7 @@ const NotificationList = ({
               key={notif.id}
               className={`p-4 border rounded-lg ${'bg-white'}`}
             >
-              <h2 className="text-sm">{notif.message}</h2>
+              <h2 className="text-sm">{parse(notif.message)}</h2>
               {!notif.read_at && (
                 <button
                   onClick={() => handleMarkAsRead([notif.id])}
