@@ -15,9 +15,9 @@ import { IconChecklist } from '@/icons'
 import { colorToken } from '@/constants/color-token'
 
 const STATUS_MAP = {
-  ['FULL MATCH']: 'Cocok Sepenuhnya',
-  ['PARTIAL MATCH']: 'Cocok Sebagian',
-  ['NO MATCH']: 'Tidak Cocok',
+  ['FULL_MATCH']: 'Cocok Sepenuhnya',
+  ['PARTIAL_MATCH']: 'Cocok Sebagian',
+  ['NO_MATCH']: 'Tidak Cocok',
 }
 
 const validationSchema = yup.object().shape({
@@ -64,7 +64,7 @@ const TransactionVerifyAccountModal = ({
       name: string
       account_number: string
       bank: string
-      status: 'FULL MATCH' | 'PARTIAL MATCH' | 'NO MATCH'
+      status: 'FULL_MATCH' | 'PARTIAL_MATCH' | 'NO_MATCH'
     }
   )
   const [isLoading, setIsLoading] = useState(false)
@@ -104,7 +104,7 @@ const TransactionVerifyAccountModal = ({
     if (isSuccess) {
       setIsLoading(false)
       toast.success('Berhasil mengecek info rekening transaksi')
-      setResult({ ...data, status: data.status || 'FULL MATCH' })
+      setResult({ ...data, status: data.status || 'FULL_MATCH' })
       setStepVerify(2)
     } else {
       setIsLoading(false)
