@@ -67,6 +67,7 @@ const TransactionVerifyAccountModal = ({
       status: 'FULL MATCH' | 'PARTIAL MATCH' | 'NO MATCH'
     }
   )
+  const [isLoading, setIsLoading] = useState(false)
 
   useEffect(() => {
     setIsShowForm(!selected.is_entity_verified)
@@ -91,6 +92,7 @@ const TransactionVerifyAccountModal = ({
   })
 
   const handleUpdate = async (value: { accountNo: string; name: string }) => {
+    setIsLoading(true)
     const { isSuccess, error, data } = await verifyBankAccount({
       transaction_id: selected.transaction_id,
       entity_name: value.name,
@@ -100,10 +102,12 @@ const TransactionVerifyAccountModal = ({
     })
 
     if (isSuccess) {
+      setIsLoading(false)
       toast.success('Berhasil mengecek info rekening transaksi')
       setResult({ ...data, status: data.status || 'FULL MATCH' })
       setStepVerify(2)
     } else {
+      setIsLoading(false)
       toast.error(`Gagal mengecek info rekening transaksi: ${error}`)
       setStepVerify(1)
       reset()
@@ -265,6 +269,7 @@ const TransactionVerifyAccountModal = ({
                       variant="primary"
                       onClick={handleSubmit(handleUpdate)}
                       disabled={!selectedBank.id || !accountNo}
+                      loading={isLoading}
                     >
                       Verifikasi
                     </Button>

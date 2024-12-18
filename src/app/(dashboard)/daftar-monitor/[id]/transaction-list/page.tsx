@@ -29,31 +29,46 @@ const TransactionListPage = async () => {
     currency: string
   }) => {
     'use server'
+    try {
+      const response = await fetch(
+        `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/entity/verify`,
+        {
+          body: JSON.stringify({
+            transaction_id,
+            entity_name,
+            entity_account_number,
+            entity_bank,
+            currency,
+          }),
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      )
 
-    const response = await fetch(
-      `${baseUrl}/${API_URL.UPDATE_TRANSACTION}/entity/verify`,
-      {
-        body: JSON.stringify({
-          transaction_id,
-          entity_name,
-          entity_account_number,
-          entity_bank,
-          currency,
-        }),
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`,
-        },
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(
+          errorData.message || `Request failed with status ${response.status}`
+        )
       }
-    )
-    const data = await response.json()
-    console.log(`verifikasi: ${data}`)
 
-    return {
-      isSuccess: data.status === 200,
-      error: data.message || '',
-      data: data.data,
+      const data = await response.json()
+
+      return {
+        isSuccess: data.status === 200,
+        error: '',
+        data: data.data,
+      }
+    } catch (error: any) {
+      console.error(`Error verifying bank account: ${error.message}`)
+      return {
+        isSuccess: false,
+        error: error.message || 'An unknown error occurred',
+        data: null,
+      }
     }
   }
 
