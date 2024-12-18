@@ -94,9 +94,9 @@ const AreaChart = ({
                             className="font-bold flex gap-1"
                           >
                             <div>{`${name}: `}</div>
-                            <div className="text-black">{`${thousandSeparator(
-                              Number(value)
-                            )}`}</div>
+                            <div
+                              style={{ color: '#000' }}
+                            >{`${thousandSeparator(Number(value))}`}</div>
                           </div>
                         )
                       })}
