@@ -76,13 +76,6 @@ export const bankOptions = [
     id: 'SINARMAS',
   },
   {
-    bank_code: '734',
-    pt: 'PT. BANK SINARMAS UNIT USAHA SYARIAH',
-    swift_code: 'SYTBIDJ1',
-    label: 'Bank Sinarmas UUS',
-    id: 'SINARMAS_UUS',
-  },
-  {
     bank_code: '531',
     pt: 'PT. ANGLOMAS INTERNATIONAL BANK',
     swift_code: 'LOMAIDJ1',
@@ -95,13 +88,6 @@ export const bankOptions = [
     swift_code: 'LOMAIDJ1',
     label: 'Bank Amar Indonesia',
     id: 'AMAR',
-  },
-  {
-    bank_code: '040',
-    pt: 'BANGKOK BANK PUBLIC CO. LTD.',
-    swift_code: 'BKKBIDJA',
-    label: 'Bangkok Bank',
-    id: 'BANGKOK',
   },
   {
     bank_code: '494',
@@ -146,13 +132,6 @@ export const bankOptions = [
     id: 'BJB',
   },
   {
-    bank_code: '057',
-    pt: 'PT. BANK BNP PARIBAS INDONESIA',
-    swift_code: 'BNPAIDJA',
-    label: 'Bank BNP Paribas',
-    id: 'BNP_PARIBAS',
-  },
-  {
     bank_code: '441',
     pt: 'PT. BANK BUKOPIN',
     swift_code: 'BBUKIDJA',
@@ -179,13 +158,6 @@ export const bankOptions = [
     swift_code: 'CTCBIDJA',
     label: 'Bank Chinatrust Indonesia',
     id: 'CHINATRUST',
-  },
-  {
-    bank_code: '950',
-    pt: 'PT. BANK COMMONWEALTH',
-    swift_code: 'BICNIDJA',
-    label: 'Bank Commonwealth',
-    id: 'COMMONWEALTH',
   },
   {
     id: 'BPR_SUPRA',
@@ -377,20 +349,6 @@ export const bankOptions = [
     id: 'SHINHAN',
   },
   {
-    bank_code: '491',
-    pt: 'PT. BANK MITRA NIAGA',
-    swift_code: 'MGABIDJ1',
-    label: 'Bank Mitra Niaga',
-    id: 'MITRA_NIAGA',
-  },
-  {
-    bank_code: '048',
-    pt: 'PT. BANK MIZUHO INDONESIA',
-    swift_code: 'MHCCIDJA',
-    label: 'Bank Mizuho Indonesia',
-    id: 'MIZUHO',
-  },
-  {
     bank_code: '147',
     pt: 'PT. BANK MUAMALAT INDONESIA TBK',
     swift_code: 'MUABIDJA',
@@ -405,13 +363,6 @@ export const bankOptions = [
     id: 'MULTI_ARTA_SENTOSA',
   },
   {
-    bank_code: '145',
-    pt: 'PT. BANK NUSANTARA PARAHYANGAN',
-    swift_code: 'NUPAIDJ6',
-    label: 'Bank Nusantara Parahyangan',
-    id: 'NUSANTARA_PARAHYANGAN',
-  },
-  {
     bank_code: '028',
     pt: 'PT. BANK OCBC NISP, TBK.',
     swift_code: 'NISPIDJA',
@@ -424,13 +375,6 @@ export const bankOptions = [
     swift_code: 'SYONIDJ1',
     label: 'Bank OCBC NISP UUS',
     id: 'OCBC_UUS',
-  },
-  {
-    bank_code: '033',
-    pt: 'BANK OF AMERICA MERRILL-LYNCH',
-    swift_code: 'BOFAID2X',
-    label: 'Bank of America Merill-Lynch',
-    id: 'BAML',
   },
   {
     bank_code: '069',
@@ -454,20 +398,6 @@ export const bankOptions = [
     id: 'PERMATA_UUS',
   },
   {
-    bank_code: '089',
-    pt: 'PT. BANK RABOBANK INTERNATIONAL INDONESIA',
-    swift_code: 'RABOIDJA',
-    label: 'Bank Rabobank International Indonesia',
-    id: 'RABOBANK',
-  },
-  {
-    bank_code: '047',
-    pt: 'PT. BANK RESONA PERDANIA',
-    swift_code: 'BPIAIDJA',
-    label: 'Bank Resona Perdania',
-    id: 'RESONA',
-  },
-  {
     bank_code: '501',
     pt: 'PT. BANK ROYAL INDONESIA',
     swift_code: 'ROYBIDJ1',
@@ -480,13 +410,6 @@ export const bankOptions = [
     swift_code: 'SIHBIDJ1',
     label: 'Mandiri Taspen Pos',
     id: 'MANDIRI_TASPEN',
-  },
-  {
-    bank_code: '045',
-    pt: 'PT. BANK SUMITOMO MITSUI INDONESIA',
-    swift_code: 'SUNIIDJA',
-    label: 'Bank Sumitomo Mitsui Indonesia',
-    id: 'MITSUI',
   },
   {
     bank_code: '451',
@@ -536,13 +459,6 @@ export const bankOptions = [
     swift_code: 'BVICIDJA',
     label: 'Bank Victoria Internasional',
     id: 'VICTORIA_INTERNASIONAL',
-  },
-  {
-    bank_code: '068',
-    pt: 'PT. BANK WOORI SAUDARA ,TBK.',
-    swift_code: 'HVBKIDJA',
-    label: 'Bank Woori Indonesia',
-    id: 'WOORI',
   },
   {
     bank_code: '490',
@@ -818,27 +734,6 @@ export const bankOptions = [
     id: 'SUMUT_UUS',
   },
   {
-    bank_code: '559',
-    pt: 'PT. CENTRATAMA NASIONAL BANK',
-    swift_code: 'CNBAIDJ1',
-    label: 'Centratama Nasional Bank',
-    id: 'CENTRATAMA',
-  },
-  {
-    bank_code: '031',
-    pt: 'CITIBANK N.A.',
-    swift_code: 'CITIIDJX',
-    label: 'Citibank',
-    id: 'CITIBANK',
-  },
-  {
-    bank_code: '067',
-    pt: 'DEUTSCHE BANK AG',
-    swift_code: 'DEUTIDJA',
-    label: 'Deutsche Bank',
-    id: 'DEUTSCHE',
-  },
-  {
     bank_code: '087',
     pt: 'HONGKONG AND SHANGHAI BANK CORPORATION',
     swift_code: 'HSBCIDJA',
@@ -853,13 +748,6 @@ export const bankOptions = [
     id: 'HSBC_UUS',
   },
   {
-    bank_code: '032',
-    pt: 'JP MORGAN CHASE BANK, N.A',
-    swift_code: 'CHASIDJX',
-    label: 'JP Morgan Chase Bank',
-    id: 'JPMORGAN',
-  },
-  {
     bank_code: '520',
     pt: 'PT. PRIMA MASTER BANK',
     swift_code: 'PMASIDJ1',
@@ -872,20 +760,6 @@ export const bankOptions = [
     swift_code: 'SCBLIDJX',
     label: 'Standard Charted Bank',
     id: 'STANDARD_CHARTERED',
-  },
-  {
-    bank_code: '003',
-    pt: 'BANK EKSPOR INDONESIA',
-    swift_code: 'LPEIIDJ1',
-    label: 'Indonesia Eximbank',
-    id: 'EXIMBANK',
-  },
-  {
-    bank_code: '020',
-    pt: 'BANK ARTA NIAGA KENCANA',
-    label: 'Bank Arta Niaga Kencana',
-    id: 'ARTA_NIAGA_KENCANA',
-    swift_code: 'ARNKIDJ1',
   },
   {
     bank_code: '164',
@@ -937,25 +811,11 @@ export const bankOptions = [
     id: 'BCA_SYR',
   },
   {
-    bank_code: '427',
-    pt: 'PT. BANK BNI SYARIAH',
-    swift_code: 'SYNIIDJ1',
-    label: 'Bank BNI Syariah',
-    id: 'BNI_SYR',
-  },
-  {
     bank_code: '425',
     pt: 'PT. BANK BJB SYARIAH',
     swift_code: 'SYJBIDJ1',
     label: 'Bank BJB Syariah',
     id: 'BJB_SYR',
-  },
-  {
-    bank_code: '422',
-    pt: 'PT. BANK SYARIAH BRI',
-    swift_code: 'DJARIDJ1',
-    label: 'Bank Syariah BRI',
-    id: 'BRI_SYR',
   },
   {
     bank_code: '521',
@@ -1007,32 +867,11 @@ export const bankOptions = [
     id: 'BANTEN',
   },
   {
-    bank_code: '466',
-    pt: 'PT. BANK ANDARA',
-    swift_code: 'RIPAIDJ1',
-    label: 'Bank Andara',
-    id: 'ANDARA',
-  },
-  {
-    bank_code: '466',
-    pt: 'PT. BANK OKE INDONESIA',
-    swift_code: 'RIPAIDJ1',
-    label: 'Bank Oke Indonesia',
-    id: 'OKE',
-  },
-  {
     bank_code: '498',
     pt: 'PT. BANK SBI INDONESIA',
     swift_code: 'IDMOIDJ1',
     label: 'Bank SBI Indonesia',
     id: 'SBI_INDONESIA',
-  },
-  {
-    bank_code: '052',
-    pt: 'PT. BANK RBS',
-    label: 'Royal Bank of Scotland (RBS)',
-    id: 'RBS',
-    swift_code: 'ABNAIDJA',
   },
   {
     bank_code: '484',
@@ -1068,27 +907,6 @@ export const bankOptions = [
     swift_code: 'BWKIIDJA',
     label: 'China Construction Bank Indonesia',
     id: 'CCB',
-  },
-  {
-    bank_code: 'OVO',
-    pt: 'OVO (PT Visionet Internasional)',
-    swift_code: 'OVO',
-    label: 'OVO',
-    id: 'EWALLET_OVO',
-  },
-  {
-    bank_code: 'DANA',
-    pt: 'DANA (PT. Espay Debit Indonesia)',
-    swift_code: 'DANA',
-    label: 'DANA',
-    id: 'EWALLET_DANA',
-  },
-  {
-    bank_code: 'GOPAY',
-    pt: 'GOPAY (PT Aplikasi Karya Anak Bangsa)',
-    swift_code: 'GOPAY',
-    label: 'GOPAY',
-    id: 'EWALLET_GOPAY',
   },
 ]
 
