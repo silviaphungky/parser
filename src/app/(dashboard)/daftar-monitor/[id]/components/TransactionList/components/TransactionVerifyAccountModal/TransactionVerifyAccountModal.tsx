@@ -253,7 +253,16 @@ const TransactionVerifyAccountModal = ({
                     </div>
                   )}
 
-                  <div className="flex justify-end space-x-4 mt-8">
+                  <div className="flex  mt-8 flex-row-reverse">
+                    <Button
+                      variant="primary"
+                      onClick={handleSubmit(handleUpdate)}
+                      disabled={!selectedBank.id || !accountNo}
+                      loading={isLoading}
+                      type="submit"
+                    >
+                      Verifikasi
+                    </Button>
                     <button
                       onClick={() => {
                         setIsOpenVerifModal(false)
@@ -263,18 +272,10 @@ const TransactionVerifyAccountModal = ({
                         setStepVerify(1)
                         setIsLoading(false)
                       }}
-                      className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
+                      className="mr-4 ml-4 px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                     >
                       Batal
                     </button>
-                    <Button
-                      variant="primary"
-                      onClick={handleSubmit(handleUpdate)}
-                      disabled={!selectedBank.id || !accountNo}
-                      loading={isLoading}
-                    >
-                      Verifikasi
-                    </Button>
                   </div>
                 </form>
               </div>
