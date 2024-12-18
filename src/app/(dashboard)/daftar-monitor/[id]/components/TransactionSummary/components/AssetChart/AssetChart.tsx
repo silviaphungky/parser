@@ -70,7 +70,6 @@ const AssetChart = ({
       ) >= 12
     ) {
       groupBy = 'monthly'
-      return
     }
 
     if (
@@ -84,7 +83,6 @@ const AssetChart = ({
       ) > 6
     ) {
       groupBy = 'weekly'
-      return
     }
     if (
       dayjs(new Date(selectedDate.to)).diff(
@@ -93,7 +91,6 @@ const AssetChart = ({
       ) > 3
     ) {
       groupBy = 'daily'
-      return
     }
   }
 
