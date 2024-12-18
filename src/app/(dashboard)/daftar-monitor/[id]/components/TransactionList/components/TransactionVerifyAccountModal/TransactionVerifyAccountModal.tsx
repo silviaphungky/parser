@@ -282,9 +282,9 @@ const TransactionVerifyAccountModal = ({
                   Status verifikasi:{' '}
                   <div
                     className={`${
-                      result.status === 'FULL MATCH'
+                      result.status === 'FULL_MATCH'
                         ? 'bg-[#22c55e80] text-[#118D57]'
-                        : result.status === 'PARTIAL MATCH'
+                        : result.status === 'PARTIAL_MATCH'
                         ? 'bg-[#ffab0033] text-[#B76E00]'
                         : 'bg-#ff563033 text-[#B71D18]'
                     } rounded px-2 py-1 text-[#118D57] font-bold text-xs`}
@@ -369,7 +369,7 @@ const TransactionVerifyAccountModal = ({
                           name: string
                           account_number: string
                           bank: string
-                          status: 'FULL MATCH' | 'PARTIAL MATCH' | 'NO MATCH'
+                          status: 'FULL_MATCH' | 'PARTIAL_MATCH' | 'NO_MATCH'
                         }
                       )
                       setStepVerify(1)
