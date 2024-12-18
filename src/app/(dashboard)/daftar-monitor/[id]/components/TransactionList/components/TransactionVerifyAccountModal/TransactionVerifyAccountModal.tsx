@@ -138,6 +138,7 @@ const TransactionVerifyAccountModal = ({
       setStepVerify(1)
       reset()
       setSelectedBank({ id: '', label: '' })
+      setIsLoading(false)
     },
     onError: (error: any) => {
       toast.error(
@@ -155,6 +156,7 @@ const TransactionVerifyAccountModal = ({
         setStepVerify(1)
         setSelectedBank({ id: '', label: '' })
         setSelected({} as ITransactionItem)
+        setIsLoading(false)
       }}
     >
       <>
@@ -180,6 +182,7 @@ const TransactionVerifyAccountModal = ({
                   setSelectedBank({ id: '', label: '' })
                   setSelected({} as ITransactionItem)
                   setStepVerify(1)
+                  setIsLoading(false)
                 }}
                 className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
               >
@@ -258,6 +261,7 @@ const TransactionVerifyAccountModal = ({
                         setSelectedBank({ id: '', label: '' })
                         setSelected({} as ITransactionItem)
                         setStepVerify(1)
+                        setIsLoading(false)
                       }}
                       className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                     >
@@ -373,6 +377,7 @@ const TransactionVerifyAccountModal = ({
                         }
                       )
                       setStepVerify(1)
+                      setIsLoading(false)
                     }}
                     className="px-4 py-2 text-sm font-semibold text-gray-700 bg-gray-200 rounded-md hover:bg-gray-300"
                   >
